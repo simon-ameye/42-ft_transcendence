@@ -1,28 +1,29 @@
 import { Strategy } from "passport-oauth2";
 import { PassportStrategy } from "@nestjs/passport";
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
-export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
-	constructor(
-			private configService : ConfigService) {
+export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
+	constructor(private prismaService: PrismaService) {
 		super({
 			// service provider to authorize access
 			authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
 			// to get the 42 API token that will be exchange for access token
 			tokenURL: 'https://api.intra.42.fr/oauth/token',
-			clientID: configService.get('42API_ID'),
-			clientSecret: configService.get('42API_SECRET'),
+			clientID: '123',
+			clientSecret: 'secret',
 			// where user is sent after authorization
-			callbackURL: 'http://localhost:3000/auth/42api/redirect',
-			state: true,
-			scope: ['public']
+			callbackURL: 'http://localhost:3000/users/signup'
 		});
 	}
-	// method called when authentification succeeded
-	async validate(token: string, refreshToken: string) {
-		console.log("VALIDATE");
-		return ({token, refreshToken});
+	async validate(email: string, password: string) {
+		// change email to unique to use FindUnique
+		const	user = await this.prismaService.user.findFirst({
+			where : {
+				email: email,
+			}
+		});
+		return (user);
 	}
 }
