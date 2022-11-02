@@ -27,6 +27,7 @@ let AuthService = class AuthService {
                 hash,
             },
         });
+        delete user.hash;
         console.log("signup done");
         return 'sign up';
     }
