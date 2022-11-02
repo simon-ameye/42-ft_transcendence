@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSGRES_DB: nest
+    volumes:
+      - ./postgres/:/var/lib/posgresql/data
+    networks:
+      - ft_transcendence
+  backend:
+    restart: always
+    image: backend-node
+    build:
+      context: ./
+      dockerfile: Dockerfile.backend-node
+    volumes:
+      - ./backend/:/app
+    ports:
+      - 3000:3000
+    # DATABASE_URL IN A .env
+    depends_on:
+      - database
+    links:
+      - database
+    command: sh -c 'npm install && npm run start:dev'
+    networks:
+      - ft_transcendence
+    #frontend:
+networks:
+  ft_transcendence:
+    driver: bridge
