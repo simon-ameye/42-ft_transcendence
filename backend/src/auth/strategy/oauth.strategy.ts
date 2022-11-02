@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
-export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
+export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 	constructor(private prismaService: PrismaService) {
 		super({
 			// service provider to authorize access
@@ -17,13 +17,19 @@ export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
 			callbackURL: 'http://localhost:3000/users/signup'
 		});
 	}
-	async validate(email: string, password: string) {
-		// change email to unique to use FindUnique
-		const	user = await this.prismaService.user.findFirst({
-			where : {
-				email: email,
-			}
-		});
-		return (user);
-	}
+		validate(content: any) {
+			console.log(content);
+		}
+//	async validate(email: string, password: string) {
+//		// change email to unique to use FindUnique
+//		const	user = await this.prismaService.user.findFirst({
+//			where : {
+//				email: email,
+//			}
+//		});
+//		if (user)
+//			return (user);
+//		// create user
+//		return (null);
+//	}
 }

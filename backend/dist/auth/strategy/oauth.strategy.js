@@ -14,7 +14,7 @@ const passport_oauth2_1 = require("passport-oauth2");
 const passport_1 = require("@nestjs/passport");
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
-let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)(passport_oauth2_1.Strategy, 'oauth') {
+let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)(passport_oauth2_1.Strategy, '42API') {
     constructor(prismaService) {
         super({
             authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
@@ -25,13 +25,8 @@ let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)
         });
         this.prismaService = prismaService;
     }
-    async validate(email, password) {
-        const user = await this.prismaService.user.findFirst({
-            where: {
-                email: email,
-            }
-        });
-        return (user);
+    validate(content) {
+        console.log(content);
     }
 };
 OAuthStrategy = __decorate([

@@ -3,6 +3,6 @@ declare const OAuthStrategy_base: new (...args: any[]) => import("passport-oauth
 export declare class OAuthStrategy extends OAuthStrategy_base {
     private prismaService;
     constructor(prismaService: PrismaService);
-    validate(email: string, password: string): Promise<import(".prisma/client").User>;
+    validate(content: any): void;
 }
 export {};
