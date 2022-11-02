@@ -8,3 +8,4 @@
 - classValidator / classTransformer
 - argon2
 - prisma
+- config ( @nestjs/config )
