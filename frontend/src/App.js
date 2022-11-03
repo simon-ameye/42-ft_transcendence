@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import CreateUser from './components/CreateUser';
+import User from './components/User';
 import NotFound from './pages/NotFound';
 import Home from './pages/Home';
 
@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
 		<Routes>
 			<Route path="/" exact element={<Home />} />
-			<Route path="/createuser" element={<CreateUser />} />
+			<Route path="/user" element={<User />} />
 			{/*<Route path="/game" element={<Game />} />*/}
 			<Route path="*" element={<NotFound />} />
 		</Routes>
