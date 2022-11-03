@@ -20,9 +20,10 @@ let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)
         super({
             authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
             tokenURL: 'https://api.intra.42.fr/oauth/token',
-            clientID: configService.get('CLIENT_ID'),
-            clientSecret: configService.get('CLIENT_SECRET'),
-            callbackURL: 'http://localhost:3000/auth/42api/redirect'
+            clientID: configService.get('42API_ID'),
+            clientSecret: configService.get('42API_SECRET'),
+            callbackURL: 'http://localhost:3000/auth/42api/redirect',
+            state: true
         });
         this.prismaService = prismaService;
         this.configService = configService;

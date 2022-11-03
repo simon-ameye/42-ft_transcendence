@@ -15,10 +15,11 @@ export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 			authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
 			// to get the 42 API token that will be exchange for access token
 			tokenURL: 'https://api.intra.42.fr/oauth/token',
-			clientID: configService.get('CLIENT_ID'),
-			clientSecret: configService.get('CLIENT_SECRET'),
+			clientID: configService.get('42API_ID'),
+			clientSecret: configService.get('42API_SECRET'),
 			// where user is sent after authorization
-			callbackURL: 'http://localhost:3000/auth/42api/redirect'
+			callbackURL: 'http://localhost:3000/auth/42api/redirect',
+			state: true
 		});
 	}
 		// method called when authentification succeeded
