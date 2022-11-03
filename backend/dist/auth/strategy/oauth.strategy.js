@@ -23,13 +23,16 @@ let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)
             clientID: configService.get('42API_ID'),
             clientSecret: configService.get('42API_SECRET'),
             callbackURL: 'http://localhost:3000/auth/42api/redirect',
-            state: true
+            state: true,
+            scope: ['public']
         });
         this.prismaService = prismaService;
         this.configService = configService;
     }
-    validate(content) {
-        console.log(content);
+    async validate(client_id, client_secret, profile) {
+        console.log("VALIDATE");
+        console.log({ profile });
+        return ({ client_id, client_secret, user: "OK" });
     }
 };
 OAuthStrategy = __decorate([

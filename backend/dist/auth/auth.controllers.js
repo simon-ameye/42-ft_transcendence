@@ -17,9 +17,12 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const dto_1 = require("./dto");
 const passport_1 = require("@nestjs/passport");
+const get_user_decorator_1 = require("./decorator/get-user.decorator");
+const axios_1 = require("@nestjs/axios");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, httpService) {
         this.authService = authService;
+        this.httpService = httpService;
     }
     signup(dto) {
         return this.authService.signup(dto);
@@ -30,8 +33,22 @@ let AuthController = class AuthController {
     loginAPI(request) {
         console.log({ request });
     }
-    handleRedirect() {
-        return ({ msg: 'OK' });
+    async handleRedirect(query, user) {
+        console.log("REDIRECT");
+        console.log(user);
+        console.log(query);
+        const data = await this.httpService.post('https://api.intra.42.fr/oauth/token', {
+            grant_type: 'authorization_code',
+            client_id: user.client_id,
+            client_secret: user.client_secret,
+            code: query.code,
+            redirect_uri: 'http://localhost:3000/auth/42api/reredirect',
+            state: query.state
+        });
+        return ({ data });
+    }
+    handleReredirect() {
+        return ({ msg: "OK" });
     }
 };
 __decorate([
@@ -57,14 +74,23 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "loginAPI", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42API')),
     (0, common_1.Get)('42api/redirect'),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "handleRedirect", null);
+__decorate([
+    (0, common_1.Get)('42api/reredirect'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "handleRedirect", null);
+], AuthController.prototype, "handleReredirect", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService, axios_1.HttpService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controllers.js.map

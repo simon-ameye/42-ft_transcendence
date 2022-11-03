@@ -19,12 +19,15 @@ export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 			clientSecret: configService.get('42API_SECRET'),
 			// where user is sent after authorization
 			callbackURL: 'http://localhost:3000/auth/42api/redirect',
-			state: true
+			state: true,
+			scope: ['public']
 		});
 	}
 		// method called when authentification succeeded
-		validate(content: any) {
-			console.log(content);
+		async validate(client_id: string, client_secret: string, profile: any) {
+			console.log("VALIDATE");
+			console.log({profile});
+			return ({client_id, client_secret, user: "OK"});
 		}
 //	async validate(email: string, password: string) {
 //		// change email to unique to use FindUnique
