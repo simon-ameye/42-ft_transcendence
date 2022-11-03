@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const client_1 = require(".prisma/client");
 const argon = require("argon2");
 let AuthService = class AuthService {
     constructor(prisma) {
@@ -21,17 +22,42 @@ let AuthService = class AuthService {
     }
     async signup(dto) {
         const hash = await argon.hash(dto.password);
-        const user = await this.prisma.user.create({
-            data: {
-                email: dto.email,
-                hash,
-            },
-        });
+        try {
+            const user = await this.prisma.user.create({
+                data: {
+                    email: dto.email,
+                    hash,
+                },
+            });
+            delete user.hash;
+        }
+        catch (e) {
+            if (e instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+                if (e.code == "P2002") {
+                    throw new common_1.ForbiddenException('Credentials taken');
+                }
+                throw e;
+            }
+        }
         console.log("signup done");
         return 'sign up';
     }
-    signin() {
-        return 'I am sign in';
+    async signin(dto) {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                email: dto.email,
+            },
+        });
+        if (!user) {
+            throw new common_1.ForbiddenException('Credentials incorrect');
+        }
+        const pwMatch = await argon.verify(user.hash, dto.password);
+        if (!pwMatch) {
+            throw new common_1.ForbiddenException('Credentials incorrect');
+        }
+        ;
+        delete user.hash;
+        return user;
     }
 };
 AuthService = __decorate([
