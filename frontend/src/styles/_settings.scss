@@ -1,16 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@600&family=Josefin+Sans:wght@400&family=Nova+Round&display=swap');
 
-$font-1: 'Nova Round', cursive;
-$font-2: 'Dosis', sans-serif;
-$font-3: 'Josefin Sans', serif;
+$nova: 'Nova Round', cursive;
+$dosis: 'Dosis', sans-serif;
+$josefin: 'Josefin Sans', serif;
 
-$color-1: #2a1d52;
-$color-2: #6C77F4;
-$color-3: rgb(99, 164, 233);
-$color-4: #4FEDD2;
-$color-5: #36D0EA;
 $white: #ddd;
-$black: #333;
+$black: black;
+$dark_grey: black;
+$user_green: #2a6637;
+$user_red: #d15050;
+$nav_color: $user_green;
+$nav_color_l: #48b15f;
+$nav_color_2: $user_red;
+$nav_text: #eee;
 
 $borderRadius: 25px;
 $shadow: 0 1px 3px #333;
@@ -23,20 +25,19 @@ $minHeight: 95vh;
 }
 
 html{
-	background-color: #333;
+	background-color: $dark_grey;
 }
 
 * {
 	box-sizing: border-box;
 	padding: 0;
 	margin: 0;
+	color: $white
 }
 
 body {
-	margin: 1rem auto;
-	max-width: 1200px;
-	font-family: $font-1;
-	color: $black;
+	font-family: $nova;
+	color: $dark_grey;
 }
 
 button {
@@ -49,7 +50,6 @@ li {
 
 a {
 	text-decoration: none;
-	color: $black;
+	color: $dark_grey;
 	cursor: pointer;
 }
-

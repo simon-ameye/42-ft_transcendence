@@ -1,9 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'
+import Navbar from '../components/Navbar';
 
 const NotFound = () => {
 	return (
 		<div className="notFound">
+			<Navbar />
 			<div className="notFoundContent">
 				<h3>404 page</h3>
 				<NavLink exact to="/" activeClassname="navActive">

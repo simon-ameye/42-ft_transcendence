@@ -1,0 +1,22 @@
+header {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	height: 50px;
+	padding: 0 5rem;
+	background-color: $nav_color;
+	color: $nav_text;
+	margin-bottom: 2rem;
+}
+
+h3 i {
+	font-size: 25px;
+	padding-right: 1rem;
+}
+
+nav span {
+	margin: 0 2rem 0 0.5rem;
+	color: $nav_text;
+}
+
+
