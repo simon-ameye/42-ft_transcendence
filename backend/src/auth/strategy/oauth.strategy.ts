@@ -2,21 +2,26 @@ import { Strategy } from "passport-oauth2";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
-	constructor(private prismaService: PrismaService) {
+	constructor(
+			private prismaService: PrismaService,
+			private configService : ConfigService
+		) {
 		super({
 			// service provider to authorize access
 			authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
 			// to get the 42 API token that will be exchange for access token
 			tokenURL: 'https://api.intra.42.fr/oauth/token',
-			clientID: '123',
-			clientSecret: 'secret',
+			clientID: configService.get('CLIENT_ID'),
+			clientSecret: configService.get('CLIENT_SECRET'),
 			// where user is sent after authorization
-			callbackURL: 'http://localhost:3000/users/signup'
+			callbackURL: 'http://localhost:3000/auth/42api/redirect'
 		});
 	}
+		// method called when authentification succeeded
 		validate(content: any) {
 			console.log(content);
 		}

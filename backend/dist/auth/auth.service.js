@@ -18,7 +18,7 @@ let AuthService = class AuthService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async signupAPI() {
+    async loginAPI() {
     }
     async signup(dto) {
         const hash = await argon.hash(dto.password);

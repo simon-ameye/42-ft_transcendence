@@ -27,8 +27,11 @@ let AuthController = class AuthController {
     signin(dto) {
         return this.authService.signin(dto);
     }
-    signupAPI(request) {
+    loginAPI(request) {
         console.log({ request });
+    }
+    handleRedirect() {
+        return ({ msg: 'OK' });
     }
 };
 __decorate([
@@ -47,12 +50,18 @@ __decorate([
 ], AuthController.prototype, "signin", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42API')),
-    (0, common_1.Post)('signupAPI'),
+    (0, common_1.Get)('loginAPI'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "signupAPI", null);
+], AuthController.prototype, "loginAPI", null);
+__decorate([
+    (0, common_1.Get)('42api/redirect'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "handleRedirect", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

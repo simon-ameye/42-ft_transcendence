@@ -14,16 +14,18 @@ const passport_oauth2_1 = require("passport-oauth2");
 const passport_1 = require("@nestjs/passport");
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
+const config_1 = require("@nestjs/config");
 let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)(passport_oauth2_1.Strategy, '42API') {
-    constructor(prismaService) {
+    constructor(prismaService, configService) {
         super({
             authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
             tokenURL: 'https://api.intra.42.fr/oauth/token',
-            clientID: '123',
-            clientSecret: 'secret',
-            callbackURL: 'http://localhost:3000/users/signup'
+            clientID: configService.get('CLIENT_ID'),
+            clientSecret: configService.get('CLIENT_SECRET'),
+            callbackURL: 'http://localhost:3000/auth/42api/redirect'
         });
         this.prismaService = prismaService;
+        this.configService = configService;
     }
     validate(content) {
         console.log(content);
@@ -31,7 +33,8 @@ let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)
 };
 OAuthStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        config_1.ConfigService])
 ], OAuthStrategy);
 exports.OAuthStrategy = OAuthStrategy;
 //# sourceMappingURL=oauth.strategy.js.map

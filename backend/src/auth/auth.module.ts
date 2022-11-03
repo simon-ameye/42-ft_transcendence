@@ -7,7 +7,6 @@ import { OAuthStrategy } from "./strategy/oauth.strategy";
 @Module({
 	imports : [PassportModule],
   controllers: [AuthController],
- // providers: [AuthService, OAuthStrategy],
-  providers: [AuthService],
+  providers: [AuthService, OAuthStrategy],
 })
 export class AuthModule {}

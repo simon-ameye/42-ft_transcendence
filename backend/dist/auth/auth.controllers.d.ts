@@ -6,5 +6,8 @@ export declare class AuthController {
     constructor(authService: AuthService);
     signup(dto: AuthDto): Promise<string>;
     signin(dto: AuthDto): Promise<import(".prisma/client").User>;
-    signupAPI(request: Request): void;
+    loginAPI(request: Request): void;
+    handleRedirect(): {
+        msg: string;
+    };
 }

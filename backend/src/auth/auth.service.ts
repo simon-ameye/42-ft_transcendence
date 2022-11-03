@@ -7,8 +7,8 @@ import * as argon from 'argon2'
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
-  // signup fucntion with 42API
-  async signupAPI() {
+  // login fucntion with 42API
+  async loginAPI() {
 
   }
   // signup function with email and password

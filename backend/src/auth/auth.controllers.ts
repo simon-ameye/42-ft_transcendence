@@ -16,10 +16,18 @@ export class AuthController {
   signin(@Body() dto: AuthDto) {
     return this.authService.signin(dto);
   }
+
 	// UseGuards determine if the request will be handled
 	@UseGuards(AuthGuard('42API'))
-	@Post('signupAPI')
-	signupAPI(@Req() request: Request) {
+	@Get('loginAPI')
+	loginAPI(@Req() request: Request) {
 		console.log({request});
 	}
+
+	// Redirection after successful connection with 42API
+	@Get('42api/redirect')
+	handleRedirect() {
+		return ({msg: 'OK'});
+	}
+	
 }
