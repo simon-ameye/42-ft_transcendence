@@ -5,10 +5,15 @@ import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "./decorator/get-user.decorator";
 import { HttpService } from "@nestjs/axios";
+import { firstValueFrom } from "rxjs";
+import { ConfigService } from "@nestjs/config";
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService, private httpService: HttpService) {}
+  constructor(
+			private authService: AuthService,
+			private httpService: HttpService,
+			private configService: ConfigService) {}
 
   @Post('signup')
   signup(@Body() dto: AuthDto) {
@@ -29,21 +34,23 @@ export class AuthController {
 	// Redirection after successful connection with 42API
 	@UseGuards(AuthGuard('42API'))
 	@Get('42api/redirect')
-	async handleRedirect(@Query() query: {code: string, state: string}, @GetUser() user: {client_id: string, client_secret: string}): Promise<any> {
+	async handleRedirect(
+			@Query() query: {code: string, state: string},
+			@GetUser() user: {client_id: string, client_secret: string}): Promise<any> {
 		console.log("REDIRECT");
 		console.log(user);
 		console.log(query);
-		const data = await this.httpService.post(
+		const data = await firstValueFrom(this.httpService.post(
 			'https://api.intra.42.fr/oauth/token',
 			{
 				grant_type: 'authorization_code',
-				client_id: user.client_id,
-				client_secret: user.client_secret,
+				client_id: this.configService.get('42API_ID'),
+				client_secret: this.configService.get('42API_SECRET'),
 				code: query.code,
 				redirect_uri: 'http://localhost:3000/auth/42api/reredirect',
 				state: query.state
-			});
-		return ({data});
+			}));
+			console.log({data});
 	}
 
 	@Get('42api/reredirect')

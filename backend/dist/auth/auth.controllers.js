@@ -19,10 +19,13 @@ const dto_1 = require("./dto");
 const passport_1 = require("@nestjs/passport");
 const get_user_decorator_1 = require("./decorator/get-user.decorator");
 const axios_1 = require("@nestjs/axios");
+const rxjs_1 = require("rxjs");
+const config_1 = require("@nestjs/config");
 let AuthController = class AuthController {
-    constructor(authService, httpService) {
+    constructor(authService, httpService, configService) {
         this.authService = authService;
         this.httpService = httpService;
+        this.configService = configService;
     }
     signup(dto) {
         return this.authService.signup(dto);
@@ -37,15 +40,15 @@ let AuthController = class AuthController {
         console.log("REDIRECT");
         console.log(user);
         console.log(query);
-        const data = await this.httpService.post('https://api.intra.42.fr/oauth/token', {
+        const data = await (0, rxjs_1.firstValueFrom)(this.httpService.post('https://api.intra.42.fr/oauth/token', {
             grant_type: 'authorization_code',
-            client_id: user.client_id,
-            client_secret: user.client_secret,
+            client_id: this.configService.get('42API_ID'),
+            client_secret: this.configService.get('42API_SECRET'),
             code: query.code,
             redirect_uri: 'http://localhost:3000/auth/42api/reredirect',
             state: query.state
-        });
-        return ({ data });
+        }));
+        console.log({ data });
     }
     handleReredirect() {
         return ({ msg: "OK" });
@@ -90,7 +93,9 @@ __decorate([
 ], AuthController.prototype, "handleReredirect", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService, axios_1.HttpService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        axios_1.HttpService,
+        config_1.ConfigService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controllers.js.map
