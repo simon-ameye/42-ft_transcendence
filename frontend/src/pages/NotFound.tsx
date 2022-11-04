@@ -8,7 +8,7 @@ const NotFound = () => {
 			<Navbar />
 			<div className="notFoundContent">
 				<h3>404 page</h3>
-				<NavLink exact to="/" activeClassname="navActive">
+				<NavLink to="/">
 					<i className="fas fa-home"></i>
 					<span>Acceuil</span>
 				</NavLink>

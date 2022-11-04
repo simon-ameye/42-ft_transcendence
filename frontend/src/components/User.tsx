@@ -9,7 +9,7 @@ const User = () => {
 	const [userLastName, setUserLastName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 
-	const handleSubmit = (e) => {
+	const handleSubmit = (e: any) => {
 		e.preventDefault();
 		const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
 
