@@ -15,8 +15,8 @@ export declare class AuthController {
         code: string;
         state: string;
     }, user: {
-        client_id: string;
-        client_secret: string;
+        token: string;
+        refreshToken: string;
     }): Promise<any>;
     handleReredirect(): {
         msg: string;

@@ -5,10 +5,9 @@ export declare class OAuthStrategy extends OAuthStrategy_base {
     private prismaService;
     private configService;
     constructor(prismaService: PrismaService, configService: ConfigService);
-    validate(client_id: string, client_secret: string, profile: any): Promise<{
-        client_id: string;
-        client_secret: string;
-        user: string;
+    validate(token: string, refreshToken: string): Promise<{
+        token: string;
+        refreshToken: string;
     }>;
 }
 export {};

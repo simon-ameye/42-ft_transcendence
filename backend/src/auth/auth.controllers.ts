@@ -36,19 +36,14 @@ export class AuthController {
 	@Get('42api/redirect')
 	async handleRedirect(
 			@Query() query: {code: string, state: string},
-			@GetUser() user: {client_id: string, client_secret: string}): Promise<any> {
+			@GetUser() user: {token: string, refreshToken: string}): Promise<any> {
+		const	authStr = 'Bearer '.concat(user.token);
 		console.log("REDIRECT");
 		console.log(user);
-		console.log(query);
-		const data = await firstValueFrom(this.httpService.post(
-			'https://api.intra.42.fr/oauth/token',
+		const data = await firstValueFrom(this.httpService.get(
+			'https://api.intra.42.fr/v2/me',
 			{
-				grant_type: 'authorization_code',
-				client_id: this.configService.get('42API_ID'),
-				client_secret: this.configService.get('42API_SECRET'),
-				code: query.code,
-				redirect_uri: 'http://localhost:3000/auth/42api/reredirect',
-				state: query.state
+				headers: { Authorization: authStr }
 			}));
 			console.log({data});
 	}

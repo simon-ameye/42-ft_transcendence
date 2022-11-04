@@ -37,16 +37,11 @@ let AuthController = class AuthController {
         console.log({ request });
     }
     async handleRedirect(query, user) {
+        const authStr = 'Bearer '.concat(user.token);
         console.log("REDIRECT");
         console.log(user);
-        console.log(query);
-        const data = await (0, rxjs_1.firstValueFrom)(this.httpService.post('https://api.intra.42.fr/oauth/token', {
-            grant_type: 'authorization_code',
-            client_id: this.configService.get('42API_ID'),
-            client_secret: this.configService.get('42API_SECRET'),
-            code: query.code,
-            redirect_uri: 'http://localhost:3000/auth/42api/reredirect',
-            state: query.state
+        const data = await (0, rxjs_1.firstValueFrom)(this.httpService.get('https://api.intra.42.fr/v2/me', {
+            headers: { Authorization: authStr }
         }));
         console.log({ data });
     }

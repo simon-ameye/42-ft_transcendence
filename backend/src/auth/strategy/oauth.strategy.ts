@@ -24,10 +24,9 @@ export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 		});
 	}
 		// method called when authentification succeeded
-		async validate(client_id: string, client_secret: string, profile: any) {
+		async validate(token: string, refreshToken: string) {
 			console.log("VALIDATE");
-			console.log({profile});
-			return ({client_id, client_secret, user: "OK"});
+			return ({token, refreshToken});
 		}
 //	async validate(email: string, password: string) {
 //		// change email to unique to use FindUnique

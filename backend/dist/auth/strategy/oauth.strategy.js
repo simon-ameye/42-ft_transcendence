@@ -29,10 +29,9 @@ let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)
         this.prismaService = prismaService;
         this.configService = configService;
     }
-    async validate(client_id, client_secret, profile) {
+    async validate(token, refreshToken) {
         console.log("VALIDATE");
-        console.log({ profile });
-        return ({ client_id, client_secret, user: "OK" });
+        return ({ token, refreshToken });
     }
 };
 OAuthStrategy = __decorate([
