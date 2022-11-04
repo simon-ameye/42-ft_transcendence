@@ -4,6 +4,8 @@ import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "./decorator/get-user.decorator";
+import * as speakeasy from "speakeasy";
+import * as qrcode from "qrcode";
 
 @Controller('auth')
 export class AuthController {
@@ -34,5 +36,12 @@ export class AuthController {
 		// query contains code and state from oauth.strategy
 		console.log(query);
 		return (this.authService.authUser(user.token));
+	}
+
+	@Get('google2FA/generate')
+	async generate2FA() {
+		const	secret = speakeasy.generateSecret();
+		const data_url = await qrcode.toDataURL(secret.otpauth_url);
+		console.log(data_url);
 	}
 }

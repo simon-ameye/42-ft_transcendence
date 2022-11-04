@@ -18,6 +18,8 @@ const auth_service_1 = require("./auth.service");
 const dto_1 = require("./dto");
 const passport_1 = require("@nestjs/passport");
 const get_user_decorator_1 = require("./decorator/get-user.decorator");
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -34,6 +36,11 @@ let AuthController = class AuthController {
     async handleRedirect(query, user) {
         console.log(query);
         return (this.authService.authUser(user.token));
+    }
+    async generate2FA() {
+        const secret = speakeasy.generateSecret();
+        const data_url = await qrcode.toDataURL(secret.otpauth_url);
+        console.log(data_url);
     }
 };
 __decorate([
@@ -67,6 +74,12 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "handleRedirect", null);
+__decorate([
+    (0, common_1.Get)('google2FA/generate'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "generate2FA", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

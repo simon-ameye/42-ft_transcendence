@@ -1,6 +1,6 @@
 import { ConsoleLogger, ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto } from "./dto";
+import { AuthDto, Auth42Dto } from "./dto";
 import { Prisma } from ".prisma/client";
 import * as argon from 'argon2'
 import { map } from "rxjs/operators";
@@ -12,7 +12,7 @@ export class AuthService {
   constructor(private prisma: PrismaService,
 			private httpService: HttpService) {}
 
-  async authUser(token: string) {
+  async authUser(token: string): Promise<Auth42Dto> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -21,6 +21,7 @@ export class AuthService {
 					headers: { Authorization: authStr }
 				}).pipe( // pipe function with map response to convert circular struct
 					map(response => response.data)));
+			// convert res to a Auth42Dto
 			return (res);
 		} catch(e) {
 			return (e.message);

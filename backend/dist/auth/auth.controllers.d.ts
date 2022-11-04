@@ -13,5 +13,6 @@ export declare class AuthController {
     }, user: {
         token: string;
         refreshToken: string;
-    }): Promise<any>;
+    }): Promise<import("./dto").Auth42Dto>;
+    generate2FA(): Promise<void>;
 }
