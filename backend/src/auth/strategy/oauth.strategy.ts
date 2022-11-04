@@ -1,15 +1,12 @@
 import { Strategy } from "passport-oauth2";
 import { PassportStrategy } from "@nestjs/passport";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { PrismaService } from "../../prisma/prisma.service";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 	constructor(
-			private prismaService: PrismaService,
-			private configService : ConfigService
-		) {
+			private configService : ConfigService) {
 		super({
 			// service provider to authorize access
 			authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
@@ -23,21 +20,9 @@ export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 			scope: ['public']
 		});
 	}
-		// method called when authentification succeeded
-		async validate(token: string, refreshToken: string) {
-			console.log("VALIDATE");
-			return ({token, refreshToken});
-		}
-//	async validate(email: string, password: string) {
-//		// change email to unique to use FindUnique
-//		const	user = await this.prismaService.user.findFirst({
-//			where : {
-//				email: email,
-//			}
-//		});
-//		if (user)
-//			return (user);
-//		// create user
-//		return (null);
-//	}
+	// method called when authentification succeeded
+	async validate(token: string, refreshToken: string) {
+		console.log("VALIDATE");
+		return ({token, refreshToken});
+	}
 }

@@ -14,11 +14,25 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const client_1 = require(".prisma/client");
 const argon = require("argon2");
+const operators_1 = require("rxjs/operators");
+const axios_1 = require("@nestjs/axios");
+const rxjs_1 = require("rxjs");
 let AuthService = class AuthService {
-    constructor(prisma) {
+    constructor(prisma, httpService) {
         this.prisma = prisma;
+        this.httpService = httpService;
     }
-    async loginAPI() {
+    async authUser(token) {
+        const authStr = 'Bearer '.concat(token);
+        try {
+            const res = await (0, rxjs_1.firstValueFrom)(this.httpService.get('https://api.intra.42.fr/v2/me', {
+                headers: { Authorization: authStr }
+            }).pipe((0, operators_1.map)(response => response.data)));
+            return (res);
+        }
+        catch (e) {
+            return (e.message);
+        }
     }
     async signup(dto) {
         const hash = await argon.hash(dto.password);
@@ -62,7 +76,8 @@ let AuthService = class AuthService {
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        axios_1.HttpService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

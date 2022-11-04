@@ -18,14 +18,9 @@ const auth_service_1 = require("./auth.service");
 const dto_1 = require("./dto");
 const passport_1 = require("@nestjs/passport");
 const get_user_decorator_1 = require("./decorator/get-user.decorator");
-const axios_1 = require("@nestjs/axios");
-const rxjs_1 = require("rxjs");
-const config_1 = require("@nestjs/config");
 let AuthController = class AuthController {
-    constructor(authService, httpService, configService) {
+    constructor(authService) {
         this.authService = authService;
-        this.httpService = httpService;
-        this.configService = configService;
     }
     signup(dto) {
         return this.authService.signup(dto);
@@ -37,16 +32,8 @@ let AuthController = class AuthController {
         console.log({ request });
     }
     async handleRedirect(query, user) {
-        const authStr = 'Bearer '.concat(user.token);
-        console.log("REDIRECT");
-        console.log(user);
-        const data = await (0, rxjs_1.firstValueFrom)(this.httpService.get('https://api.intra.42.fr/v2/me', {
-            headers: { Authorization: authStr }
-        }));
-        console.log({ data });
-    }
-    handleReredirect() {
-        return ({ msg: "OK" });
+        console.log(query);
+        return (this.authService.authUser(user.token));
     }
 };
 __decorate([
@@ -80,17 +67,9 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "handleRedirect", null);
-__decorate([
-    (0, common_1.Get)('42api/reredirect'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "handleReredirect", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService,
-        axios_1.HttpService,
-        config_1.ConfigService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 exports.AuthController = AuthController;
 //# sourceMappingURL=auth.controllers.js.map

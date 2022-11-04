@@ -9,32 +9,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OAuthStrategy = void 0;
-const passport_oauth2_1 = require("passport-oauth2");
+exports.JwtStrategy = void 0;
+const passport_jwt_1 = require("passport-jwt");
 const passport_1 = require("@nestjs/passport");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-let OAuthStrategy = class OAuthStrategy extends (0, passport_1.PassportStrategy)(passport_oauth2_1.Strategy, '42API') {
-    constructor(configService) {
+const prisma_service_1 = require("../../prisma/prisma.service");
+let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwt') {
+    constructor(configService, prismaService) {
         super({
-            authorizationURL: 'https://api.intra.42.fr/oauth/authorize',
-            tokenURL: 'https://api.intra.42.fr/oauth/token',
-            clientID: configService.get('42API_ID'),
-            clientSecret: configService.get('42API_SECRET'),
-            callbackURL: 'http://localhost:3000/auth/42api/redirect',
-            state: true,
-            scope: ['public']
+            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: configService.get('JWT_SECRET')
         });
         this.configService = configService;
+        this.prismaService = prismaService;
     }
-    async validate(token, refreshToken) {
-        console.log("VALIDATE");
-        return ({ token, refreshToken });
+    async validate(payload) {
+        return ({ payload });
     }
 };
-OAuthStrategy = __decorate([
+JwtStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService])
-], OAuthStrategy);
-exports.OAuthStrategy = OAuthStrategy;
-//# sourceMappingURL=oauth.strategy.js.map
+    __metadata("design:paramtypes", [config_1.ConfigService,
+        prisma_service_1.PrismaService])
+], JwtStrategy);
+exports.JwtStrategy = JwtStrategy;
+//# sourceMappingURL=jwt.strategy.js.map

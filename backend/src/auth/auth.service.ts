@@ -3,14 +3,30 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto } from "./dto";
 import { Prisma } from ".prisma/client";
 import * as argon from 'argon2'
+import { map } from "rxjs/operators";
+import { HttpService } from "@nestjs/axios";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
-  // login fucntion with 42API
-  async loginAPI() {
+  constructor(private prisma: PrismaService,
+			private httpService: HttpService) {}
 
+  async authUser(token: string) {
+		const	authStr = 'Bearer '.concat(token);
+		try {
+			const res = await firstValueFrom(this.httpService.get(
+				'https://api.intra.42.fr/v2/me',
+				{
+					headers: { Authorization: authStr }
+				}).pipe( // pipe function with map response to convert circular struct
+					map(response => response.data)));
+			return (res);
+		} catch(e) {
+			return (e.message);
+		}
   }
+
   // signup function with email and password
   async signup(dto: AuthDto) {
     const hash = await argon.hash(dto.password);
