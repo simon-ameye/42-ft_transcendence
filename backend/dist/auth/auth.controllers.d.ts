@@ -15,4 +15,7 @@ export declare class AuthController {
         refreshToken: string;
     }): Promise<import("./dto").Auth42Dto>;
     generate2FA(): Promise<void>;
+    verifyToken(body: {
+        code: string;
+    }): void;
 }

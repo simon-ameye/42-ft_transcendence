@@ -39,8 +39,16 @@ let AuthController = class AuthController {
     }
     async generate2FA() {
         const secret = speakeasy.generateSecret();
+        console.log(secret);
         const data_url = await qrcode.toDataURL(secret.otpauth_url);
         console.log(data_url);
+    }
+    verifyToken(body) {
+        console.log(speakeasy.totp.verify({
+            secret: "user.secretBase32",
+            encoding: 'base32',
+            token: body.code
+        }));
     }
 };
 __decorate([
@@ -80,6 +88,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "generate2FA", null);
+__decorate([
+    (0, common_1.Post)('google2FA/verify'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "verifyToken", null);
 AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

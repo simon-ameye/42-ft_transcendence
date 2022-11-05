@@ -40,8 +40,20 @@ export class AuthController {
 
 	@Get('google2FA/generate')
 	async generate2FA() {
+		// register secret in user database
 		const	secret = speakeasy.generateSecret();
+		console.log(secret);
 		const data_url = await qrcode.toDataURL(secret.otpauth_url);
 		console.log(data_url);
+	}
+
+	@Post('google2FA/verify')
+	verifyToken(@Body() body: {code: string}) {
+		console.log(speakeasy.totp.verify({
+			// get user.secretBase32
+			secret: "user.secretBase32",
+			encoding: 'base32',
+			token: body.code
+		}));
 	}
 }
