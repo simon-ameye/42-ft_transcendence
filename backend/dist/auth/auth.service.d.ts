@@ -1,11 +1,24 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto, Auth42Dto } from "./dto";
+import { AuthDto, UserDto } from "./dto";
 import { HttpService } from "@nestjs/axios";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 export declare class AuthService {
     private prisma;
     private httpService;
-    constructor(prisma: PrismaService, httpService: HttpService);
-    authUser(token: string): Promise<Auth42Dto>;
-    signup(dto: AuthDto): Promise<string>;
-    signin(dto: AuthDto): Promise<import(".prisma/client").User>;
+    private jwtService;
+    private configService;
+    constructor(prisma: PrismaService, httpService: HttpService, jwtService: JwtService, configService: ConfigService);
+    logUser42(token: string): Promise<{
+        access_token: string;
+    }>;
+    signup(dto: AuthDto): Promise<{
+        access_token: string;
+    }>;
+    signin(dto: AuthDto): Promise<{
+        access_token: string;
+    }>;
+    signToken(user: UserDto): Promise<{
+        access_token: string;
+    }>;
 }

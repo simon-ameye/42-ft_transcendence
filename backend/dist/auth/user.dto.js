@@ -22,4 +22,4 @@ __decorate([
     __metadata("design:type", String)
 ], UserDto.prototype, "email", void 0);
 exports.UserDto = UserDto;
-//# sourceMappingURL=auth42.dto.js.map
+//# sourceMappingURL=user.dto.js.map

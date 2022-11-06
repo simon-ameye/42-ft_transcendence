@@ -22,8 +22,8 @@ export class AuthController {
 
 	// UseGuards determine if the request will be handled
 	@UseGuards(AuthGuard('42API'))
-	@Get('loginAPI')
-	loginAPI(@Req() request: Request) {
+	@Get('42api/login')
+	login42(@Req() request: Request) {
 		console.log({request});
 	}
 
@@ -35,7 +35,7 @@ export class AuthController {
 			@GetUser() user: {token: string, refreshToken: string}) {
 		// query contains code and state from oauth.strategy
 		console.log(query);
-		return (this.authService.authUser(user.token));
+		return (this.authService.logUser42(user.token));
 	}
 
 	@Get('google2FA/generate')
@@ -47,7 +47,7 @@ export class AuthController {
 		console.log(data_url);
 	}
 
-	@Post('google2FA/verify')
+	@Post('google2FA/login')
 	verifyToken(@Body() body: {code: string}) {
 		console.log(speakeasy.totp.verify({
 			// get user.secretBase32

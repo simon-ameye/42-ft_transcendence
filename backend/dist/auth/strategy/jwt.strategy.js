@@ -25,7 +25,7 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         this.configService = configService;
         this.prismaService = prismaService;
     }
-    async validate(payload) {
+    validate(payload) {
         return ({ payload });
     }
 };

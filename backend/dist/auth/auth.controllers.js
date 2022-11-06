@@ -30,12 +30,12 @@ let AuthController = class AuthController {
     signin(dto) {
         return this.authService.signin(dto);
     }
-    loginAPI(request) {
+    login42(request) {
         console.log({ request });
     }
     async handleRedirect(query, user) {
         console.log(query);
-        return (this.authService.authUser(user.token));
+        return (this.authService.logUser42(user.token));
     }
     async generate2FA() {
         const secret = speakeasy.generateSecret();
@@ -67,12 +67,12 @@ __decorate([
 ], AuthController.prototype, "signin", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42API')),
-    (0, common_1.Get)('loginAPI'),
+    (0, common_1.Get)('42api/login'),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "loginAPI", null);
+], AuthController.prototype, "login42", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('42API')),
     (0, common_1.Get)('42api/redirect'),
@@ -89,7 +89,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "generate2FA", null);
 __decorate([
-    (0, common_1.Post)('google2FA/verify'),
+    (0, common_1.Post)('google2FA/login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

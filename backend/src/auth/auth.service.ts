@@ -1,18 +1,22 @@
 import { ConsoleLogger, ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto, Auth42Dto } from "./dto";
+import { AuthDto, UserDto } from "./dto";
 import { Prisma } from ".prisma/client";
 import * as argon from 'argon2'
 import { map } from "rxjs/operators";
 import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService,
-			private httpService: HttpService) {}
+			private httpService: HttpService,
+			private jwtService: JwtService,
+			private configService: ConfigService) {}
 
-  async authUser(token: string): Promise<Auth42Dto> {
+  async logUser42(token: string): Promise<{access_token: string}> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -21,15 +25,29 @@ export class AuthService {
 					headers: { Authorization: authStr }
 				}).pipe( // pipe function with map response to convert circular struct
 					map(response => response.data)));
-			// convert res to a Auth42Dto
-			return (res);
+			var user = await this.prisma.user.findUnique({
+				where: {
+					email: res.email,
+				},
+			});
+			if (!user) {
+				user = await this.prisma.user.create({
+					data: {
+						email: String(res.email),
+						firstName: String(res.first_name),
+						lastName: String(res.last_name),
+						imageUrl: String(res.image_url)
+					}
+				});
+			}
+		return (this.signToken(user));
 		} catch(e) {
 			return (e.message);
 		}
   }
 
   // signup function with email and password
-  async signup(dto: AuthDto) {
+  async signup(dto: AuthDto): Promise<{access_token: string}> {
     const hash = await argon.hash(dto.password);
     try {
       const user = await this.prisma.user.create({
@@ -39,6 +57,7 @@ export class AuthService {
         },
       });
       delete user.hash;
+			return (this.signToken(user));
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -49,13 +68,11 @@ export class AuthService {
         throw e;
       }
     }
-    console.log("signup done");
-    return 'sign up';
   }
 
-  async signin(dto: AuthDto) {
+  async signin(dto: AuthDto): Promise<{access_token: string}> {
     // find user
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },
@@ -75,6 +92,19 @@ export class AuthService {
       )
     };
     delete user.hash;
-    return user;
+		return (this.signToken(user));
   }
+
+	async signToken(user: UserDto): Promise<{access_token: string}> {
+		const data = {
+			id: user.id,
+			email: user.email
+		};
+		console.log(data);
+		const token = await this.jwtService.signAsync(data, {
+				secret: this.configService.get('JWT_SECRET')
+			}
+		);
+		return ({access_token: token});
+	}
 }
