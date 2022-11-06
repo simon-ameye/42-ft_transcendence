@@ -14,23 +14,28 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
-const platform_express_1 = require("@nestjs/platform-express");
 const common_2 = require("@nestjs/common");
-const express_1 = require("express");
+const dto_1 = require("./dto");
 let UserController = class UserController {
-    uploadImage(file) {
-        console.log(file);
-        return express_1.response;
+    uploadFileAndPassValidation(body, file) {
+        return {
+            body,
+            file: file.buffer.toString(),
+        };
     }
 };
 __decorate([
     (0, common_1.Post)('uploadImage'),
-    (0, common_2.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
-    __param(0, (0, common_2.UploadedFile)()),
+    __param(0, (0, common_2.Body)()),
+    __param(1, (0, common_2.UploadedFile)(new common_2.ParseFilePipe({
+        validators: [
+            new common_2.FileTypeValidator({ fileType: 'jpeg' }),
+        ]
+    }))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [dto_1.SampleDto, Object]),
     __metadata("design:returntype", void 0)
-], UserController.prototype, "uploadImage", null);
+], UserController.prototype, "uploadFileAndPassValidation", null);
 UserController = __decorate([
     (0, common_1.Controller)('user')
 ], UserController);

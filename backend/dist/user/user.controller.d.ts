@@ -1,5 +1,8 @@
 /// <reference types="multer" />
-/// <reference types="express" />
+import { SampleDto } from "./dto";
 export declare class UserController {
-    uploadImage(file: Express.Multer.File): import("express").Response<any, Record<string, any>>;
+    uploadFileAndPassValidation(body: SampleDto, file: Express.Multer.File): {
+        body: SampleDto;
+        file: string;
+    };
 }

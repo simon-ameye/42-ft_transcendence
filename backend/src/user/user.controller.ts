@@ -1,17 +1,28 @@
-import { ConsoleLogger, Controller, Post } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { UseInterceptors, UploadedFile } from '@nestjs/common';
-import { Express, response } from 'express';
+import { Controller, Post } from '@nestjs/common';
+import { UploadedFile, Body, ParseFilePipe, FileTypeValidator} from '@nestjs/common';
+import { Express } from 'express';
+import { SampleDto } from "./dto";
 
 @Controller('user')
 export class UserController {
-
+ 
   @Post('uploadImage')
-  @UseInterceptors(
-    FileInterceptor('file'),
-  )
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    return response;
+  uploadFileAndPassValidation(
+    @Body() body: SampleDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: 'jpeg' }),
+          // ... Set of file validator instances here
+        ]
+      })
+    )
+    file: Express.Multer.File,
+  ) {
+    return {
+      body,
+      file: file.buffer.toString(),
+    };
   }
+
 }
