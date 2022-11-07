@@ -1,4 +1,4 @@
-import { ConsoleLogger, ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto, UserDto } from "./dto";
 import { Prisma } from ".prisma/client";
@@ -25,8 +25,7 @@ export class AuthService {
 				'https://api.intra.42.fr/v2/me',
 				{
 					headers: { Authorization: authStr }
-				}).pipe( // pipe function with map response to convert circular struct
-					map(response => response.data)));
+				}).pipe(map(response => response.data)));
 			var user = await this.prismaService.user.findUnique({
 				where: {
 					email: res.email,
@@ -48,7 +47,6 @@ export class AuthService {
 		}
   }
 
-  // signup function with email and password
   async signup(dto: AuthDto): Promise<{access_token: string}> {
     const hash = await argon.hash(dto.password);
     try {
@@ -118,7 +116,6 @@ export class AuthService {
 	}
 
 	async verify2FA(payload: {email: string, code: string}) {
-		console.log({payload});
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				email: payload.email,

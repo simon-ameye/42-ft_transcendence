@@ -114,7 +114,6 @@ let AuthService = class AuthService {
         return (qrcode.toDataURL(secret.otpauth_url));
     }
     async verify2FA(payload) {
-        console.log({ payload });
         const user = await this.prismaService.user.findUnique({
             where: {
                 email: payload.email,

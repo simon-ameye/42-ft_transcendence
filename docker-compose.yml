@@ -22,13 +22,13 @@ services:
       - ./backend/:/app
     ports:
       - "3000:3000"
-      - "5555:5555"
+    #  - "5555:5555"
     # DATABASE_URL IN A .env
     depends_on:
       - database
     links:
       - database
-    command: sh -c 'npm install && npx prisma migrate dev && npm run start:dev'
+    command: sh -c 'npm install && npm run start:dev'
     networks:
       - ft_transcendence
     #frontend:
