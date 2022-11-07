@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
 
@@ -11,10 +11,12 @@ const User = () => {
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
+		//const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
 
 		axios.post('http://localhost:3000/auth/signup',{
-			data
+			email: userMail,
+			firstName: userFirstName,
+			lastName: userLastName
 		}).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
