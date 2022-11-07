@@ -118,6 +118,7 @@ export class AuthService {
 	}
 
 	async verify2FA(payload: {email: string, code: string}) {
+		console.log({payload});
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				email: payload.email,
@@ -130,7 +131,9 @@ export class AuthService {
 			encoding: 'base32',
 			token: payload.code
 		});
-		return (verify);
+		if (verify)
+			return (this.signToken(user))
+		throw new ForbiddenException('Credentials invalid');
 	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {

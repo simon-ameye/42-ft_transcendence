@@ -114,6 +114,7 @@ let AuthService = class AuthService {
         return (qrcode.toDataURL(secret.otpauth_url));
     }
     async verify2FA(payload) {
+        console.log({ payload });
         const user = await this.prismaService.user.findUnique({
             where: {
                 email: payload.email,
@@ -126,7 +127,9 @@ let AuthService = class AuthService {
             encoding: 'base32',
             token: payload.code
         });
-        return (verify);
+        if (verify)
+            return (this.signToken(user));
+        throw new common_1.ForbiddenException('Credentials invalid');
     }
     async signToken(user) {
         const data = {

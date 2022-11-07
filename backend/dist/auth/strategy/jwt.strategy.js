@@ -25,8 +25,13 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         this.configService = configService;
         this.prismaService = prismaService;
     }
-    validate(payload) {
-        return ({ payload });
+    async validate(payload) {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: payload.id
+            },
+        });
+        return (user);
     }
 };
 JwtStrategy = __decorate([

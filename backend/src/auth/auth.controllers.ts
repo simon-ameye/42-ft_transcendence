@@ -25,7 +25,6 @@ export class AuthController {
 		console.log({request});
 	}
 
-	// Redirection after successful connection with 42API
 	@UseGuards(AuthGuard('42API'))
 	@Get('42api/redirect')
 	async handleRedirect (

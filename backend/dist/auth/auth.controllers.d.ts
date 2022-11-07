@@ -26,5 +26,7 @@ export declare class AuthController {
     verify2FA(body: {
         email: string;
         code: string;
-    }): Promise<boolean>;
+    }): Promise<{
+        access_token: string;
+    }>;
 }

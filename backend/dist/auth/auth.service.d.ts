@@ -22,7 +22,9 @@ export declare class AuthService {
     verify2FA(payload: {
         email: string;
         code: string;
-    }): Promise<boolean>;
+    }): Promise<{
+        access_token: string;
+    }>;
     signToken(user: UserDto): Promise<{
         access_token: string;
     }>;
