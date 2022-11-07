@@ -7,7 +7,8 @@ import { Controller,
   Body,
   ParseFilePipe, 
   FileTypeValidator, 
-  UseInterceptors
+  UseInterceptors,
+  UseGuards
 } from '@nestjs/common';
 
 import { Express } from 'express';
@@ -22,17 +23,19 @@ import { UserDto } from './dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  // upload profile image
-  // it will be a put method to modify existing path to the profile image
-  // Intercept the file  : TO DO store it and name it
+  // do all PUT and GET requests
+  @Get()
+  displayEmail(@Body() dto: UserDto) {
+    // return this.userService.displayEmail();
+  }
+  //@UseGuards('jwt')
   @Post('uploadImage')
   @UseInterceptors(
     FileInterceptor('image', {
       dest: './uploads',
     }
   ))
-  // should store the path to the image in the database
-  async uploadFileAndPassValidation(
+  async uploadSingle(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -41,17 +44,19 @@ export class UserController {
         ]
       })
     )
+    file: Express.Multer.File,
     @Body() dto: UserDto,
-    file?: Express.Multer.File
   ) {
-    let response = await this.userService.upload(dto);
+    let response = await this.userService.upload(dto, file.path);
     return 'file is uploaded successfully';
   }
 
   // display the image of the user specified
-  /*@Get()
-  display(@Res() res) {
-    // send the file according to the user ( need user id )
-    res.sendFile('index-53a2.jpg',{ root: './uploads' })
-  }*/
+  @Get()
+  displayImage(@Res() res) {
+    //let response = await this.userService.display(dto, file.path);
+    // https://docs.nestjs.com/techniques/streaming-files
+    //res.sendFile('index-53a2.jpg',{ root: './uploads' })
+  }
+
 }
