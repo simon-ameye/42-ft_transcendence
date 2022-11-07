@@ -4,4 +4,4 @@ exports.UserDto = void 0;
 class UserDto {
 }
 exports.UserDto = UserDto;
-//# sourceMappingURL=sample.dto.js.map
+//# sourceMappingURL=user.dto.js.map

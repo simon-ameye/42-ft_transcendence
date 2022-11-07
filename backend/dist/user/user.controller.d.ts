@@ -1,8 +1,8 @@
 /// <reference types="multer" />
-import { SampleDto } from "./dto";
+import { UserService } from './user.service';
+import { UserDto } from './dto';
 export declare class UserController {
-    uploadFileAndPassValidation(body: SampleDto, file: Express.Multer.File): {
-        body: SampleDto;
-        file: string;
-    };
+    private userService;
+    constructor(userService: UserService);
+    uploadFileAndPassValidation(dto: UserDto, file?: Express.Multer.File): Promise<string>;
 }

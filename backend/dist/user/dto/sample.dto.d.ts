@@ -1,3 +1,4 @@
-export declare class SampleDto {
-    FileTypeValidator: string;
+export declare class UserDto {
+    name: string;
+    filename: string;
 }

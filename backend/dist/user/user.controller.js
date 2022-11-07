@@ -14,30 +14,37 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
-const common_2 = require("@nestjs/common");
+const user_service_1 = require("./user.service");
+const platform_express_1 = require("@nestjs/platform-express");
 const dto_1 = require("./dto");
 let UserController = class UserController {
-    uploadFileAndPassValidation(body, file) {
-        return {
-            body,
-            file: file.buffer.toString(),
-        };
+    constructor(userService) {
+        this.userService = userService;
+    }
+    async uploadFileAndPassValidation(dto, file) {
+        let response = await this.userService.upload(dto);
+        return 'file is uploaded successfully';
     }
 };
 __decorate([
     (0, common_1.Post)('uploadImage'),
-    __param(0, (0, common_2.Body)()),
-    __param(1, (0, common_2.UploadedFile)(new common_2.ParseFilePipe({
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', {
+        dest: './uploads',
+    })),
+    __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [
-            new common_2.FileTypeValidator({ fileType: 'jpeg' }),
+            new common_1.MaxFileSizeValidator({ maxSize: 100000 }),
+            new common_1.FileTypeValidator({ fileType: 'png|jpeg|svg' }),
         ]
     }))),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [dto_1.SampleDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [dto_1.UserDto, Object]),
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "uploadFileAndPassValidation", null);
 UserController = __decorate([
-    (0, common_1.Controller)('user')
+    (0, common_1.Controller)('user'),
+    __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 exports.UserController = UserController;
 //# sourceMappingURL=user.controller.js.map

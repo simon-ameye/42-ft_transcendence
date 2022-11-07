@@ -1,3 +1,4 @@
+/// <reference types="passport-oauth2" />
 import { PrismaService } from "../../prisma/prisma.service";
 declare const OAuthStrategy_base: new (...args: any[]) => import("passport-oauth2");
 export declare class OAuthStrategy extends OAuthStrategy_base {
