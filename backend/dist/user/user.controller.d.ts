@@ -4,5 +4,7 @@ import { UserDto } from './dto';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    uploadFileAndPassValidation(dto: UserDto, file?: Express.Multer.File): Promise<string>;
+    displayEmail(dto: UserDto): void;
+    uploadSingle(file: Express.Multer.File, dto: UserDto): Promise<string>;
+    displayImage(res: any): void;
 }

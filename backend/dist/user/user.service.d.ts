@@ -3,5 +3,6 @@ import { UserDto } from './dto';
 export declare class UserService {
     private prisma;
     constructor(prisma: PrismaService);
-    upload(dto: UserDto): Promise<void>;
+    displayEmail(dto: UserDto): Promise<void>;
+    upload(dto: UserDto, path: string): Promise<string>;
 }

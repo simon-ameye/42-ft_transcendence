@@ -1,3 +1,3 @@
 export declare class UserDto {
-    id: string;
+    token: string;
 }

@@ -16,12 +16,15 @@ let UserService = class UserService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async upload(dto) {
-        console.log("dto id", dto.id);
-        if (!dto.id) {
-            console.log(dto.id);
+    async displayEmail(dto) {
+    }
+    async upload(dto, path) {
+        console.log("dto id", dto.token);
+        if (!dto.token) {
+            console.log("no user token");
         }
         console.log('store path of the image for the current user');
+        return 'path image update';
     }
 };
 UserService = __decorate([

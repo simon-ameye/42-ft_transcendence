@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class UserDto {
-  id: string;
+  token: string; // the token to indentify the user
 }
