@@ -103,7 +103,7 @@ export class AuthService {
 			const user = await this.prismaService.user.create({
 				data: {
 					email,
-					googleSecret: String(secret)
+					googleSecret: String(secret.base32)
 				},
 			});
 		} catch (error) {
@@ -138,7 +138,6 @@ export class AuthService {
 			id: user.id,
 			email: user.email
 		};
-		console.log(data);
 		const token = await this.jwtService.signAsync(data, {
 				secret: this.configService.get('JWT_SECRET')
 			}
