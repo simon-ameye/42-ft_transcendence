@@ -20,8 +20,11 @@ export declare class AuthController {
     }): Promise<{
         access_token: string;
     }>;
-    generate2FA(): Promise<void>;
-    verifyToken(body: {
+    signup2FA(body: {
+        email: string;
+    }): Promise<string>;
+    verify2FA(body: {
+        email: string;
         code: string;
-    }): void;
+    }): Promise<boolean>;
 }

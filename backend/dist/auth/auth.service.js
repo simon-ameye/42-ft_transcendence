@@ -19,9 +19,11 @@ const axios_1 = require("@nestjs/axios");
 const rxjs_1 = require("rxjs");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
 let AuthService = class AuthService {
-    constructor(prisma, httpService, jwtService, configService) {
-        this.prisma = prisma;
+    constructor(prismaService, httpService, jwtService, configService) {
+        this.prismaService = prismaService;
         this.httpService = httpService;
         this.jwtService = jwtService;
         this.configService = configService;
@@ -32,13 +34,13 @@ let AuthService = class AuthService {
             const res = await (0, rxjs_1.firstValueFrom)(this.httpService.get('https://api.intra.42.fr/v2/me', {
                 headers: { Authorization: authStr }
             }).pipe((0, operators_1.map)(response => response.data)));
-            var user = await this.prisma.user.findUnique({
+            var user = await this.prismaService.user.findUnique({
                 where: {
                     email: res.email,
                 },
             });
             if (!user) {
-                user = await this.prisma.user.create({
+                user = await this.prismaService.user.create({
                     data: {
                         email: String(res.email),
                         firstName: String(res.first_name),
@@ -56,7 +58,7 @@ let AuthService = class AuthService {
     async signup(dto) {
         const hash = await argon.hash(dto.password);
         try {
-            const user = await this.prisma.user.create({
+            const user = await this.prismaService.user.create({
                 data: {
                     email: dto.email,
                     hash,
@@ -75,7 +77,7 @@ let AuthService = class AuthService {
         }
     }
     async signin(dto) {
-        const user = await this.prisma.user.findUnique({
+        const user = await this.prismaService.user.findUnique({
             where: {
                 email: dto.email,
             },
@@ -90,6 +92,41 @@ let AuthService = class AuthService {
         ;
         delete user.hash;
         return (this.signToken(user));
+    }
+    async signup2FA(email) {
+        const secret = speakeasy.generateSecret();
+        try {
+            const user = await this.prismaService.user.create({
+                data: {
+                    email,
+                    googleSecret: String(secret)
+                },
+            });
+        }
+        catch (error) {
+            if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
+                if (error.code === 'P2002') {
+                    throw new common_1.ForbiddenException('Credentials taken');
+                }
+            }
+            throw (error);
+        }
+        return (qrcode.toDataURL(secret.otpauth_url));
+    }
+    async verify2FA(payload) {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                email: payload.email,
+            },
+        });
+        if (!user)
+            throw new common_1.ForbiddenException('Credentials invalid');
+        const verify = speakeasy.totp.verify({
+            secret: user.googleSecret,
+            encoding: 'base32',
+            token: payload.code
+        });
+        return (verify);
     }
     async signToken(user) {
         const data = {

@@ -18,7 +18,8 @@ model User {
   hash String?
   firstName String?
   lastName String?
-	imageUrl String?
+  imageUrl String?
+  googleSecret String?
 
   @@map("users")
 }

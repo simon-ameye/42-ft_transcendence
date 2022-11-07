@@ -8,10 +8,12 @@ import { HttpService } from "@nestjs/axios";
 import { firstValueFrom } from "rxjs";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import * as speakeasy from "speakeasy";
+import * as qrcode from "qrcode";
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService,
+  constructor(private prismaService: PrismaService,
 			private httpService: HttpService,
 			private jwtService: JwtService,
 			private configService: ConfigService) {}
@@ -25,13 +27,13 @@ export class AuthService {
 					headers: { Authorization: authStr }
 				}).pipe( // pipe function with map response to convert circular struct
 					map(response => response.data)));
-			var user = await this.prisma.user.findUnique({
+			var user = await this.prismaService.user.findUnique({
 				where: {
 					email: res.email,
 				},
 			});
 			if (!user) {
-				user = await this.prisma.user.create({
+				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
 						firstName: String(res.first_name),
@@ -50,7 +52,7 @@ export class AuthService {
   async signup(dto: AuthDto): Promise<{access_token: string}> {
     const hash = await argon.hash(dto.password);
     try {
-      const user = await this.prisma.user.create({
+      const user = await this.prismaService.user.create({
         data: {
           email: dto.email,
           hash,
@@ -72,7 +74,7 @@ export class AuthService {
 
   async signin(dto: AuthDto): Promise<{access_token: string}> {
     // find user
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: {
         email: dto.email,
       },
@@ -94,6 +96,42 @@ export class AuthService {
     delete user.hash;
 		return (this.signToken(user));
   }
+
+	async	signup2FA(email: string): Promise<string> {
+		const secret = speakeasy.generateSecret();
+		try {
+			const user = await this.prismaService.user.create({
+				data: {
+					email,
+					googleSecret: String(secret)
+				},
+			});
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === 'P2002') {
+					throw new ForbiddenException('Credentials taken');
+				}
+			}
+			throw (error);
+		}
+		return (qrcode.toDataURL(secret.otpauth_url));
+	}
+
+	async verify2FA(payload: {email: string, code: string}) {
+		const user = await this.prismaService.user.findUnique({
+			where: {
+				email: payload.email,
+			},
+		});
+		if (!user)
+				throw new ForbiddenException('Credentials invalid');
+		const verify = speakeasy.totp.verify({
+			secret: user.googleSecret,
+			encoding: 'base32',
+			token: payload.code
+		});
+		return (verify);
+	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {
 		const data = {
