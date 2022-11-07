@@ -18,6 +18,7 @@ model User {
   hash String?
   firstName String?
   lastName String?
+  imageUrl String?
   // add path of the image
   @@map("users")
 }
