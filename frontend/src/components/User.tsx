@@ -33,7 +33,7 @@ const User = () => {
 					/>
 					<label>Password</label>
 					<input
-						type="text"
+						type="password"
 						required
 						value={userPass}
 						onChange={(e) => setUserPass(e.target.value)}
@@ -59,7 +59,7 @@ const User = () => {
 						onChange={(e) => setUserProfilePicture(e.target.value)}
 						/>
 					<label className="upload" htmlFor="file">Upload profile picture</label>
-					<button>submit</button>
+					<button onClick={handleSubmit}>submit</button>
 				</form>
 			</div>
 		</div>
