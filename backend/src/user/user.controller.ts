@@ -38,11 +38,11 @@ export class UserController {
     return user.displayName;
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Put('modifyName')
-  modifyName(@GetUser() user: UserDto, @Body() body: {displayName: string}) {
-    return this.userService.modifyName(user, body.displayName);
-  }
+//  @UseGuards(AuthGuard('jwt'))
+//  @Put('modifyName')
+//  modifyName(@GetUser() user: UserDto, @Body() body: {displayName: string}) {
+//    return this.userService.modifyName(user, body.displayName);
+//  }
 
   //// IMAGE UPLOAD
   @UseGuards(AuthGuard('jwt'))
