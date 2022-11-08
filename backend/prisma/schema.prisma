@@ -19,8 +19,15 @@ model User {
   displayName String?
   imageUrl String?
   googleSecret String?
+  online Boolean
   // add path of the image
   @@map("users")
+}
+
+model relationShip {
+  id Int @id @default(autoincrement())
+  RequesterId Int // request ID
+  AddresseeId Int // Addresse ID
 }
 
 // mode Channels ( many to many relations with Users )
