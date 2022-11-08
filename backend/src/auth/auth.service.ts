@@ -35,8 +35,7 @@ export class AuthService {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
-						firstName: String(res.first_name),
-						lastName: String(res.last_name),
+						displayName: String(res.log),
 						imageUrl: String(res.image_url)
 					}
 				});

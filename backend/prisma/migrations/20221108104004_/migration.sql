@@ -4,9 +4,10 @@ CREATE TABLE "users" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "email" TEXT NOT NULL,
-    "hash" TEXT NOT NULL,
-    "firstName" TEXT,
-    "lastName" TEXT,
+    "hash" TEXT,
+    "displayName" TEXT,
+    "imageUrl" TEXT,
+    "googleSecret" TEXT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );

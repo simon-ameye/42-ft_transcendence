@@ -16,6 +16,8 @@ import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { UserDto } from './dto';
+import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/decorator/get-user.decorator';
 
 // clean dependencies + unused dtos
 
@@ -23,13 +25,28 @@ import { UserDto } from './dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  // do all PUT and GET requests
-  @Get()
-  displayEmail(@Body() dto: UserDto) {
-    // return this.userService.displayEmail();
+  @UseGuards(AuthGuard('jwt'))
+  @Get('getEmail')
+  getEmail(@GetUser() user: UserDto) {
+    return user.email;
   }
-  //@UseGuards('jwt')
-  @Post('uploadImage')
+
+  // DisplayName
+  @UseGuards(AuthGuard('jwt'))
+  @Get('getName')
+  getName(@GetUser() user: UserDto) {
+    return user.displayName;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('modifyName')
+  modifyName(@GetUser() user: UserDto, @Body() body: {displayName: string}) {
+    return this.userService.modifyName(user, body.displayName);
+  }
+
+  //// IMAGE UPLOAD
+  @UseGuards(AuthGuard('jwt'))
+  @Put('uploadImage')
   @UseInterceptors(
     FileInterceptor('image', {
       dest: './uploads',
@@ -45,18 +62,19 @@ export class UserController {
       })
     )
     file: Express.Multer.File,
-    @Body() dto: UserDto,
+    @GetUser() user: UserDto,
   ) {
-    let response = await this.userService.upload(dto, file.path);
-    return 'file is uploaded successfully';
+    let response = await this.userService.upload(user, file.path);
+    return response;
   }
 
   // display the image of the user specified
-  @Get()
-  displayImage(@Res() res) {
+  @UseGuards(AuthGuard('jwt'))
+  @Get('getImage')
+  displayImage(@GetUser() user: UserDto, @Res() res) {
     //let response = await this.userService.display(dto, file.path);
     // https://docs.nestjs.com/techniques/streaming-files
-    //res.sendFile('index-53a2.jpg',{ root: './uploads' })
+    res.sendFile(user.imageUrl, { root: './' })
+    //return image;
   }
-
 }

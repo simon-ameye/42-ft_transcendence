@@ -6,30 +6,32 @@ import { UserDto } from './dto';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
-
-  // create a function for searching a user by his token
-
-  async displayEmail(dto: UserDto) {
-        
-  }
-  async upload(dto: UserDto, path: string) {
-    console.log("dto id", dto.token);
-    if (!dto.token) {
-      // error handling
-      console.log("no user token");
+  
+  async modifyName(dto: UserDto, modif: string) {
+    if (!dto) {
+      console.log("not expecred error");
     }
-    console.log('store path of the image for the current user');
-    /*const user = await this.prisma.user.findFirst({
+    const updateUser = await this.prisma.user.update({
       where: {
-        token: dto.token,
+        id: dto.id,
       },
-    });
-    if (!user) {
-      throw new ForbiddenException(
-        'Credentials incorrect',
-      );
-    }*/
-    // /user.pathUrl = path;
-    return 'path image update'
+      data: {
+        displayName: modif,
+      },
+    })
+  }
+  // create a function for searching a user by his token
+  async upload(dto: UserDto, path: string) {
+    if (!dto) {
+      console.log("not expected error");
+    }
+    const updateUser = await this.prisma.user.update({
+      where: {
+        id: dto.id,
+      },
+      data: {
+        imageUrl: path,
+      },
+    })
   }
 }

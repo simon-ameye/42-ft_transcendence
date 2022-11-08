@@ -15,6 +15,6 @@ async function bootstrap() {
 	saveUninitialized: false}),);
   console.log("testing 42API");
   
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
