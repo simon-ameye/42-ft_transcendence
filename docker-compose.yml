@@ -21,7 +21,7 @@ services:
     volumes:
       - ./backend/:/app
     ports:
-      - "3000:3000"
+      - "3001:3001"
     #  - "5555:5555"
     # DATABASE_URL IN A .env
     depends_on:

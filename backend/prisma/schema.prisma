@@ -16,11 +16,10 @@ model User {
   updatedAt DateTime @updatedAt
   email String @unique
   hash String?
-  firstName String?
-  lastName String?
+  displayName String?
   imageUrl String?
   googleSecret String?
-
+  // add path of the image
   @@map("users")
 }
 
