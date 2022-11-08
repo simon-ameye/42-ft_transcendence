@@ -1,0 +1,13 @@
+.ball {
+	--x: 50;
+	--y: 50;
+	position: absolute;
+	background-image: url(../../../assets/42_Logo.svg);
+	background-color: white;
+	border-radius: 45%;
+	left: calc(var(--x) * 1vw);
+	top: calc(var(--y) * 1vh);
+	transform: translate(-50%, -50%);
+	width: 2.5vh;
+	height: 2.5vh;
+}

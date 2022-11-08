@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import User from './components/User';
 import NotFound from './pages/notFound';
 import Home from './pages/home';
-import Game from './pages/game';
+import Game from './pages/pong';
 import Chat from './pages/chat';
 
 function App() {
