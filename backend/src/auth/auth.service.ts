@@ -39,6 +39,23 @@ export class AuthService {
 						imageUrl: String(res.image_url)
 					}
 				});
+				const fs = require('fs');
+				const fetch = require('node-fetch');
+
+				const url = user.imageUrl;
+  			const response = await fetch(url);
+ 				const buffer = await response.buffer();
+				const image_url = `./uploads/` + user.id;
+  			fs.writeFile(image_url, buffer, () =>
+					console.log('finished downloading!'));
+					const updateUser = await this.prismaService.user.update({
+						where: {
+							id: user.id,
+						},
+						data: {
+							imageUrl: image_url,
+						},
+					})
 			}
 		return (this.signToken(user));
 		} catch(e) {

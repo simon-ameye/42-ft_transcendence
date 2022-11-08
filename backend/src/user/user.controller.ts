@@ -68,13 +68,9 @@ export class UserController {
     return response;
   }
 
-  // display the image of the user specified
   @UseGuards(AuthGuard('jwt'))
   @Get('getImage')
   displayImage(@GetUser() user: UserDto, @Res() res) {
-    //let response = await this.userService.display(dto, file.path);
-    // https://docs.nestjs.com/techniques/streaming-files
     res.sendFile(user.imageUrl, { root: './' })
-    //return image;
   }
 }

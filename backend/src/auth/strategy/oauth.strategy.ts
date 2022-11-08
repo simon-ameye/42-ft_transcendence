@@ -15,7 +15,7 @@ export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 			clientID: configService.get('42API_ID'),
 			clientSecret: configService.get('42API_SECRET'),
 			// where user is sent after authorization
-			callbackURL: 'http://localhost:3000/auth/42api/redirect',
+			callbackURL: 'http://localhost:3001/auth/42api/redirect',
 			state: true,
 			scope: ['public']
 		});
