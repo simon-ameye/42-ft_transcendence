@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { GameModule } from './game/game.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [AuthModule,
@@ -12,7 +13,8 @@ import { GameModule } from './game/game.module';
       isGlobal: true,
     }),
     PrismaModule,
-    GameModule
+    GameModule,
+    ApiModule
   ],
 })
 
