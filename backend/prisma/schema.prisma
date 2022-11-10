@@ -11,16 +11,54 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email String @unique
-  hash String?
-  displayName String?
-  imageUrl String?
-  googleSecret String?
+  //User auth data
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  email         String    @unique
+  hash          String?
+  displayName   String?
+  imageUrl      String?
+  googleSecret  String?
   // add path of the image
+
+  //User chat data
+  channelsOwned     Channel[]   @relation("Owner")                                          //one  to many
+  channelsAdmined   Channel[]   @relation("Admin")                                          //many to many
+  channelsBanned    Channel[]   @relation("Bans")                                           //many to many
+  channelsMutes     Channel[]   @relation("Mutes")                                          //many to many
+  messagesSent      Message[]   @relation("Author")                                         //one  to many
+
   @@map("users")
 }
 
-// mode Channels ( many to many relations with Users )
+model Channel{
+  id                Int         @id @default(autoincrement())
+  name              String
+  mode              ChannelMode @default(PUBLIC)
+  password          String?
+  owner             User        @relation("Owner", fields: [ownerId], references: [id])     //one  to many
+  ownerId           Int                                                                     //one  to many field
+  admins            User[]      @relation("Admin")                                          //many to many
+  bans              User[]      @relation("Bans")                                           //many to many
+  mutes             User[]      @relation("Mutes")                                          //many to many
+  messages          Message[]   @relation("Channel")                                        //one  to many
+
+  //@@map("channels")
+}
+
+model Message {
+  id                Int         @id @default(autoincrement())
+  text              String?
+  author            User        @relation("Author", fields: [authorId], references: [id])   //one  to many
+  authorId          Int                                                                     //one  to many field
+  channel           Channel     @relation("Channel", fields: [channelId], references: [id]) //one  to many
+  channelId         Int                                                                     //one  to many field
+}
+
+enum ChannelMode {
+  PUBLIC                                                                                    //everybody can join
+  DIRECT                                                                                    //direct messages between two users
+  PRIVATE                                                                                   //new users must be invited by channel users (not clear in the subject)
+  PROTECTED                                                                                 //a password is set
+}
