@@ -1,13 +1,8 @@
 
 import { OnModuleInit } from '@nestjs/common';
-import{
-	MessageBody,
-	SubscribeMessage,
-	WebSocketGateway,
-	WebSocketServer,
-} from '@nestjs/websockets'
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { Server } from 'socket.io';
-
+import { ChatService } from './chat.service';
 
 @WebSocketGateway()
 export class ChatGateway implements OnModuleInit {
@@ -32,12 +27,4 @@ export class ChatGateway implements OnModuleInit {
 			msg: 'heeeyyy you have asked for new chat',
 			content: body,
 		})	}
-
-	@SubscribeMessage('oldChat')
-	onOldChat(@MessageBody() body: any){
-		this.server.emit('oldChat', {
-			msg: 'yooo this is an old chat',
-			content: body,
-		})
-	}
 }
