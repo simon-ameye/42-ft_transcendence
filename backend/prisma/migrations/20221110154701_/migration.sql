@@ -2,12 +2,28 @@
 CREATE TYPE "ChannelMode" AS ENUM ('PUBLIC', 'DIRECT', 'PRIVATE', 'PROTECTED');
 
 -- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "email" TEXT NOT NULL,
+    "hash" TEXT,
+    "displayName" TEXT,
+    "imageUrl" TEXT,
+    "googleSecret" TEXT,
+    "socketId" TEXT,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Channel" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "mode" "ChannelMode" NOT NULL DEFAULT 'PUBLIC',
     "password" TEXT,
     "ownerId" INTEGER NOT NULL,
+    "banedRelease" TIMESTAMP(3)[],
 
     CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
 );
@@ -39,6 +55,9 @@ CREATE TABLE "_Mutes" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_Admin_AB_unique" ON "_Admin"("A", "B");

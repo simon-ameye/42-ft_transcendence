@@ -28,7 +28,7 @@ model User {
   channelsBanned    Channel[]   @relation("Bans")                                           //many to many
   channelsMutes     Channel[]   @relation("Mutes")                                          //many to many
   messagesSent      Message[]   @relation("Author")                                         //one  to many
-
+  socketId          String?
   @@map("users")
 }
 
@@ -37,10 +37,11 @@ model Channel{
   name              String
   mode              ChannelMode @default(PUBLIC)
   password          String?
-  owner             User        @relation("Owner", fields: [ownerId], references: [id])     //one  to many
-  ownerId           Int                                                                     //one  to many field
+  owner             User?       @relation("Owner", fields: [ownerId], references: [id])     //one  to many
+  ownerId           Int?                                                                    //one  to many field
   admins            User[]      @relation("Admin")                                          //many to many
-  bans              User[]      @relation("Bans")                                           //many to many
+  banedUsers        User[]      @relation("Bans")                                           //many to many
+  banedRelease      DateTime[]
   mutes             User[]      @relation("Mutes")                                          //many to many
   messages          Message[]   @relation("Channel")                                        //one  to many
 
