@@ -20,14 +20,15 @@ model User {
   imageUrl String?
   googleSecret String?
   // add path of the image
-
-	matching Matching?
+//	matching Matching?
   @@map("users")
 }
 
 // mode Channels ( many to many relations with Users )
 
 model	Matching {
-	user User @relation(fields: [userId], references: [id])
-	userId Int @unique
+//	user User @relation(fields: [userId], references: [id])
+//	userId Int
+  id Int @id @default(autoincrement())
+	title String?
 }

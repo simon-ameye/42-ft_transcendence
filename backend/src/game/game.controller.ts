@@ -8,14 +8,14 @@ import { GameService } from './game.service';
 export class GameController {
 	constructor(private gameService: GameService) {}
 
-	@UseGuards(AuthGuard('jwt'))
-	@Put('queue')
-	addToQueue(@GetUser() user: UserDto) {
-		return (this.gameService.addToQueue(user.id));
-	}
-
-	@Get('queue')
-	showQueue() {
-		return (this.gameService.showQueue());
-	}
+//	@UseGuards(AuthGuard('jwt'))
+//	@Put('queue')
+//	addToQueue(@GetUser() user: UserDto) {
+//		return (this.gameService.addToQueue(user.id));
+//	}
+//
+//	@Get('queue')
+//	showQueue() {
+//		return (this.gameService.showQueue());
+//	}
 }

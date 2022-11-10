@@ -35,7 +35,6 @@ export class AuthService {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
-					//	displayName: String(res.log),
 						imageUrl: String(res.image_url)
 					}
 				});
@@ -127,9 +126,9 @@ export class AuthService {
 			encoding: 'base32',
 			token: payload.code
 		});
-		if (verify)
-			return (this.signToken(user))
-		throw new ForbiddenException('Credentials invalid');
+		if (!verify)
+			throw new ForbiddenException('Credentials invalid');
+		return (this.signToken(user))
 	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {
