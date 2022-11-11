@@ -14,8 +14,8 @@ export class GameController {
 //		return (this.gameService.addToQueue(user.id));
 //	}
 //
-//	@Get('queue')
-//	showQueue() {
-//		return (this.gameService.showQueue());
-//	}
+	@Get()
+	showQueue() {
+		return (this.gameService.showQueue());
+	}
 }

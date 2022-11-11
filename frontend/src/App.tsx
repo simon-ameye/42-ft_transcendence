@@ -5,6 +5,7 @@ import MessageInput from './components/message-input.component';
 import Messages from './components/messages.component';
 import JoinGame from './components/join-game.component';
 import MatchingQueue from './components/matching-queue.component';
+import axios from 'axios';
 
 function App() {
 	const [socket, setSocket] = useState<Socket>()
@@ -35,8 +36,21 @@ function App() {
 		}
 	})
 
-	// COMPONENTS/MATCHING_QUEUE \\
-	const	[matchingQueue, setMatchingQueue] = useState<string[]>([])
+	// COMPONENTS MATCHING_QUEUE \\
+
+	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
+	const	[initQueue, setInitQueue] = useState<string[]>([]);
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/game')
+			.then(res => {
+				console.log(res);
+				setInitQueue(res.data);
+			})
+			.catch(err => {
+				console.log(err);
+			})
+	}, []);
 
 	const	addToQueue = () => {
 		if (socket !== undefined && !matchingQueue.includes(socket.id)) {
@@ -67,7 +81,7 @@ function App() {
 			<MessageInput send={send} />
 			<Messages messages={messages} />
 			<JoinGame addToQueue={addToQueue} />
-			<MatchingQueue queue={matchingQueue} />
+			<MatchingQueue queue={initQueue.concat(matchingQueue)} />
 		</>
 	)
 }

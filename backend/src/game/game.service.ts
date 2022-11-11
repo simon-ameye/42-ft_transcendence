@@ -27,17 +27,19 @@ export class GameService implements OnModuleInit {
 
 	async showQueue() {
 		const queue = await this.prismaService.matching.findMany();
-		return ({queue});
+		const len = queue.length;
+		let ids: string[] = new Array(len);
+		for (let i = 0; i < len; ++i)
+			ids[i] = queue[i].title;
+		return (ids);
 	}
 
-	async addClientToMatchingQueue() {
+	async addClientToMatchingQueue(id: string): Promise<void> {
 		++this.matchingUsers;
-		console.log({"matchingUsers": this.matchingUsers});
 		const matching = await this.prismaService.matching.create({
 			data: {
-				title: "hey"
+				title: id
 			}
 		});
-		console.log({matching});
 	}
 }

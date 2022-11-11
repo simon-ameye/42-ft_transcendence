@@ -1,14 +1,16 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, MessageBody } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GameService } from './game.service';
+import { MatchingQueueInterface } from './interfaces';
 
 @WebSocketGateway(4343, {cors: '*'})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
 	constructor(
 		private prismaService: PrismaService,
 		private gameService: GameService) {}
+
 	@WebSocketServer() server: Server;
 
 	users: number = 0;
@@ -18,11 +20,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			socket.emit('message', 'Hey i\'m new');
 			console.log({"socket.id": socket.id});
 			console.log('connected');
-			const queue = await this.prismaService.matching.findMany();
-			if (!queue)
-				return ;
-			console.log({queue});
-			this.server.to("matching queue").emit('matchingQueue', "hey");
 		});
 	}
 
@@ -46,6 +43,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		addToQueue(client): void {
 			client.join("matching queue");
 			this.server.to("matching queue").emit('matchingQueue', client.id);
-			this.gameService.addClientToMatchingQueue();
+			this.gameService.addClientToMatchingQueue(client.id);
 		}
 }

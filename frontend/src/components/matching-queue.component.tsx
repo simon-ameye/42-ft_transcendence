@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function MatchingQueue({queue}: {queue: string[]}) {
 	return (
 		<>
 			<h5>Matching Queue</h5>
-			<div>
+			<ul>
 				{queue.map((queue, index) => (
-					<div key={index}> - {queue}</div>
+					<li key={index}> - {queue}</li>
 				))}
-			</div>
+			</ul>
 		</>
 	)
 }
