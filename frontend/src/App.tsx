@@ -6,6 +6,7 @@ import Messages from './components/messages.component';
 import JoinGame from './components/join-game.component';
 import MatchingQueue from './components/matching-queue.component';
 import axios from 'axios';
+import InvitPopup from './components/invit-popup.component';
 
 function App() {
 	const [socket, setSocket] = useState<Socket>()
@@ -69,6 +70,25 @@ function App() {
 		}
 	})
 
+	// COMPONENTS INVIT-POPUP \\
+	const [invit, setInvit] = useState<boolean>(false)
+
+	useEffect(() => {
+		socket?.on("sendInvit", invitListener);
+		return () => {
+			socket?.off("sendInvit", invitListener);
+		}
+	})
+
+	const sendInvit = (receiverId: string) => {
+		if (socket !== undefined && socket.id !== receiverId)
+			socket.emit("invitation", receiverId);
+	}
+
+	const invitListener = (sockerId: string) => {
+		setInvit(true);
+	}
+
 	return (
 		<>
 			<div>
@@ -82,6 +102,7 @@ function App() {
 			<Messages messages={messages} />
 			<JoinGame addToQueue={addToQueue} />
 			<MatchingQueue queue={initQueue.concat(matchingQueue)} />
+			<InvitPopup trigger={invit} />
 		</>
 	)
 }
