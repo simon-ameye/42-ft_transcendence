@@ -18,11 +18,32 @@ $borderRadius: 25px;
 $shadow: 0 1px 3px #333;
 $minHeight: 95vh;
 
-@mixin verticalCenter {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+@mixin btn-anim {
+	background: $user_red;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	color: $white;
+	border: none;
+	padding: 10px 25px 10px 25px;
+	border-radius: $borderRadius;
+	margin-top: 25px;
+	cursor: pointer;
+	letter-spacing: 2.5px;
+	transition: all 0.3s ease 0s;
+	outline: none;
 }
+
+@mixin btn-anim-hover {
+	background-color: $user_red;
+	box-shadow: 0px 10px 15px rgba($user_red, 0.4);
+	transform: translateY(-3px);
+}
+
+@mixin btn-anim-active {
+	transform: translateY(-1px);
+}
+
 
 html{
 	background-color: $dark_grey;

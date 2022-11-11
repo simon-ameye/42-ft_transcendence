@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 const User = () => {
 	const [userMail, setUserMail] = useState('');
 	const [userPass, setUserPass] = useState('');
-	const [userFirstName, setUserFirstName] = useState('');
+	const [userDisplayName, setUserDisplayName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 
 	const handleSubmit = (e: any) => {
@@ -13,8 +13,8 @@ const User = () => {
 		axios.post('http://localhost:3001/auth/signup',{
 			email: userMail,
 			password: userPass,
-			//displayName: userFirstName,
-			//imageUrl: userProfilePicture
+			displayName: userDisplayName,
+			imageUrl: userProfilePicture
 		}).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
@@ -23,37 +23,40 @@ const User = () => {
 			<Navbar />
 			<div className="createUserContent">
 				<h3>Create user page</h3>
-				<form onSubmit={handleSubmit}>
-					<label>Email</label>
+				<form onSubmit={handleSubmit} method='POST'>
+					<label title='Email is mandatory'>Email</label>
 					<input 
 						type="email"
+						placeholder='Email'
 						required
 						value={userMail}
 						onChange={(e) => setUserMail(e.target.value)}
 					/>
-					<label>Password</label>
+					<label title='Password is mandatory'>Password</label>
 					<input
 						type="password"
+						placeholder='Password'
 						required
 						value={userPass}
 						onChange={(e) => setUserPass(e.target.value)}
 					/>
-					<label>First Name</label>
+					<label>Username</label>
 					<input 
 						type="text"
-						value={userFirstName}
-						onChange={(e) => setUserFirstName(e.target.value)}
+						placeholder='Username'
+						value={userDisplayName}
+						onChange={(e) => setUserDisplayName(e.target.value)}
 					/>
-				</form>
-				<form>
 					<input
 						id="file"
 						type="file"
 						value={userProfilePicture}
 						onChange={(e) => setUserProfilePicture(e.target.value)}
 						/>
-					<label className="upload" htmlFor="file">Upload profile picture</label>
-					<button onClick={handleSubmit}>submit</button>
+					<div className="submit-upload">
+						<label className="upload" htmlFor="file">Upload profile picture</label>
+						<button type="submit" className='submit-btn'>submit</button>
+					</div>
 				</form>
 			</div>
 		</div>
