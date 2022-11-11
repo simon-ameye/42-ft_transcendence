@@ -11,10 +11,9 @@ const User = () => {
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		console.log(typeof(e));
 		//const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
 
-		axios.post('http://localhost:3000/auth/signup',{
+		axios.post('http://localhost:3001/auth/signup',{
 			email: userMail,
 			firstName: userFirstName,
 			lastName: userLastName

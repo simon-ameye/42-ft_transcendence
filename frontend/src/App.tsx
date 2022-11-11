@@ -6,17 +6,17 @@ import Game from './pages/pong';
 import Chat from './pages/chat';
 
 function App() {
-  return (
-    <BrowserRouter>
-		<Routes>
-			<Route path="/" element={<Home />} />
-			<Route path="/user" element={<User />} />
-			<Route path="/game" element={<Game />} />
-			<Route path="/chat" element={<Chat />} />
-			<Route path="*" element={<NotFound />} />
-		</Routes>
-	</BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/user" element={<User />} />
+				<Route path="/game" element={<Game />} />
+				<Route path="/chat" element={<Chat />} />
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</BrowserRouter>
+	);
 }
 
 export default App;

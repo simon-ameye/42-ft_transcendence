@@ -1,9 +1,11 @@
+interface props {
+	ref:React.RefObject<HTMLCanvasElement>
+}
+
 const Paddle = () => {
 	return (
-		<div>
-			
-		</div>
-	);
-};
+		<div>Paddle</div>
+	)
+}
 
-export default Paddle;
+export default Paddle
