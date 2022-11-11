@@ -24,28 +24,28 @@ const User = () => {
 			<div className="createUserContent">
 				<h3>Create user page</h3>
 				<form onSubmit={handleSubmit} method='POST'>
-					<label title='Email is mandatory'>Email</label>
+					<label title='Email is mandatory'>Email*</label>
 					<input 
 						type="email"
-						placeholder='Email'
+						placeholder='ex: "test@test.fr"'
 						required
 						value={userMail}
 						onChange={(e) => setUserMail(e.target.value)}
 					/>
-					<label title='Password is mandatory'>Password</label>
-					<input
-						type="password"
-						placeholder='Password'
-						required
-						value={userPass}
-						onChange={(e) => setUserPass(e.target.value)}
-					/>
 					<label>Username</label>
 					<input 
 						type="text"
-						placeholder='Username'
+						placeholder='Display on pong ranking etc..'
 						value={userDisplayName}
 						onChange={(e) => setUserDisplayName(e.target.value)}
+					/>
+					<label title='Password is mandatory'>Password*</label>
+					<input
+						type="password"
+						placeholder='"123" is not a strong password ¯\_(ツ)_/¯'
+						required
+						value={userPass}
+						onChange={(e) => setUserPass(e.target.value)}
 					/>
 					<input
 						id="file"
