@@ -6,15 +6,15 @@ const User = () => {
 	const [userMail, setUserMail] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [userFirstName, setUserFirstName] = useState('');
-	const [userLastName, setUserLastName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
-
-		axios.post('http://localhost:3000/auth/signup',{
-			data
+		axios.post('http://localhost:3001/auth/signup',{
+			email: userMail,
+			password: userPass,
+			//displayName: userFirstName,
+			//imageUrl: userProfilePicture
 		}).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
@@ -43,12 +43,6 @@ const User = () => {
 						type="text"
 						value={userFirstName}
 						onChange={(e) => setUserFirstName(e.target.value)}
-					/>
-					<label>Last Name</label>
-					<input 
-						type="text"
-						value={userLastName}
-						onChange={(e) => setUserLastName(e.target.value)}
 					/>
 				</form>
 				<form>
