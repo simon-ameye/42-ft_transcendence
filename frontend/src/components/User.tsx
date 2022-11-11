@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
 
@@ -11,11 +11,14 @@ const User = () => {
 
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
-		const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
+		//const data = { userMail, userPass, userFirstName, userLastName, userProfilePicture };
 
-		axios.post('http://localhost:3000/auth/signup',{
-			data
-		}).then(res => console.log(res)).catch(err => console.log(err))
+		axios.post('http://localhost:3001/auth/signup',{
+			email: userMail,
+			firstName: userFirstName,
+			lastName: userLastName
+		}
+		).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
 	return (
@@ -23,18 +26,16 @@ const User = () => {
 			<Navbar />
 			<div className="createUserContent">
 				<h3>Create user page</h3>
-				<form onSubmit={handleSubmit}>
+				<form>
 					<label>Email</label>
 					<input 
 						type="email"
-						required
 						value={userMail}
 						onChange={(e) => setUserMail(e.target.value)}
 					/>
 					<label>Password</label>
 					<input
 						type="password"
-						required
 						value={userPass}
 						onChange={(e) => setUserPass(e.target.value)}
 					/>
