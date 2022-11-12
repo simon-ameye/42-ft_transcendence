@@ -1,5 +1,6 @@
 export default interface	InvitPopupInterface {
 	trigger: boolean,
 	removeInvitPopup: () => void
-	invitText: string
+	invitText: string,
+	acceptInvit: () => void
 }

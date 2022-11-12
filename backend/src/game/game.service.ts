@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { OppenentsInterface } from './interfaces';
 
 @Injectable()
 export class GameService implements OnModuleInit {
@@ -40,6 +41,14 @@ export class GameService implements OnModuleInit {
 			data: {
 				title: id
 			}
+		});
+	}
+
+	async startGame(oppenents: OppenentsInterface): Promise<void> {
+		const deleteUsers = await this.prismaService.matching.deleteMany({
+			where: {
+				OR: [{title: oppenents.one }, { title: oppenents.two }],
+			},
 		});
 	}
 }

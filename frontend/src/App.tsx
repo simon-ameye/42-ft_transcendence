@@ -7,6 +7,7 @@ import JoinGame from './components/join-game.component';
 import MatchingQueue from './components/matching-queue.component';
 import axios from 'axios';
 import InvitPopup from './components/invit-popup.component';
+import OppenentsInterface from './interfaces/oppenents.interface';
 
 function App() {
 	const [socket, setSocket] = useState<Socket>()
@@ -39,6 +40,8 @@ function App() {
 
 	// COMPONENTS MATCHING_QUEUE \\
 
+	const [invit, setInvit] = useState<boolean>(false)
+	const [invitText, setInvitText] = useState<string>("")
 	const	[initQueue, setInitQueue] = useState<string[]>([]);
 	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
 
@@ -69,15 +72,29 @@ function App() {
 		}
 	})
 
-	// COMPONENTS INVIT-POPUP \\
-
-	const [invit, setInvit] = useState<boolean>(false)
-	const [invitText, setInvitText] = useState<string>("")
+	const deleteOppenentsListener = (oppenents: OppenentsInterface) => {
+		let index = matchingQueue.indexOf(oppenents.one);
+		console.log({"index": index});
+		matchingQueue.splice(index, 1);
+		setMatchingQueue(matchingQueue);
+	}
 
 	useEffect(() => {
-		socket?.on("sendInvit", invitListener);
+		socket?.on("deleteOppenents", deleteOppenentsListener);
 		return () => {
-			socket?.off("sendInvit", invitListener);
+			socket?.off("deleteOppenents", deleteOppenentsListener);
+		}
+	}, [invit])
+
+	// COMPONENTS INVIT-POPUP \\
+
+//	const [invit, setInvit] = useState<boolean>(false)
+//	const [invitText, setInvitText] = useState<string>("")
+
+	useEffect(() => {
+		socket?.on("send invitation", invitListener);
+		return () => {
+			socket?.off("send invitation", invitListener);
 		}
 	})
 
@@ -92,6 +109,15 @@ function App() {
 	}
 
 	const removeInvitPopup = () => {
+		setInvit(false);
+	}
+
+	const acceptInvit = () => {
+		if (socket !== undefined) {
+			const invitTextArray = invitText.split(" ");
+			const	senderId = invitTextArray[invitTextArray.length - 1];
+			socket.emit("invitation accepted", senderId);
+		}
 		setInvit(false);
 	}
 
@@ -111,7 +137,8 @@ function App() {
 			<InvitPopup
 				trigger={invit}
 				removeInvitPopup={removeInvitPopup}
-				invitText={invitText} />
+				invitText={invitText}
+				acceptInvit={acceptInvit} />
 		</>
 	)
 }

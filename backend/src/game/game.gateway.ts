@@ -41,7 +41,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	
 	@SubscribeMessage('matchingQueue')
 		addToQueue(client): void {
-			client.join("matching queue");
+		//	client.join("matching queue");
 		//	this.server.to("matching queue").emit('matchingQueue', client.id);
 			this.server.emit('matchingQueue', client.id);
 			this.gameService.addClientToMatchingQueue(client.id);
@@ -49,6 +49,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
 	@SubscribeMessage('invitation')
 		invitSocket(client, receiverId: string): void {
-			this.server.to(receiverId).emit('sendInvit', client.id);
+			this.server.to(receiverId).emit('send invitation', client.id);
+		}
+	
+	@SubscribeMessage('invitation accepted')
+		acceptInvit(client, senderId: string): void {
+			this.gameService.startGame({"one": client.id, "two": senderId});
+			this.server.emit('deleteOppenents',
+			{"one": client.id, "two": senderId});
 		}
 }
