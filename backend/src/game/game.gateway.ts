@@ -42,7 +42,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	@SubscribeMessage('matchingQueue')
 		addToQueue(client): void {
 			client.join("matching queue");
-			this.server.to("matching queue").emit('matchingQueue', client.id);
+		//	this.server.to("matching queue").emit('matchingQueue', client.id);
+			this.server.emit('matchingQueue', client.id);
 			this.gameService.addClientToMatchingQueue(client.id);
 		}
 

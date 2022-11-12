@@ -39,13 +39,12 @@ function App() {
 
 	// COMPONENTS MATCHING_QUEUE \\
 
-	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
 	const	[initQueue, setInitQueue] = useState<string[]>([]);
+	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
 
 	useEffect(() => {
 		axios.get('http://localhost:3001/game')
 			.then(res => {
-				console.log(res);
 				setInitQueue(res.data);
 			})
 			.catch(err => {
@@ -71,7 +70,9 @@ function App() {
 	})
 
 	// COMPONENTS INVIT-POPUP \\
+
 	const [invit, setInvit] = useState<boolean>(false)
+	const [invitText, setInvitText] = useState<string>("")
 
 	useEffect(() => {
 		socket?.on("sendInvit", invitListener);
@@ -85,8 +86,13 @@ function App() {
 			socket.emit("invitation", receiverId);
 	}
 
-	const invitListener = (sockerId: string) => {
+	const invitListener = (socketId: string) => {
+		setInvitText("You receive an invitation to pong game from ".concat(socketId));
 		setInvit(true);
+	}
+
+	const removeInvitPopup = () => {
+		setInvit(false);
 	}
 
 	return (
@@ -101,8 +107,11 @@ function App() {
 			<MessageInput send={send} />
 			<Messages messages={messages} />
 			<JoinGame addToQueue={addToQueue} />
-			<MatchingQueue queue={initQueue.concat(matchingQueue)} />
-			<InvitPopup trigger={invit} />
+			<MatchingQueue queue={initQueue.concat(matchingQueue)} sendInvit={sendInvit} />
+			<InvitPopup
+				trigger={invit}
+				removeInvitPopup={removeInvitPopup}
+				invitText={invitText} />
 		</>
 	)
 }

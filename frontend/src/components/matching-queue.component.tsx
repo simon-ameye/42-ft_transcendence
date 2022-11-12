@@ -1,8 +1,8 @@
 import React from 'react';
+import MatchingQueueInterface from '../interfaces/matching-queue.interface';
 
 export default function MatchingQueue(
-		{queue}: {queue: string[]},
-		{sendInvit}: {sendInvit: () => void})
+		{queue, sendInvit}: MatchingQueueInterface)
 {
 	return (
 		<>
@@ -10,7 +10,7 @@ export default function MatchingQueue(
 			<ul>
 				{queue.map((queue, index) => (
 					<li key={index}>{queue}     <button 
-							onClick={(queue) => sendInvit()}>Invit</button>
+							onClick={() => sendInvit(queue)}>Invit</button>
 					</li>
 				))}
 			</ul>
