@@ -19,47 +19,53 @@ const User = () => {
 	}
 
 	return (
-		<div className="createUser">
+		<>
 			<Navbar />
-			<div className="createUserContent">
-				<h3>Create user page</h3>
-				<form onSubmit={handleSubmit} method='POST'>
-					<label title='Email is mandatory'>Email*</label>
-					<input 
-						type="email"
-						placeholder='ex: "test@test.fr"'
-						required
-						value={userMail}
-						onChange={(e) => setUserMail(e.target.value)}
-					/>
-					<label>Username</label>
-					<input 
-						type="text"
-						placeholder='Display on pong ranking etc..'
-						value={userDisplayName}
-						onChange={(e) => setUserDisplayName(e.target.value)}
-					/>
-					<label title='Password is mandatory'>Password*</label>
-					<input
-						type="password"
-						placeholder='"123" is not a strong password ¯\_(ツ)_/¯'
-						required
-						value={userPass}
-						onChange={(e) => setUserPass(e.target.value)}
-					/>
-					<input
-						id="file"
-						type="file"
-						value={userProfilePicture}
-						onChange={(e) => setUserProfilePicture(e.target.value)}
+			<div className="createUser">
+				<div className="createUserContent">
+					<form onSubmit={handleSubmit} method='POST'>
+						<label>Email</label>
+						<input 
+							type="email"
+							placeholder='ex: "test@test.fr"'
+							required
+							value={userMail}
+							onChange={(e) => setUserMail(e.target.value)}
 						/>
-					<div className="submit-upload">
-						<label className="upload" htmlFor="file">Upload profile picture</label>
-						<button type="submit" className='submit-btn'>submit</button>
-					</div>
-				</form>
+						<label>Username</label>
+						<input 
+							type="text"
+							placeholder='Display on pong ranking etc..'
+							value={userDisplayName}
+							onChange={(e) => setUserDisplayName(e.target.value)}
+						/>
+						<label>Password</label>
+						<input
+							type="password"
+							placeholder='"123" is not a strong password ¯\_(ツ)_/¯'
+							required
+							value={userPass}
+							onChange={(e) => setUserPass(e.target.value)}
+						/>
+						<input
+							id="file"
+							type="file"
+							value={userProfilePicture}
+							onChange={(e) => setUserProfilePicture(e.target.value)}
+							/>
+						<div className="submit-upload">
+							<label className="upload" htmlFor="file">Upload profile picture</label>
+							<button type="submit" className='submit-btn'>submit</button>
+						</div>
+					</form>
+				</div>
+				<div className="or">OR</div>
+				<button className='login-btn'>
+					<p>Login with</p>
+					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png'></img>
+				</button>
 			</div>
-		</div>
+		</>
 	);
 };
 
