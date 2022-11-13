@@ -5,6 +5,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class FriendService {
   constructor (private prismaService: PrismaService) {}
 
-  
+
 }
 

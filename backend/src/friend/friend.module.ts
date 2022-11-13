@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
-import { MyGateway } from "./friend.gateway";
+import { FriendGateway } from "./friend.gateway";
+import { FriendService } from "./friend.service";
 
 @Module({
-  providers: [MyGateway],
+  providers: [FriendGateway, FriendService],
 })
-export class GatewayModule {
+export class FriendModule {
 
 }

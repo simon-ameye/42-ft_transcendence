@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
-import { GatewayModule } from './friend/friend.module';
+import { FriendModule } from './friend/friend.module';
 import { FriendService } from './friend/friend.service';
 
 @Module({
@@ -13,9 +13,9 @@ import { FriendService } from './friend/friend.service';
       isGlobal: true,
     }),
     PrismaModule,
-    GatewayModule,
+    FriendModule,
   ],
-  providers: [FriendService],
+  //providers: [FriendService],
 })
 
 export class AppModule {}

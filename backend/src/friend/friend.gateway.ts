@@ -7,7 +7,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { FriendService } from "./friend.service";
 
 @WebSocketGateway() // listening on same port than HTTP
-export class MyGateway implements OnModuleInit, OnGatewayDisconnect {
+export class FriendGateway implements OnModuleInit, OnGatewayDisconnect {
   constructor( private friendService: FriendService ) {}
 
   // friend service
