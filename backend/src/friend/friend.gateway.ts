@@ -6,7 +6,7 @@ import { User } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { FriendService } from "./friend.service";
 
-@WebSocketGateway() // listening on same port than HTTP
+@WebSocketGateway() // only for notifications and status or modification of the database in it ?
 export class FriendGateway implements OnModuleInit, OnGatewayDisconnect {
   constructor( private friendService: FriendService ) {}
 
@@ -22,14 +22,23 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect {
     });
   }
 
+  /*@SubscribeMessage('invitation')
+		invitSocket(client, receiverId: string): void {
+			this.server.to(receiverId).emit('send invitation', client.id);
+	}*/
+
   @SubscribeMessage('friendInvit')
-  onNewFriendRequest(@MessageBody() body: UserDto) {
+  onNewFriendRequest( client, receiverId: string ) {
     // when we have and event friend request
-    console.log("friend request");
-    // have to emit something
+    /// create relationshipin database
+    console.log('client id', client.id);
+    console.log('receiver id', receiverId); // to who are we sending the friend request
+    this.server.to(receiverId).emit('send friend invitation', client.id);
   }
 
-  @SubscribeMessage('declineInvit')
+  /// may be cleaner to do a controller for this
+
+  /*@SubscribeMessage('declineInvit')
   onDeclineRequest(@MessageBody() body: UserDto) {
     // when decline event is sent
     console.log("dont wanna be your friend man");
@@ -37,14 +46,14 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect {
       msg: 'you have a friend request',
     })
     // have to emit something
-  }
+  }*/
 
-  @SubscribeMessage('acceptInvit')
+  /*@SubscribeMessage('acceptInvit')
   onAcceptRequest(@MessageBody() body: UserDto) {
     // when accept event is sent
     console.log("lets be friend");
     // have to emit something
-  }
+  }*/
 
   async handleDisconnect(@MessageBody() body: any) {
     this.server.emit('offline')
