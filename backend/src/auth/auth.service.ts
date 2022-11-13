@@ -36,7 +36,9 @@ export class AuthService {
 					data: {
 						email: String(res.email),
 						displayName: String(res.log),
-						imageUrl: String(res.image_url)
+						imageUrl: String(res.image_url),
+						status: "online",
+						countWin: 0,
 					}
 				});
 				const fs = require('fs');
@@ -70,6 +72,8 @@ export class AuthService {
         data: {
           email: dto.email,
           hash,
+					status: "online",
+					countWin: 0,
         },
       });
       delete user.hash;
@@ -117,7 +121,9 @@ export class AuthService {
 			const user = await this.prismaService.user.create({
 				data: {
 					email,
-					googleSecret: String(secret.base32)
+					googleSecret: String(secret.base32),
+					status: "online",
+					countWin: 0,
 				},
 			});
 		} catch (error) {

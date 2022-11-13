@@ -21,18 +21,13 @@ model User {
   googleSecret String?
   status String
   countWin Int
-  // also a match history
-  // friends users[]
-  // channels and rights in those channels ( map : _name of channel and array of rights )
-  // add path of the image
+  friends Int[]
   @@map("users")
 }
 
-//for now just handle one request friend at a time on websocket
 model relationShip {
   id Int @id @default(autoincrement())
   RequesterId Int // request ID
   AddresseeId Int // Addresse ID
-  // blocked ?
-  // friends ?
+  status String // pending / accepted / refused
 }

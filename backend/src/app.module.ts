@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module';
-import { GatewayModule } from './gateway/gateway.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { GatewayModule } from './friend/friend.module';
+import { FriendService } from './friend/friend.service';
 
 @Module({
   imports: [AuthModule,
@@ -11,9 +12,10 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    PrismaModule,
     GatewayModule,
-    PrismaModule
   ],
+  providers: [FriendService],
 })
 
 export class AppModule {}
