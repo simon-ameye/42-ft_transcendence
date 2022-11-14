@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/invit-popup.css';
+import '../styles/invit-popup.style.css';
 import InvitPopupInterface from '../interfaces/invit-popup.interface';
 
 export default function	InvitPopup(

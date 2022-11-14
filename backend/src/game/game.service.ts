@@ -44,11 +44,49 @@ export class GameService implements OnModuleInit {
 		});
 	}
 
-	async startGame(oppenents: OppenentsInterface): Promise<void> {
+	async startGame(oppenents: OppenentsInterface): Promise<string> {
 		const deleteUsers = await this.prismaService.matching.deleteMany({
 			where: {
 				OR: [{title: oppenents.one }, { title: oppenents.two }],
 			},
 		});
+		const game = await this.prismaService.game.create({
+			data: {
+				players: {
+					create: [
+						{socketId: oppenents.one},
+						{socketId: oppenents.two}
+					]
+				}
+			}
+		});
+		console.log({"ID": game.id});
+		console.log(game.players);
+		const gameRoom = "game".concat(String(game.id));
+		return (gameRoom);
+	}
+
+	async	updateScore(socketId: string, n: number): Promise<string> {
+		const	player = await this.prismaService.player.update({
+			where: {
+				socketId,
+			},
+			data: {
+				score: {
+					increment: n
+				},
+			},
+		});
+		const gameRoom = "game".concat(String(player.gameId));
+		return (gameRoom);
+	}
+
+	findOne(id: string) {
+		const game = this.prismaService.game.findUnique({
+			where: {
+				id: Number(id)
+			}
+		});
+		return ({game});
 	}
 }

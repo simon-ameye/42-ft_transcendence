@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { GameModule } from './game/game.module';
+import { TestModule } from './test/test.module';
 
 @Module({
   imports: [AuthModule,
@@ -13,6 +14,7 @@ import { GameModule } from './game/game.module';
     }),
     PrismaModule,
     GameModule,
+    TestModule,
   ],
 })
 

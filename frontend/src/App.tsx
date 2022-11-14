@@ -8,11 +8,19 @@ import MatchingQueue from './components/matching-queue.component';
 import axios from 'axios';
 import InvitPopup from './components/invit-popup.component';
 import OppenentsInterface from './interfaces/oppenents.interface';
+import LiveGame from './components/live-game.component';
+import Player from './interfaces/player.interface';
 
 function App() {
+	const [rerender, setRerender] = useState<boolean>(false);
 	const [socket, setSocket] = useState<Socket>()
 	const [messages, setMessages] = useState<string[]>([])
 	const [count, setCount] = useState(0);
+	const [live, setLive] = useState<boolean>(true);
+	const [playerRight, setPlayerRight] =
+			useState<Player>({id: "right", score: 0});
+	const [playerLeft, setPlayerLeft] =
+			useState<Player>({id: "left", score: 0});
 
 	useEffect(() => {
 		document.title = `${count}`;
@@ -91,9 +99,6 @@ function App() {
 
 	// COMPONENTS INVIT-POPUP \\
 
-//	const [invit, setInvit] = useState<boolean>(false)
-//	const [invitText, setInvitText] = useState<string>("")
-
 	useEffect(() => {
 		socket?.on("send invitation", invitListener);
 		return () => {
@@ -124,6 +129,39 @@ function App() {
 		setInvit(false);
 	}
 
+	useEffect(() => {
+		socket?.on("invitation accepted sender",
+				invitAcceptedSenderListener);
+		return () => {
+			socket?.off("invitation accepted sender",
+					invitAcceptedSenderListener);
+		}
+	})
+
+	const	invitAcceptedSenderListener = (gameRoom: string) => {
+		socket?.emit("invitation accepted sender", gameRoom);
+	}
+
+	// COMPONENTS LIVE GAME \\
+
+
+//	const addPoint = (side: string) => {
+//		if (side === 'right') {
+//			++playerRight.score;
+//			setPlayerRight(playerRight);
+//		} else
+//		{
+//			++playerLeft.score;
+//			setPlayerLeft(playerLeft);
+//		}
+//		setRerender(!rerender);
+//	}
+
+	const addPoint = (side: string) => {
+		if (side === 'right')
+			socket?.emit("add point", playerRight);
+	}
+
 	return (
 		<>
 			<div>
@@ -142,6 +180,10 @@ function App() {
 				removeInvitPopup={removeInvitPopup}
 				invitText={invitText}
 				acceptInvit={acceptInvit} />
+			<LiveGame trigger={live}
+				playerRight={playerRight}
+				playerLeft={playerLeft}
+				addPoint={addPoint} />
 		</>
 	)
 }

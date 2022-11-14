@@ -32,3 +32,17 @@ model	Matching {
   id Int @id @default(autoincrement())
 	title String?
 }
+
+model	Player {
+	socketId String @id
+	score	Int @default(0)
+	game	Game? @relation(fields: [gameId], references: [id])
+	gameId Int?
+	//@@map("players")
+}
+
+model	Game {
+  id Int @id @default(autoincrement())
+	players Player[]
+//	spectators Player[]
+}

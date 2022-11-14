@@ -1,4 +1,4 @@
-import { Controller, Put, UseGuards, Get } from '@nestjs/common';
+import { Controller, Put, UseGuards, Get, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/decorator';
 import { UserDto } from '../auth/dto';
@@ -17,5 +17,10 @@ export class GameController {
 	@Get()
 	showQueue() {
 		return (this.gameService.showQueue());
+	}
+
+	@Get(':id')
+	findOne(@Param('id') id: string) {
+		return (this.gameService.findOne(id));
 	}
 }
