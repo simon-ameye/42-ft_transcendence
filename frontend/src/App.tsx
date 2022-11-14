@@ -57,7 +57,7 @@ function App() {
 
 	const	addToQueue = () => {
 		if (socket !== undefined && !matchingQueue.includes(socket.id)) {
-			socket.emit("matchingQueue", socket.id);
+			socket.emit("matchingQueue");
 		}
 	}
 
@@ -74,9 +74,12 @@ function App() {
 
 	const deleteOppenentsListener = (oppenents: OppenentsInterface) => {
 		let index = matchingQueue.indexOf(oppenents.one);
-		console.log({"index": index});
-		matchingQueue.splice(index, 1);
-		setMatchingQueue(matchingQueue);
+		if (index >= 0)
+			matchingQueue.splice(index, 1);
+		index = matchingQueue.indexOf(oppenents.two);
+		if (index >= 0)
+			matchingQueue.splice(index, 1);
+		setMatchingQueue([...matchingQueue]);
 	}
 
 	useEffect(() => {
@@ -84,7 +87,7 @@ function App() {
 		return () => {
 			socket?.off("deleteOppenents", deleteOppenentsListener);
 		}
-	}, [invit])
+	})
 
 	// COMPONENTS INVIT-POPUP \\
 
