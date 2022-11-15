@@ -1,17 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { OppenentsInterface } from './interfaces';
 
 @Injectable()
-export class GameService implements OnModuleInit {
+export class GameService {
 	constructor(private prismaService: PrismaService) {}
-
-	matchingUsers: number = 0;
-
-	async onModuleInit() {
-		const count = await this.prismaService.matching.count({});
-			this.matchingUsers = count;
-	}
 
 //	async addToQueue(id: number) {
 //		const updateUser = await this.prismaService.user.update({
@@ -31,15 +24,14 @@ export class GameService implements OnModuleInit {
 		const len = queue.length;
 		let ids: string[] = new Array(len);
 		for (let i = 0; i < len; ++i)
-			ids[i] = queue[i].title;
+			ids[i] = queue[i].socketId;
 		return (ids);
 	}
 
 	async addClientToMatchingQueue(id: string): Promise<void> {
-		++this.matchingUsers;
 		const matching = await this.prismaService.matching.create({
 			data: {
-				title: id
+				socketId: id
 			}
 		});
 	}
@@ -47,7 +39,7 @@ export class GameService implements OnModuleInit {
 	async startGame(oppenents: OppenentsInterface): Promise<string> {
 		const deleteUsers = await this.prismaService.matching.deleteMany({
 			where: {
-				OR: [{title: oppenents.one }, { title: oppenents.two }],
+				OR: [{socketId: oppenents.one }, { socketId: oppenents.two }],
 			},
 		});
 		const game = await this.prismaService.game.create({
