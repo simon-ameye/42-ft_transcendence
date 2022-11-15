@@ -7,4 +7,5 @@ export interface	ChannelInterface {
   mode: string,
   messages: string[],
   authors: string[],
+  userSocketId :string,
 }

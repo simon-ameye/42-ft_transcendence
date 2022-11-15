@@ -95,18 +95,33 @@ export class ChatService {
     (await user).socketId = socketId;
     return ('User socketId is now set');
   }
-/*
+
   async getChannelInterfaces()
   {
-    var channelInterfaces
-    for (var channel in this.prisma.channel)
-    {
-      for (var userId in (await channel).userIds)
-      {
+    let channelInterfaces : ChannelInterface[];
+    let channelInterface : ChannelInterface;
 
-      }
-    }
-    return (this.prisma.channel.aggregate)
+    let channels = await this.prisma.channel.findMany();
+    channels.forEach(async (channel) => {
+
+      let userIds = channel.userIds;
+      userIds.forEach(async (userId) => {
+        channelInterface.id = channel.id;
+        channelInterface.name = channel.name;
+        channelInterface.mode = channel.mode; //not sure
+        var user = this.prisma.user.findUnique({ where: { id: userId } });
+        channelInterface.userSocketId = (await user).socketId;
+
+        let messageIds = channel.messageIds;
+        messageIds.forEach(async (messageId) => {
+          var message = this.prisma.message.findUnique({ where: { id: messageId } });
+          channelInterface.messages.push((await message).text);
+          channelInterface.authors.push((await message).author);
+        })
+        channelInterfaces.push(channelInterface);
+      })
+    })
+
+    return (channelInterfaces);
   }
-*/
 }

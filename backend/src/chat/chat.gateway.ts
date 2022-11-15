@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import { ChatService } from './chat.service';
 import { PrismaService } from "src/prisma/prisma.service";
 import { prisma } from '@prisma/client';
+import { ChannelInterface } from "./chat.interfaces";
 
 
 @WebSocketGateway()
@@ -25,22 +26,21 @@ export class ChatGateway implements OnModuleInit {
 	onSetConnection(
     @ConnectedSocket() socket: any,
     @MessageBody() userId: number){
-      console.log('A new client runs setConnection with socket ', socket.id);
+      console.log('A new client runs setConnection with socket ', socket.id, ' and id ', userId);
       return (this.chatService.setConnection(Number(userId), socket.id));
-		  //this.server.emit('setConnection', {
-			//msg: 'heeeyyy you have asked setConnection',
-			//content: body,
 	}
 
-  //async handleConnection() {
+  async flushAllChannels() {
+    var channelInterfaces = this.chatService.getChannelInterfaces();
 
-    //for (var userId of (await channel).userIds)
-    //{
-    //  var user = this.prisma.user.findUnique({ where: { id: userId } });
-    //  if (!user)
-    //    return ('Critical message sending : channel user not found');
-//
-    //}
-  //}
-
+    (await channelInterfaces).forEach(async (channelInterface) => {
+      this.server.to(channelInterface.userSocketId).emit('channelInterface', {
+        id: channelInterface.id,
+        name: channelInterface.name,
+        mode: channelInterface.mode,
+        messages: channelInterface.messages,
+        authors: channelInterface.authors,
+      })
+    })
+  }
 }
