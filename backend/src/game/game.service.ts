@@ -60,8 +60,6 @@ export class GameService implements OnModuleInit {
 				}
 			}
 		});
-		console.log({"ID": game.id});
-		console.log(game.players);
 		const gameRoom = "game".concat(String(game.id));
 		return (gameRoom);
 	}

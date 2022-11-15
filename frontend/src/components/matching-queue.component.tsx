@@ -1,19 +1,88 @@
-import React from 'react';
-import MatchingQueueInterface from '../interfaces/matching-queue.interface';
+import React, { useState, useEffect } from 'react';
+import { socket } from '../App';
+import axios from 'axios';
+import OppenentsInterface from '../interfaces/oppenents.interface';
 
-export default function MatchingQueue(
-		{queue, sendInvit}: MatchingQueueInterface)
-{
+export default function MatchingQueue() {
+
+		// VARIABLES \\
+	
+	const	initQueue = setInitQueue;
+	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
+	
+		// FUNCTIONS \\
+	
+	const	addToQueue = () => {
+		if (!matchingQueue.includes(socket.id)) {
+			socket.emit("matchingQueue");
+		}
+	}
+
+	const sendInvit = (receiverId: string) => {
+		if (socket.id !== receiverId)
+			socket.emit("invitation", receiverId);
+	}
+	
+		// USE_EFFECT FCT \\
+	
+	const setInitQueue = () => {
+	 axios.get('http://localhost:3001/game')
+	 	.then(res => {
+			return (res.data);
+	 	})
+	 	.catch(err => {
+	 		console.log(err);
+	 	})
+		return ([]);
+	}
+
+	useEffect(() => {
+		socket?.on("matchingQueue", matchingQueueListener);
+		return () => {
+			socket?.off("matchingQueue", matchingQueueListener);
+		}
+	})
+
+	useEffect(() => {
+		socket?.on("deleteOppenents", deleteOppenentsListener);
+		return () => {
+			socket?.off("deleteOppenents", deleteOppenentsListener);
+		}
+	})
+
+		// LISTENER \\
+	
+	const matchingQueueListener = (socketId: string) => {
+			setMatchingQueue([...matchingQueue, socketId]);
+	}
+
+	const deleteOppenentsListener = (oppenents: OppenentsInterface) => {
+		let index = matchingQueue.indexOf(oppenents.one);
+		if (index >= 0)
+			matchingQueue.splice(index, 1);
+		index = matchingQueue.indexOf(oppenents.two);
+		if (index >= 0)
+			matchingQueue.splice(index, 1);
+		setMatchingQueue([...matchingQueue]);
+	}
+
+		// RETURN \\
+
 	return (
 		<>
-			<h5>Matching Queue</h5>
-			<ul>
-				{queue.map((queue, index) => (
-					<li key={index}>{queue}     <button 
-							onClick={() => sendInvit(queue)}>Invit</button>
-					</li>
-				))}
-			</ul>
+			<div>
+				<button onClick={() => addToQueue()}>Join game</button>
+			</div>
+			<div>
+				<h5>Matching Queue</h5>
+				<ul>
+					{matchingQueue.map((matchingQueue, index) => (
+						<li key={index}>{matchingQueue}     <button 
+								onClick={() => sendInvit(matchingQueue)}>Invit</button>
+						</li>
+					))}
+				</ul>
+			</div>
 		</>
 	)
 }

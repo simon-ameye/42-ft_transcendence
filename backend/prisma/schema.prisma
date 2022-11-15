@@ -38,7 +38,6 @@ model	Player {
 	score	Int @default(0)
 	game	Game? @relation(fields: [gameId], references: [id])
 	gameId Int?
-	//@@map("players")
 }
 
 model	Game {
