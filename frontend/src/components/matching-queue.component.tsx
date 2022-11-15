@@ -7,7 +7,6 @@ export default function MatchingQueue() {
 
 		// VARIABLES \\
 	
-	const	initQueue = setInitQueue;
 	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
 	
 		// FUNCTIONS \\
@@ -23,30 +22,30 @@ export default function MatchingQueue() {
 			socket.emit("invitation", receiverId);
 	}
 	
-		// USE_EFFECT FCT \\
+		// USE_EFFECT \\
 	
-	const setInitQueue = () => {
+	 useEffect (() => {
 	 axios.get('http://localhost:3001/game')
 	 	.then(res => {
-			return (res.data);
+			setMatchingQueue(res.data);
 	 	})
 	 	.catch(err => {
 	 		console.log(err);
 	 	})
-		return ([]);
-	}
+	}, []);
+	
 
 	useEffect(() => {
-		socket?.on("matchingQueue", matchingQueueListener);
+		socket.on("matchingQueue", matchingQueueListener);
 		return () => {
-			socket?.off("matchingQueue", matchingQueueListener);
+			socket.off("matchingQueue", matchingQueueListener);
 		}
 	})
 
 	useEffect(() => {
-		socket?.on("deleteOppenents", deleteOppenentsListener);
+		socket.on("deleteOppenents", deleteOppenentsListener);
 		return () => {
-			socket?.off("deleteOppenents", deleteOppenentsListener);
+			socket.off("deleteOppenents", deleteOppenentsListener);
 		}
 	})
 

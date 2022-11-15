@@ -54,23 +54,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		}
 	
 	@SubscribeMessage('invitation accepted')
-		acceptInvit(client, senderId: string): void {
-			const gameRoom = this.gameService.startGame(
+		async acceptInvit(client, senderId: string): Promise<void> {
+			const gameRoom = await this.gameService.startGame(
 					{"one": client.id, "two": senderId});
 			client.join(gameRoom);
-			this.server.to(senderId).emit("invitation accepted sender", gameRoom);
+			this.server.to(senderId).emit('invitation accepted sender',
+				{"gameRoom": gameRoom, "oppenentId": client.id});
 			this.server.emit('deleteOppenents',
 			{"one": client.id, "two": senderId});
 		}
 	
 	@SubscribeMessage('invitation accepted sender')
-		acceptInvitSender(client, gameRoom: string): void {
-			client.join(gameRoom);
+		acceptInvitSender(client, data: {gameRoom: string, oppenentId: string}): void {
+			client.join(data.gameRoom);
+			this.server.to(data.gameRoom).emit('game started', [client.id, data.oppenentId]);
 		}
 
 	@SubscribeMessage('add point')
-		addPoint(client, player: PlayerInterface): void {
-			const gameRoom = this.gameService.updateScore(player.id, +1);
-			this.server.emit('update score', player);
+		async addPoint(client, player: PlayerInterface): Promise<void> {
+			const gameRoom = await this.gameService.updateScore(player.id, +1);
+			player.score += 1;
+			this.server.to(gameRoom).emit('update score', player);
 		}
 }
