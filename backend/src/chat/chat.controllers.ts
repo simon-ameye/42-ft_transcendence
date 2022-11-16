@@ -17,6 +17,7 @@ export class ChatController {
   //(propriétaire). Ceci, jusqu’à ce qu’il le quitte.
   @Post('createChannel')
   createChannel(@Body() body: {userId: number, name: string, mode: ChannelMode, password: string}, ) {
+    //console.log('creating a new channel by userId ', body.userId);
     return (this.chatService.createChannel(Number(body.userId), body.name, body.mode, body.password));
   }
 

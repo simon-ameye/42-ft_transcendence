@@ -1,19 +1,20 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User, Channel, Message } from ".prisma/client";
-import { Prisma } from ".prisma/client";
 import { ChannelInterface } from "./chat.interfaces"
-
-import internal from "stream";
 
 @Injectable()
 export class ChatService {
-	constructor(private prisma: PrismaService) {}
+  constructor(
+    private eventEmitter: EventEmitter2,
+    private prisma: PrismaService,
+  ) {}
 
   async createChannel(userId : number, name : string, mode : ChannelMode, password : string)
   {
     var newowner = this.prisma.user.findUnique({ where: { id: userId } });
-    if (!newowner)
+    if (!await newowner)
       return ('User not found');
 
     var newChannel = await this.prisma.channel.create({
@@ -32,11 +33,12 @@ export class ChatService {
   async joinChannel(userId : number, channelId : number, password : string)
   {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
-    if (!channel)
+
+    if (!await channel)
       return ('Channel not found');
 
     var user = this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user)
+    if (!await user)
       return ('User not found');
 
     if ((await channel).mode == ChannelMode.DIRECT)
@@ -48,9 +50,12 @@ export class ChatService {
     if ((await channel).mode == ChannelMode.PROTECTED && password != (await channel).password)
       return ('Channel is protected but you provided a wong password');
 
-    (await channel).userIds.push(userId);
-    return ('Channel joined');
-  }
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: { userIds : { push: userId, }, }, })
+
+      return ('Channel joined');
+    }
 
   async sendMessage(userId : number, channelId : number, text : string)
   {
@@ -59,10 +64,10 @@ export class ChatService {
       return ('Channel not found');
 
     var user = this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user)
+    if (!await user)
       return ('User not found');
 
-    if (!(userId in (await channel).userIds))
+    if (!(userId in (await channel).userIds)) //BUGGING
       return ('User not in channel');
 
     var newMessage = await this.prisma.message.create({
@@ -72,40 +77,40 @@ export class ChatService {
       }
     });
 
-    (await channel).messageIds.push((await newMessage).id);
+    const updateChannel = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: { messageIds : { push: (await newMessage).id, }, }, })
 
-    //push all messages
-    //for (var userId of (await channel).userIds)
-    //{
-    //  var user = this.prisma.user.findUnique({ where: { id: userId } });
-    //  if (!user)
-    //    return ('Critical message sending : channel user not found');
-//
-    //}
+    this.eventEmitter.emit('flushAllChannels');
     return ('Message sent');
   }
 
-  //return (this.chatService.setConnection(Number(userId), client.id));
   async setConnection(userId : number, socketId : string)
   {
-    var user = this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user)
-      return ('User not found');
-
-    (await user).socketId = socketId;
+    const user = await this.prisma.user.update({
+      where: { id: userId, },
+      data: { socketId : socketId, }, })
     return ('User socketId is now set');
   }
 
-  async getChannelInterfaces()
+  async getChannelInterfaces(): Promise<ChannelInterface[]>
   {
-    let channelInterfaces : ChannelInterface[];
-    let channelInterface : ChannelInterface;
+    let channelInterfaces : ChannelInterface[] = [];
 
     let channels = await this.prisma.channel.findMany();
-    channels.forEach(async (channel) => {
-
+    for (let channel of channels)
+    {
       let userIds = channel.userIds;
-      userIds.forEach(async (userId) => {
+      for (let userId of userIds)
+      {
+        let channelInterface : ChannelInterface = {
+          id: 0,
+          name: '',
+          mode: '',
+          messages: [],
+          authors: [],
+          userSocketId: '',
+        };
         channelInterface.id = channel.id;
         channelInterface.name = channel.name;
         channelInterface.mode = channel.mode; //not sure
@@ -113,15 +118,18 @@ export class ChatService {
         channelInterface.userSocketId = (await user).socketId;
 
         let messageIds = channel.messageIds;
-        messageIds.forEach(async (messageId) => {
+        for (let messageId of messageIds)
+        {
           var message = this.prisma.message.findUnique({ where: { id: messageId } });
+          //if (!await message)
+            //return (channelInterfaces);
           channelInterface.messages.push((await message).text);
           channelInterface.authors.push((await message).author);
-        })
+        }
         channelInterfaces.push(channelInterface);
-      })
-    })
-
+      }
+    }
     return (channelInterfaces);
+
   }
 }

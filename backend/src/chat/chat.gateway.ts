@@ -1,13 +1,12 @@
 
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { OnModuleInit } from '@nestjs/common';
 import { MessageBody, ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { Server } from 'socket.io';
 import { ChatService } from './chat.service';
-import { PrismaService } from "src/prisma/prisma.service";
-import { prisma } from '@prisma/client';
-import { ChannelInterface } from "./chat.interfaces";
+import { OnEvent } from '@nestjs/event-emitter';
 
-
+//@Injectable()
 @WebSocketGateway()
 export class ChatGateway implements OnModuleInit {
   constructor(private chatService: ChatService) {}
@@ -30,10 +29,12 @@ export class ChatGateway implements OnModuleInit {
       return (this.chatService.setConnection(Number(userId), socket.id));
 	}
 
+  @OnEvent('flushAllChannels')
   async flushAllChannels() {
-    var channelInterfaces = this.chatService.getChannelInterfaces();
+    let channelInterfaces = await this.chatService.getChannelInterfaces();
 
-    (await channelInterfaces).forEach(async (channelInterface) => {
+    for (let channelInterface of channelInterfaces)
+    {
       this.server.to(channelInterface.userSocketId).emit('channelInterface', {
         id: channelInterface.id,
         name: channelInterface.name,
@@ -41,6 +42,6 @@ export class ChatGateway implements OnModuleInit {
         messages: channelInterface.messages,
         authors: channelInterface.authors,
       })
-    })
+    }
   }
 }
