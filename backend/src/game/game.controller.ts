@@ -14,11 +14,16 @@ export class GameController {
 //		return (this.gameService.addToQueue(user.id));
 //	}
 //
-	@Get()
-	showQueue() {
-		return (this.gameService.showQueue());
+	@Get('queue')
+	getQueue() {
+		return (this.gameService.getQueue());
 	}
 
+	@Get('list')
+	getList() {
+		return (this.gameService.getList());
+	}
+	
 	@Get(':id')
 	findOne(@Param('id') id: string) {
 		return (this.gameService.findOne(id));

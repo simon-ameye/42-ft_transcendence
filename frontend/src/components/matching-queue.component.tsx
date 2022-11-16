@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { socket } from '../App';
 import axios from 'axios';
 import OppenentsInterface from '../interfaces/oppenents.interface';
+import PlayerInterface from '../interfaces/player.interface';
 import InvitPopup from './invit-popup.component';
+import { useNavigate } from 'react-router-dom';
 
 export default function MatchingQueue() {
 
 		// VARIABLES \\
 	
+	const navigate = useNavigate();
 	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
+	const [gameList, setGameList] = useState<string[]>([]);
 	
 		// FUNCTIONS \\
 	
@@ -22,13 +26,30 @@ export default function MatchingQueue() {
 		if (socket.id !== receiverId)
 			socket.emit("invitation", receiverId);
 	}
+
+	const watchMatch = (strGame: string) => {
+		const playerIds = strGame.split(" ");
+		playerIds.splice(1, 1);
+		navigate('/live');
+		socket.emit("watch game", playerIds);
+	}
 	
 		// USE_EFFECT \\
 	
 	 useEffect (() => {
-	 axios.get('http://localhost:3001/game')
+	 axios.get('http://localhost:3001/game/queue')
 	 	.then(res => {
 			setMatchingQueue(res.data);
+	 	})
+	 	.catch(err => {
+	 		console.log(err);
+	 	})
+	}, []);
+	
+	 useEffect (() => {
+	 axios.get('http://localhost:3001/game/list')
+	 	.then(res => {
+			setGameList(res.data);
 	 	})
 	 	.catch(err => {
 	 		console.log(err);
@@ -50,6 +71,13 @@ export default function MatchingQueue() {
 		}
 	})
 
+	useEffect(() => {
+		socket.on("update game list", updateGameListListener);
+		return () => {
+			socket.off("update game list", updateGameListListener);
+		}
+	})
+
 		// LISTENER \\
 	
 	const matchingQueueListener = (socketId: string) => {
@@ -66,6 +94,12 @@ export default function MatchingQueue() {
 		setMatchingQueue([...matchingQueue]);
 	}
 
+	const updateGameListListener = (players: PlayerInterface[]) => {
+		let strGame = players[0].socketId.concat(" vs ");
+		strGame = strGame.concat(players[1].socketId);
+		setGameList([...gameList, strGame]);
+	}
+
 		// RETURN \\
 
 	return (
@@ -79,6 +113,16 @@ export default function MatchingQueue() {
 					{matchingQueue.map((matchingQueue, index) => (
 						<li key={index}>{matchingQueue}     <button 
 								onClick={() => sendInvit(matchingQueue)}>Invit</button>
+						</li>
+					))}
+				</ul>
+			</div>
+			<div>
+				<h5>Game in progress</h5>
+				<ul>
+					{gameList.map((gameList, index) => (
+						<li key={index}>{gameList}      <button 
+								onClick={() => watchMatch(gameList)}>Watch</button>
 						</li>
 					))}
 				</ul>

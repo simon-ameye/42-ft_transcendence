@@ -1,31 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { OppenentsInterface } from './interfaces';
+import { OppenentsInterface, PlayerInterface } from './interfaces';
 
 @Injectable()
 export class GameService {
 	constructor(private prismaService: PrismaService) {}
 
-//	async addToQueue(id: number) {
-//		const updateUser = await this.prismaService.user.update({
-//			where: {
-//				id
-//			},
-//			data: {
-//				matching: {
-//					create: {}
-//				}
-//			}
-//		});
-//	}
-
-	async showQueue() {
+	async getQueue(): Promise<string[]> {
 		const queue = await this.prismaService.matching.findMany();
 		const len = queue.length;
 		let ids: string[] = new Array(len);
 		for (let i = 0; i < len; ++i)
 			ids[i] = queue[i].socketId;
 		return (ids);
+	}
+
+	async getList(): Promise<string[]> {
+		const games = await this.prismaService.game.findMany();
+		const len = games.length;
+		let versus: string[] = new Array(len);
+		for (let i = 0; i < len; ++i) {
+			let players = await this.prismaService.player.findMany({
+				where: {
+					gameId: games[i].id
+				}
+			});
+			versus[i] = this.getStrGame(players);
+		}
+		return (versus);
 	}
 
 	async addClientToMatchingQueue(id: string): Promise<void> {
@@ -78,5 +80,20 @@ export class GameService {
 			}
 		});
 		return ({game});
+	}
+
+	getStrGame(players: PlayerInterface[]): string {
+		let strGame = players[0].socketId.concat(" vs ");
+		strGame = strGame.concat(players[1].socketId);
+		return (strGame);
+	}
+
+	async getPlayers(playerIds: string[]): Promise<PlayerInterface[]> {
+		const players = await this.prismaService.player.findMany({
+			where: {
+				OR: [{socketId: playerIds[0] }, { socketId: playerIds[1] }],
+			}
+		});
+		return (players);
 	}
 }

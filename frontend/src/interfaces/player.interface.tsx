@@ -1,4 +1,4 @@
-export default interface	Player {
-	id: string,
+export default interface	PlayerInterface {
+	socketId: string,
 	score: number
 }

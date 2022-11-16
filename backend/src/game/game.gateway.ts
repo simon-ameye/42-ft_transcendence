@@ -41,11 +41,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	
 	@SubscribeMessage('matchingQueue')
 		addToQueue(client): void {
-		//	client.join("matching queue");
-		//	this.server.to("matching queue").emit('matchingQueue', client.id);
 			this.server.emit('matchingQueue', client.id);
 			this.gameService.addClientToMatchingQueue(client.id);
-	//		this.gameService.addClientAsPlayer(client.id);
 		}
 
 	@SubscribeMessage('invitation')
@@ -59,21 +56,32 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 					{"one": client.id, "two": senderId});
 			client.join(gameRoom);
 			this.server.to(senderId).emit('invitation accepted sender',
-				{"gameRoom": gameRoom, "oppenentId": client.id});
+					{"gameRoom": gameRoom, "oppenentId": client.id});
 			this.server.emit('deleteOppenents',
-			{"one": client.id, "two": senderId});
+					{"one": client.id, "two": senderId});
 		}
 	
 	@SubscribeMessage('invitation accepted sender')
-		acceptInvitSender(client, data: {gameRoom: string, oppenentId: string}): void {
+		async acceptInvitSender(client, data: {gameRoom: string, oppenentId: string}): Promise<void> {
 			client.join(data.gameRoom);
-			this.server.to(data.gameRoom).emit('game started', [client.id, data.oppenentId]);
+			const playerIds = [client.id, data.oppenentId];
+			const players = await this.gameService.getPlayers(playerIds);
+			this.server.to(data.gameRoom).emit('game started', players);
+			this.server.emit('update game list', players);
 		}
 
 	@SubscribeMessage('add point')
 		async addPoint(client, player: PlayerInterface): Promise<void> {
-			const gameRoom = await this.gameService.updateScore(player.id, +1);
+			const gameRoom = await this.gameService.updateScore(player.socketId, +1);
 			player.score += 1;
 			this.server.to(gameRoom).emit('update score', player);
+		}
+
+	@SubscribeMessage('watch game')
+		async watchGame(client, playerIds: string[]): Promise<void> {
+			const players = await this.gameService.getPlayers(playerIds);
+			const gameRoom = "game".concat(String(players[0].gameId));
+			client.join(gameRoom);
+			this.server.to(client.id).emit('game started', players);
 		}
 }
