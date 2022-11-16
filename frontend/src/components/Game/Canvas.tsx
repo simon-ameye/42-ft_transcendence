@@ -1,35 +1,85 @@
-//import Paddle from "./Paddle";
-import React, { useRef, useEffect } from 'react';
+import { useEffect, useRef } from "react";
 
 interface props {
-	y:number
-	width:number
-	height:number
+	width:number;
+	height:number;
 }
 
-const Canvas: React.FC<props> = ({y, width, height}) => {
-  let canvasRef = useRef<HTMLCanvasElement | null>(null);
-  let canvasCtxRef = React.useRef<CanvasRenderingContext2D | null>(null);
+interface elementSize {
+	elemWidth:number;
+	elemHeight:number;
+}
 
-  useEffect(() => {
-    if (canvasRef.current) {
-		canvasCtxRef.current = canvasRef.current.getContext('2d');
-		let ctx = canvasCtxRef.current;
-		ctx!.fillStyle = "#ffffff";
-		ctx!.fillRect(5, y, width, height);
-    }
-});
+interface paddle extends elementSize {
+	posX:number;
+	posY:number;
+}
 
-const  handleKeyDown = () => {
-			console.log("OUI")
-	};
+const Canvas: React.FC<props> = ({width, height}) => {
 
-  return (
-	<div>
-		<div className="score"></div>
-  		<canvas onKeyDown={handleKeyDown} ref={canvasRef}></canvas>
-	</div>
-  );
+	const canvasWidth = width;
+	const canvasHeight = height;
+	const leftPaddle = initPaddle({posX: 10, posY: (canvasHeight / 2) - 50, elemHeight: 100, elemWidth: 10});
+	const rightPaddle = initPaddle({posX: canvasWidth - 20, posY: (canvasHeight / 2) - 50, elemHeight: 100, elemWidth: 10});
+	let move = 0;
+
+
+	function initPaddle (leftPaddle: paddle){
+		return (leftPaddle);
+	}
+
+	const handleKeyPress = (event:React.KeyboardEvent<HTMLElement>) => {
+		if (event.key == "ArrowUp")
+		{
+			move++;
+		}
+		else if (event.key == "ArrowDown")
+		{
+
+		}
+	}
+
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
+	let context:CanvasRenderingContext2D | null;
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) 
+			throw new Error("Error")
+		context = canvas.getContext("2d");
+		if (!context)
+			throw new Error("Error")
+		draw(context, move);
+
+	}, []);
+	
+	function draw(context:CanvasRenderingContext2D | null, move:number) {
+		if (context)
+		{
+			context.fillStyle = "#333";
+			context.fillRect(0, 0, canvasWidth, canvasHeight);
+			context.fillStyle = "#fff"
+			context.fillRect(leftPaddle.posX, leftPaddle.posY + move, leftPaddle.elemWidth, leftPaddle.elemHeight);
+			context.fillRect(rightPaddle.posX, rightPaddle.posY + move, rightPaddle.elemWidth, rightPaddle.elemHeight);
+		}
+	}
+
+	function clearCanvas(context:CanvasRenderingContext2D | null){
+		if (context)
+		{
+			context.fillStyle = "#333";
+			context.fillRect(0, 0, canvasWidth, canvasHeight);
+		}
+	}
+	return (
+		<canvas 
+			tabIndex={0}
+			width={width}
+			height={height}
+			ref={canvasRef}
+			onKeyDown={handleKeyPress}
+		/>
+	);
 };
 
 export default Canvas;

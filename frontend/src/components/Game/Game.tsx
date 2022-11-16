@@ -1,10 +1,15 @@
+import Ball from "./Ball"
 import Canvas from "./Canvas"
+import Paddle from "./Paddle"
 
-const Game: React.FC = () => 
+//const PLAYER_UP   = 38  // up arrow
+//const PLAYER_DOWN = 40  // down arrow
+
+const Game = () => 
 {
 	return (
 		<div className="playgroundArea">
-			<Canvas y={1} width={5} height={25}/>
+			<Canvas width={1000} height={500}/>
 		</div>
 	)
 }

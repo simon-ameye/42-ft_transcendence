@@ -1,10 +1,6 @@
-interface props {
-	ref:React.RefObject<HTMLCanvasElement>
-}
-
 const Paddle = () => {
 	return (
-		<div>Paddle</div>
+		<div className="paddle"></div>
 	)
 }
 
