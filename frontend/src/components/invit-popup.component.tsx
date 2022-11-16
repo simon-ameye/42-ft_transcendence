@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/invit-popup.style.css';
 import { socket } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 export default function	InvitPopup() {
 
 	// VARIABLES \\
 
+	const navigate = useNavigate();
 	const [invit, setInvit] = useState<boolean>(false);
 	const [invitText, setInvitText] = useState<string>("");
 
@@ -19,6 +21,7 @@ export default function	InvitPopup() {
 		const invitTextArray = invitText.split(" ");
 		const	senderId = invitTextArray[invitTextArray.length - 1];
 		socket.emit("invitation accepted", senderId);
+		navigate('/live');
 		setInvit(false);
 	}
 
@@ -49,6 +52,7 @@ export default function	InvitPopup() {
 
 	const	invitAcceptedSenderListener = (gameRoom: string) => {
 		socket.emit("invitation accepted sender", gameRoom);
+		navigate('/live');
 	}
 
 	// RETURN \\

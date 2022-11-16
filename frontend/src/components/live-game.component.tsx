@@ -7,7 +7,6 @@ export default function	LiveGame() {
 	// VARIABLES \\
 	
 	const [rerender, setRerender] = useState<boolean>(false);
-	const [live, setLive] = useState<boolean>(false);
 	const [playerRight, setPlayerRight] =
 			useState<Player>({id: "right", score: 0});
 	const [playerLeft, setPlayerLeft] =
@@ -20,7 +19,6 @@ export default function	LiveGame() {
 			socket.emit("add point", playerRight);
 		else
 			socket.emit("add point", playerLeft);
-			
 	}
 
 	// USE_EFFECT \\
@@ -46,7 +44,6 @@ export default function	LiveGame() {
 		playerLeft.id = ids[1];
 		setPlayerRight(playerRight);
 		setPlayerLeft(playerLeft);
-		setLive(true);
 		setRerender(!rerender);
 	}
 
@@ -64,7 +61,7 @@ export default function	LiveGame() {
 
 	// RETURN \\
 
-	return (live) ? (
+	return (
 		<>
 			<div>
 				<h2>LIVE GAME</h2>
@@ -76,5 +73,5 @@ export default function	LiveGame() {
 				<button onClick={() => addPoint('left')}>LEFT</button>
 			</div>
 		</>
-	) : <></>;
+	)
 }

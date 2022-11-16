@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { socket } from '../App';
 import axios from 'axios';
 import OppenentsInterface from '../interfaces/oppenents.interface';
+import InvitPopup from './invit-popup.component';
 
 export default function MatchingQueue() {
 
@@ -82,6 +83,7 @@ export default function MatchingQueue() {
 					))}
 				</ul>
 			</div>
+			<InvitPopup />
 		</>
 	)
 }
