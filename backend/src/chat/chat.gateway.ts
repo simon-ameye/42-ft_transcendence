@@ -41,6 +41,7 @@ export class ChatGateway implements OnModuleInit {
         mode: channelInterface.mode,
         messages: channelInterface.messages,
         authors: channelInterface.authors,
+        isProtected: channelInterface.isProtected,
       })
     }
   }

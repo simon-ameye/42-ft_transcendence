@@ -28,9 +28,6 @@ export class ChatService {
     if ((await channelsWithSameName).length != 0)
       return ('Channel name already in use');
 
-    if (mode == ChannelMode.PROTECTED && password == '')
-      return ('Channel is PROTECTED but password is blank');
-
     var newChannel = await this.prisma.channel.create({
       data: {
         name: name,
@@ -57,14 +54,11 @@ export class ChatService {
     if ((await channel).userIds.includes(userId))
       return ('You are already registered to this channel');
 
-    if ((await channel).mode == ChannelMode.DIRECT)
-      return ('You cant join a DIRECT channel');
+    if ((await channel).mode != ChannelMode.PUBLIC)
+      return ('You can ONLY join a PUBLIC channel. PUBLIC channels may be protected by a pasword');
 
-    if ((await channel).mode == ChannelMode.PRIVATE)
-      return ('You cant join a PRIVATE channel');
-
-    if ((await channel).mode == ChannelMode.PROTECTED && password != (await channel).password)
-      return ('Channel is protected but you provided a wong password');
+    if (password != (await channel).password)
+      return ('Wong password');
 
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
@@ -128,12 +122,14 @@ export class ChatService {
           messages: [],
           authors: [],
           userSocketId: '',
+          isProtected: false,
         };
         channelInterface.id = channel.id;
         channelInterface.name = channel.name;
         channelInterface.mode = channel.mode; //not sure
         var user = this.prisma.user.findUnique({ where: { id: userId } });
         channelInterface.userSocketId = (await user).socketId;
+        channelInterface.isProtected = channel.password != '';
 
         let messageIds = channel.messageIds;
         for (let messageId of messageIds)
@@ -175,6 +171,5 @@ export class ChatService {
     this.eventEmitter.emit('flushAllChannels');
     return ('User is now blocked');
   }
-
 
 }

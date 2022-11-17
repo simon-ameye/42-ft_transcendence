@@ -7,5 +7,6 @@ export interface	ChannelInterface {
   mode: string,
   messages: string[],
   authors: string[],
+  isProtected :boolean,
   userSocketId :string,
 }

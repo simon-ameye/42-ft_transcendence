@@ -31,7 +31,7 @@ model Channel{
   id                Int         @id @default(autoincrement())
   name              String
   mode              ChannelMode @default(PUBLIC)
-  password          String?
+  password          String      @default("")
   ownerId           Int?                                                                    //one  to many field
   adminIds          Int[]
   banedUserIds      Int[]
@@ -57,5 +57,5 @@ enum ChannelMode {
   PUBLIC                                                                                    //everybody can join
   DIRECT                                                                                    //direct messages between two users
   PRIVATE                                                                                   //new users must be invited by channel users (not clear in the subject)
-  PROTECTED                                                                                 //a password is set
+  //PROTECTED                                                                                 //a password is set //This is just a pulic channel with password
 }

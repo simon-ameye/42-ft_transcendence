@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ChannelMode" AS ENUM ('PUBLIC', 'DIRECT', 'PRIVATE', 'PROTECTED');
+CREATE TYPE "ChannelMode" AS ENUM ('PUBLIC', 'DIRECT', 'PRIVATE');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -22,7 +22,7 @@ CREATE TABLE "Channel" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "mode" "ChannelMode" NOT NULL DEFAULT 'PUBLIC',
-    "password" TEXT,
+    "password" TEXT NOT NULL DEFAULT '',
     "ownerId" INTEGER,
     "adminIds" INTEGER[],
     "banedUserIds" INTEGER[],
