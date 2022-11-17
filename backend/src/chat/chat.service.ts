@@ -172,4 +172,24 @@ export class ChatService {
     return ('User is now blocked');
   }
 
+  async setChannelPassword(userId: number, channelId: number , newPassword: string)
+  {
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel)
+      return ('Channel not found');
+
+    if ((await channel).ownerId != userId)
+      return ('You are not the owner of this channel.');
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: { password : newPassword, }, })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('Password modified');
+  }
 }

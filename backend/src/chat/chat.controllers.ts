@@ -42,8 +42,8 @@ export class ChatController {
   //Le propriétaire du channel peut définir un mot de passe requis pour accéder
   //au channel, le modifier, et le retirer.
   @Post('setChannelPassword')
-  setChannelPassword() {
-    return ("request threated");
+  setChannelPassword(@Body() body: {userId: number, channelId: number, newPassword: string}) {
+    return (this.chatService.setChannelPassword(Number(body.userId), Number(body.channelId), body.newPassword));
   }
 
   //Le propriétaire du channel en est aussi un administrateur. Il peut donner le
