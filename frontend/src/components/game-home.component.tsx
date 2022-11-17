@@ -6,7 +6,7 @@ import PlayerInterface from '../interfaces/player.interface';
 import InvitPopup from './invit-popup.component';
 import { useNavigate } from 'react-router-dom';
 
-export default function MatchingQueue() {
+export default function GameHome() {
 
 		// VARIABLES \\
 	

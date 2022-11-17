@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import MatchingQueue from './components/matching-queue.component';
+import GameHome from './components/game-home.component';
 import LiveGame from './components/live-game.component';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ function App() {
 	return (
 		<Router>
 			<Routes>
-				<Route path="/" element={<MatchingQueue />}/>
+				<Route path="/" element={<GameHome />}/>
 				<Route path="/live" element={<LiveGame  />}/>
 			</Routes>
 		</Router>
