@@ -5,11 +5,13 @@ import { MessageBody, ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSo
 import { Server } from 'socket.io';
 import { ChatService } from './chat.service';
 import { OnEvent } from '@nestjs/event-emitter';
+import { ChannelService } from "./interfaces/channel.service";
 
 //@Injectable()
 @WebSocketGateway()
 export class ChatGateway implements OnModuleInit {
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService,
+              private channelService : ChannelService) {}
 
 	@WebSocketServer()
 	server: Server;
@@ -31,7 +33,7 @@ export class ChatGateway implements OnModuleInit {
 
   @OnEvent('flushAllChannels')
   async flushAllChannels() {
-    let channelInterfaces = await this.chatService.getChannelInterfaces();
+    let channelInterfaces = await this.channelService.getChannelInterfaces();
 
     for (let channelInterface of channelInterfaces)
     {
