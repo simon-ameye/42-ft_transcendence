@@ -22,13 +22,8 @@ model User {
   googleSecret  String?
   // add path of the image
 
-  //User chat data
-  //channelsOwned     Channel[]   @relation("Owner")                                          //one  to many
-  //channelsAdmined   Channel[]   @relation("Admin")                                          //many to many
-  //channelsBanned    Channel[]   @relation("Bans")                                           //many to many
-  //channelsMutes     Channel[]   @relation("Mutes")                                          //many to many
-  //messagesSent      Message[]   @relation("Author")                                         //one  to many
-  socketId          String?
+  socketId       String?
+  blockedUserIds     Int[]
   @@map("users")
 }
 
@@ -37,11 +32,8 @@ model Channel{
   name              String
   mode              ChannelMode @default(PUBLIC)
   password          String?
-  //owner             User?       @relation("Owner", fields: [ownerId], references: [id])     //one  to many
   ownerId           Int?                                                                    //one  to many field
-  //admins            User[]      @relation("Admin")                                          //many to many
   adminIds          Int[]
-  //banedUsers        User[]      @relation("Bans")                                           //many to many
   banedUserIds      Int[]
   banedRelease      DateTime[]
   //mutes             User[]      @relation("Mutes")                                          //many to many
@@ -55,8 +47,8 @@ model Message {
   id                Int         @id @default(autoincrement())
   text              String?
   //author            User        @relation("Author", fields: [authorId], references: [id])   //one  to many
-  //authorId          Int                                                                     //one  to many field
-  author            String?
+  authorId          Int                                                                     //one  to many field
+  //author            String?
   //channel           Channel     @relation("Channel", fields: [channelId], references: [id]) //one  to many
   //channelId         Int                                                                     //one  to many field
 }

@@ -12,6 +12,7 @@ CREATE TABLE "users" (
     "imageUrl" TEXT,
     "googleSecret" TEXT,
     "socketId" TEXT,
+    "blockedUserIds" INTEGER[],
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -36,7 +37,7 @@ CREATE TABLE "Channel" (
 CREATE TABLE "Message" (
     "id" SERIAL NOT NULL,
     "text" TEXT,
-    "author" TEXT,
+    "authorId" INTEGER NOT NULL,
 
     CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );

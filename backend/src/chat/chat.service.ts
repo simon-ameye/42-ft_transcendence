@@ -3,6 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User, Channel, Message } from ".prisma/client";
 import { ChannelInterface } from "./chat.interfaces"
+import passport from "passport";
 
 @Injectable()
 export class ChatService {
@@ -16,6 +17,19 @@ export class ChatService {
     var newowner = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await newowner)
       return ('User not found');
+
+    if (name == '')
+      return ('Channel name must not be blank');
+
+    if (!(mode in ChannelMode))
+      return ('Unknown channel mode');
+
+    var channelsWithSameName = this.prisma.channel.findMany({ where: { name: name } });
+    if ((await channelsWithSameName).length != 0)
+      return ('Channel name already in use');
+
+    if (mode == ChannelMode.PROTECTED && password == '')
+      return ('Channel is PROTECTED but password is blank');
 
     var newChannel = await this.prisma.channel.create({
       data: {
@@ -33,13 +47,15 @@ export class ChatService {
   async joinChannel(userId : number, channelId : number, password : string)
   {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
-
     if (!await channel)
       return ('Channel not found');
 
     var user = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await user)
       return ('User not found');
+
+    if ((await channel).userIds.includes(userId))
+      return ('You are already registered to this channel');
 
     if ((await channel).mode == ChannelMode.DIRECT)
       return ('You cant join a DIRECT channel');
@@ -54,8 +70,9 @@ export class ChatService {
       where: { id: channelId, },
       data: { userIds : { push: userId, }, }, })
 
-      return ('Channel joined');
-    }
+    this.eventEmitter.emit('flushAllChannels');
+    return ('Channel joined');
+  }
 
   async sendMessage(userId : number, channelId : number, text : string)
   {
@@ -73,7 +90,7 @@ export class ChatService {
     var newMessage = await this.prisma.message.create({
       data: {
         text: text,
-        author: (await user).displayName,
+        authorId: userId,
       }
     });
 
@@ -90,6 +107,7 @@ export class ChatService {
     const user = await this.prisma.user.update({
       where: { id: userId, },
       data: { socketId : socketId, }, })
+    this.eventEmitter.emit('flushAllChannels');
     return ('User socketId is now set');
   }
 
@@ -121,15 +139,42 @@ export class ChatService {
         for (let messageId of messageIds)
         {
           var message = this.prisma.message.findUnique({ where: { id: messageId } });
-          //if (!await message)
-            //return (channelInterfaces);
-          channelInterface.messages.push((await message).text);
-          channelInterface.authors.push((await message).author);
+          if (!(await user).blockedUserIds.includes((await message).authorId))
+          {
+            channelInterface.messages.push((await message).text);
+            var author = this.prisma.user.findUnique({ where: { id: (await message).authorId } });
+            channelInterface.authors.push((await author).displayName);
+          }
         }
         channelInterfaces.push(channelInterface);
       }
     }
     return (channelInterfaces);
-
   }
+
+  async blockUser(userId: number, blockedUserId: number)
+  {
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var blockedUser = this.prisma.user.findUnique({ where: { id: blockedUserId } });
+    if (!await blockedUser)
+      return ('User to block not found');
+
+    if ((await user).blockedUserIds.includes(blockedUserId))
+      return ('You already blocked this user');
+
+    if (userId == blockedUserId)
+      return ('You can not block yourself');
+
+    const updateUser = await this.prisma.user.update({
+      where: { id: userId, },
+      data: { blockedUserIds : { push: blockedUserId, }, }, })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('User is now blocked');
+  }
+
+
 }

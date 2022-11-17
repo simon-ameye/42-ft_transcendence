@@ -17,7 +17,6 @@ export class ChatController {
   //(propriétaire). Ceci, jusqu’à ce qu’il le quitte.
   @Post('createChannel')
   createChannel(@Body() body: {userId: number, name: string, mode: ChannelMode, password: string}, ) {
-    //console.log('creating a new channel by userId ', body.userId);
     return (this.chatService.createChannel(Number(body.userId), body.name, body.mode, body.password));
   }
 
@@ -30,42 +29,42 @@ export class ChatController {
   //+channels
   @Post('sendMessage')
   sendMessage(@Body() body: {userId: number, channelId: number, text: string}, ) {
-    return (this.chatService.sendMessage(Number(body.userId), Number(body.channelId), body.text))
+    return (this.chatService.sendMessage(Number(body.userId), Number(body.channelId), body.text));
   }
 
   //L’utilisateur doit pouvoir en bloquer d’autres. Ainsi, il ne verra plus les messages
   //envoyés par les comptes qu’il aura bloqués.
   @Post('blockUser')
-  blockUser() {
-    return ("request threated")
+  blockUser(@Body() body: {userId: number, blockedUserId: number}) {
+    return (this.chatService.blockUser(Number(body.userId), Number(body.blockedUserId)));
   }
 
   //Le propriétaire du channel peut définir un mot de passe requis pour accéder
   //au channel, le modifier, et le retirer.
   @Post('setChannelPassword')
   setChannelPassword() {
-    return ("request threated")
+    return ("request threated");
   }
 
   //Le propriétaire du channel en est aussi un administrateur. Il peut donner le
   //rôle d’administrateur à d’autres utilisateurs.
   @Post('makeUserAdmin')
   makeUserAdmin() {
-    return ("request threated")
+    return ("request threated");
   }
 
   //Les administrateurs du channel peuvent bannir ou mute d’autres utilisateurs
   //pendant une durée déterminée.
   @Post('muteUser')
   muteUser() {
-    return ("request threated")
+    return ("request threated");
   }
 
   //Grâce à l’interface de chat, l’utilisateur doit pouvoir en inviter d’autres à faire
   //une partie de Pong.
   @Post('inviteToGame')
   inviteToGame() {
-    return ("request threated")
+    return ("request threated");
   }
 
   //Grâce à l’interface de chat, l’utilisateur doit pouvoir accéder aux profils d’autres
