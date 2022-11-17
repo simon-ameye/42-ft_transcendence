@@ -67,7 +67,7 @@ export class ChatService {
     if (!await user)
       return ('User not found');
 
-    if (!(userId in (await channel).userIds)) //BUGGING
+    if (!(await channel).userIds.includes(userId)) //BUGGING
       return ('User not in channel');
 
     var newMessage = await this.prisma.message.create({
