@@ -8,8 +8,9 @@ const User = () => {
 	const [userDisplayName, setUserDisplayName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 
-	const handleSubmit = (e: any) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
+
 		axios.post('http://localhost:3001/auth/signup',{
 			email: userMail,
 			password: userPass,
@@ -18,12 +19,16 @@ const User = () => {
 		}).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
+	const handleLogin =  ()=> {
+		axios.get('http://localhost:3001/auth/42api');
+	}
+
 	return (
 		<>
 			<Navbar />
 			<div className="createUser">
 				<div className="createUserContent">
-					<form onSubmit={handleSubmit} method='POST'>
+					<form onSubmit={handleSubmit}>
 						<label>Email</label>
 						<input 
 							type="email"
@@ -60,7 +65,7 @@ const User = () => {
 					</form>
 				</div>
 				<div className="or">OR</div>
-				<button className='login-btn'>
+				<button onClick={handleLogin} className='login-btn'>
 					<p>Login with</p>
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>
