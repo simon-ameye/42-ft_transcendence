@@ -35,7 +35,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend/
+      context: ./
       dockerfile: Dockerfile.frontend-node
     restart: always
     ports:
