@@ -66,6 +66,33 @@ export class ChatService {
     return ('Channel joined');
   }
 
+  async leaveChannel(userId : number, channelId : number)
+  {
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!await channel)
+      return ('Channel not found');
+
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    if (!(await channel).userIds.includes(userId))
+      return ('You are not registered to this channel');
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: {
+        userIds   : {set: (await channel).userIds .filter((id) => id !== userId)},
+        adminIds  : {set: (await channel).adminIds.filter((id) => id !== userId)},
+        ownerId   : {set: (await channel).ownerId == userId ? 0 : (await channel).ownerId},
+      },
+    })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('Channel left');
+  }
+
+
   async sendMessage(userId : number, channelId : number, text : string)
   {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });

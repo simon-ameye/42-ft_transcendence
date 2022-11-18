@@ -25,6 +25,11 @@ export class ChatController {
     return (this.chatService.joinChannel(Number(body.userId), Number(body.channelId), body.password));
   }
 
+  @Post('leaveChannel')
+  leaveChannel(@Body() body: {userId: number, channelId: number}, ) {
+    return (this.chatService.leaveChannel(Number(body.userId), Number(body.channelId)));
+  }
+
   //L’utilisateur doit pouvoir envoyer des direct messages à d’autres utilisateurs.
   //+channels
   @Post('sendMessage')
