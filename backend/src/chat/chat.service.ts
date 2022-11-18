@@ -52,6 +52,9 @@ export class ChatService {
     if ((await channel).userIds.includes(userId))
       return ('You are already registered to this channel');
 
+    if ((await channel).banedUserIds.includes(userId))
+      return ('You are baned from this channel');
+
     if ((await channel).mode != ChannelMode.PUBLIC)
       return ('You can ONLY join a PUBLIC channel. PUBLIC channels may be protected by a pasword');
 
@@ -103,7 +106,17 @@ export class ChatService {
       return ('User not found');
 
     if (!(await channel).userIds.includes(userId)) //BUGGING
-      return ('User not in channel');
+      return ('You are not in the channel');
+
+
+    var actualDate = new Date();
+    let muteUserIds = (await channel).muteUserIds;
+    let muteRelease = (await channel).muteRelease;
+    for (let i = 0; i < muteUserIds.length; i++)
+    {
+      if (muteUserIds[i] == userId && actualDate < muteRelease[i])
+      return ('You are muted');
+    }
 
     var newMessage = await this.prisma.message.create({
       data: {
@@ -151,7 +164,7 @@ export class ChatService {
 
     const updateUser = await this.prisma.user.update({
       where: { id: userId, },
-      data: { blockedUserIds : { push: blockedUserId, }, }, })
+      data: { blockedUserIds : { push: blockedUserId, } }, })
 
     this.eventEmitter.emit('flushAllChannels');
     return ('User is now blocked');
@@ -219,5 +232,74 @@ export class ChatService {
       data: { adminIds : { push: newAdminId, }, }, })
 
     return ('New admin set')
+  }
+
+  async banUser(userId: number, channelId: number, banedId: number)
+  {
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel)
+      return ('Channel not found');
+
+    var banedUser = this.prisma.user.findUnique({ where: { id: banedId } });
+    if (!await banedUser)
+      return ('Baned user not found');
+
+    if (!(await channel).adminIds.includes(userId))
+      return ('You are not admin of this channel')
+
+    if (!(await channel).userIds.includes(banedId))
+      return ('This user is not on this channel')
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: {
+        userIds       : {set: (await channel).userIds .filter((id) => id !== banedId)},
+        adminIds      : {set: (await channel).adminIds.filter((id) => id !== banedId)},
+        ownerId       : {set: (await channel).ownerId == banedId ? 0 : (await channel).ownerId},
+        banedUserIds  : {push: banedId},
+      },
+    })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('User baned')
+  }
+
+  async muteUser(userId: number, channelId: number, muteId: number, minutes: number)
+  {
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel)
+      return ('Channel not found');
+
+    var muteUser = this.prisma.user.findUnique({ where: { id: muteId } });
+    if (!await muteUser)
+      return ('Mute user not found');
+
+    if (!(await channel).adminIds.includes(userId))
+      return ('You are not admin of this channel')
+
+    if (!(await channel).userIds.includes(muteId))
+      return ('This user is not on this channel')
+
+    var muteRelease = new Date();
+    muteRelease.setMinutes(muteRelease.getMinutes() + minutes);
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: {
+        muteUserIds : {push: muteId},
+        muteRelease : {push: muteRelease},
+      },
+    })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('User muted')
   }
 }

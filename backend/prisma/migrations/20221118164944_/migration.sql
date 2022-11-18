@@ -20,15 +20,16 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "Channel" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT NOT NULL DEFAULT 'unknown channel',
     "mode" "ChannelMode" NOT NULL DEFAULT 'PUBLIC',
     "password" TEXT NOT NULL DEFAULT '',
-    "ownerId" INTEGER,
+    "ownerId" INTEGER NOT NULL DEFAULT 0,
     "adminIds" INTEGER[],
     "banedUserIds" INTEGER[],
-    "banedRelease" TIMESTAMP(3)[],
     "messageIds" INTEGER[],
     "userIds" INTEGER[],
+    "muteUserIds" INTEGER[],
+    "muteRelease" TIMESTAMP(3)[],
 
     CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
 );

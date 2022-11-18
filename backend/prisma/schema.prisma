@@ -29,33 +29,26 @@ model User {
 
 model Channel{
   id                Int         @id @default(autoincrement())
-  name              String
+  name              String      @default("unknown channel")
   mode              ChannelMode @default(PUBLIC)
   password          String      @default("")
-  ownerId           Int?                                                                    //one  to many field
+  ownerId           Int         @default(0)
   adminIds          Int[]
   banedUserIds      Int[]
-  banedRelease      DateTime[]
-  //mutes             User[]      @relation("Mutes")                                          //many to many
-  //messages          Message[]   @relation("Channel")                                        //one  to many
   messageIds        Int[]
   userIds           Int[]
-  //@@map("channels")
+  muteUserIds       Int[]
+  muteRelease       DateTime[]
 }
 
 model Message {
   id                Int         @id @default(autoincrement())
   text              String?
-  //author            User        @relation("Author", fields: [authorId], references: [id])   //one  to many
-  authorId          Int                                                                     //one  to many field
-  //author            String?
-  //channel           Channel     @relation("Channel", fields: [channelId], references: [id]) //one  to many
-  //channelId         Int                                                                     //one  to many field
+  authorId          Int                                        //one  to many field
 }
 
 enum ChannelMode {
-  PUBLIC                                                                                    //everybody can join
-  DIRECT                                                                                    //direct messages between two users
-  PRIVATE                                                                                   //new users must be invited by channel users (not clear in the subject)
-  //PROTECTED                                                                                 //a password is set //This is just a pulic channel with password
+  PUBLIC                                                       //everybody can join, but there may be a password. No password = password = ''
+  DIRECT                                                       //direct messages between two users
+  PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
 }

@@ -60,9 +60,16 @@ export class ChatController {
 
   //Les administrateurs du channel peuvent bannir ou mute d’autres utilisateurs
   //pendant une durée déterminée.
+  @Post('banUser')
+  banUser(@Body() body: {userId: number, channelId: number, banedId: number}) {
+    return (this.chatService.banUser(Number(body.userId), Number(body.channelId), Number(body.banedId)));
+  }
+
+  //Les administrateurs du channel peuvent bannir ou mute d’autres utilisateurs
+  //pendant une durée déterminée.
   @Post('muteUser')
-  muteUser() {
-    return ("request threated");
+  muteUser(@Body() body: {userId: number, channelId: number, muteId: number, minutes: number}) {
+    return (this.chatService.muteUser(Number(body.userId), Number(body.channelId), Number(body.muteId), Number(body.minutes)));
   }
 
   //Grâce à l’interface de chat, l’utilisateur doit pouvoir en inviter d’autres à faire
