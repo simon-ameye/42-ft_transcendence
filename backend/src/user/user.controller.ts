@@ -8,7 +8,8 @@ import { Controller,
   ParseFilePipe, 
   FileTypeValidator, 
   UseInterceptors,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 
 import { Express } from 'express';

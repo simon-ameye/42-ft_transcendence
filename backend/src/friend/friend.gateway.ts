@@ -1,4 +1,4 @@
-import { OnModuleInit } from "@nestjs/common";
+import { OnModuleInit, Session, UseGuards } from "@nestjs/common";
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from 'socket.io';
 import { UserDto } from "src/user/dto";
@@ -7,6 +7,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { FriendService } from "./friend.service";
 import { Logger } from '@nestjs/common';
 import { Socket } from "socket.io";
+import { AuthGuard } from "@nestjs/passport";
+import { GetUser } from "src/auth/decorator/get-user.decorator";
 
 @WebSocketGateway() // only for notifications and status or modification of the database in it ?
 export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatewayConnection {
@@ -33,28 +35,10 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
   @SubscribeMessage('friendRequest') // have to emit this to the client friend
   handleFriendRequest( client: Socket, receiverId: string ) {
     /// create relationshipin database
-    console.log('client id', client.id);
-    console.log('receiver id', receiverId);
-    // .to(receiverId).
-    this.server.emit('onFriendRequest', client.id);
+    // .to(receiverId)
+    this.friendService.sendFriendRequest(client.id, receiverId);
+    this.server.emit('friendRequestToclient', receiverId);
   }
-
-  /*@SubscribeMessage('declineInvit')
-  onDeclineRequest(@MessageBody() body: UserDto) {
-    // when decline event is sent
-    console.log("dont wanna be your friend man");
-    this.server.emit('onFriendRequest', {
-      msg: 'you have a friend request',
-    })
-    // have to emit something
-  }*/
-
-  /*@SubscribeMessage('acceptInvit')
-  onAcceptRequest(@MessageBody() body: UserDto) {
-    // when accept event is sent
-    console.log("lets be friend");
-    // have to emit something
-  }*/
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
