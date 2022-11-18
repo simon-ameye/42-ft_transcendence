@@ -34,12 +34,17 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
 
   @SubscribeMessage('friendRequest') // have to emit this to the client friend
   handleFriendRequest( client: Socket, receiverId: string ) {
-    /// create relationshipin database
-    // .to(receiverId)
-    this.friendService.sendFriendRequest(client.id, receiverId);
-    this.server.emit('friendRequestToclient', receiverId);
+    this.logger.log(`friend request of ${client.id} to ${receiverId}`);
+    this.friendService.sendFriendRequest(client.id, receiverId); // do the logic when testing can be done
+    this.server.to(receiverId).emit('friend request', client.id); // sending id of the user who send the request
   }
 
+  @SubscribeMessage('acceptRequest')
+  handleAcceptRequest( client: Socket, receiverId: string ) {
+    this.logger.log(`accepted request`);
+    // have to create this service this.friendService.acceptRequset();
+    //this.server.emit.toString()
+  }
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
   }

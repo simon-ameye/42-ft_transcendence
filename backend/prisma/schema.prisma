@@ -11,24 +11,27 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email String @unique
-  hash String?
-  displayName String?
-  imageUrl String?
-  googleSecret String?
-  status String
-  countWin Int
-  friends Int[]
-  clientId Int?
+  id                     Int             @id @default(autoincrement())
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  email                  String          @unique
+  hash                   String?
+  displayName            String?
+  imageUrl               String?
+  googleSecret           String?
+  status                 String
+  countWin               Int
+  // probably a command with all
+  sentFriendRequests friendRequest[] @relation("creator")
+  receivedFriendRequests friendRequest[] @relation("receiver")
   @@map("users")
 }
 
-model relationShip {
+model friendRequest {
   id Int @id @default(autoincrement())
-  RequesterId Int //Request ID
-  AddresseeId Int //Addresse ID
-  status String // pending / accepted / refused
+  creator User? @relation("creator", fields: [creatorId], references: [id]) // have the creator user stored in db
+  creatorId Int?
+  receiver User? @relation("receiver", fields: [receiverId], references: [id])
+  receiverId Int?
+  status String
 }
