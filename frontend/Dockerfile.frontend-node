@@ -6,7 +6,6 @@ COPY ./ /app
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 
+RUN npm install -g node-sass@6.0.1
 RUN npm install
-RUN npm rebuild node-sass
-
 CMD [ "npm", "start" ]
