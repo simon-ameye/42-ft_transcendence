@@ -151,4 +151,20 @@ export class ChatService {
     this.eventEmitter.emit('flushAllChannels');
     return ('Password modified');
   }
+
+  async getChannelTable()
+  {
+    var ids         : number[]  = [];
+    var names       : string[]  = [];
+    var isPrivates  : boolean[] = [];
+
+    let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC },})
+    for (let channel of channels)
+    {
+      ids         .push(channel.id);
+      names       .push(channel.name);
+      isPrivates  .push(channel.password != '');
+    }
+    return {ids, names, isPrivates};
+  }
 }

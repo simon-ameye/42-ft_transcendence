@@ -73,4 +73,11 @@ export class ChatController {
   accessUserProfile() {
     return ("request threated")
   }
+
+  @Get('getChannelTable')
+  async getChannelTable() {
+    let { ids, names, isPrivates } = await this.chatService.getChannelTable();
+    console.log(ids, names, isPrivates);
+    return { ids: ids, names: names, isPrivates: isPrivates };
+  }
 }
