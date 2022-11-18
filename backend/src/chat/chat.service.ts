@@ -92,7 +92,6 @@ export class ChatService {
     return ('Channel left');
   }
 
-
   async sendMessage(userId : number, channelId : number, text : string)
   {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
@@ -193,5 +192,32 @@ export class ChatService {
       isPrivates  .push(channel.password != '');
     }
     return {ids, names, isPrivates};
+  }
+
+  async makeUserAdmin(userId: number, channelId: number, newAdminId: number)
+  {
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel)
+      return ('Channel not found');
+
+    var newAdmin = this.prisma.user.findUnique({ where: { id: newAdminId } });
+    if (!await newAdmin)
+      return ('New Admin not found');
+
+    if ((await channel).ownerId != userId)
+      return ('You are not owner of this channel')
+
+    if ((await channel).adminIds.includes(newAdminId))
+      return ('This user is already admin of this channel')
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: { adminIds : { push: newAdminId, }, }, })
+
+    return ('New admin set')
   }
 }

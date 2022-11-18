@@ -54,8 +54,8 @@ export class ChatController {
   //Le propriétaire du channel en est aussi un administrateur. Il peut donner le
   //rôle d’administrateur à d’autres utilisateurs.
   @Post('makeUserAdmin')
-  makeUserAdmin() {
-    return ("request threated");
+  makeUserAdmin(@Body() body: {userId: number, channelId: number, newAdminId: number}) {
+    return (this.chatService.makeUserAdmin(Number(body.userId), Number(body.channelId), Number(body.newAdminId)));
   }
 
   //Les administrateurs du channel peuvent bannir ou mute d’autres utilisateurs
