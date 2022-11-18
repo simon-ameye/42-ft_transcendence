@@ -22,7 +22,7 @@ model User {
   status String
   countWin Int
   friends Int[]
-  clientId Int
+  clientId Int?
   @@map("users")
 }
 
