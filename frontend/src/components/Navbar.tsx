@@ -22,6 +22,11 @@ const Navbar = () => {
 					<i className="fa-solid fa-user"></i>
 					<span>User</span>
 				</NavLink>
+				<NavLink to="/notifications">
+					<i className="fa-solid fa-bell"></i>
+					<button>
+					</button>
+				</NavLink>
 			</nav>
 		</header>
 	);

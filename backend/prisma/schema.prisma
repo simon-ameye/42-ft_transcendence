@@ -29,9 +29,16 @@ model User {
 
 model friendRequest {
   id Int @id @default(autoincrement())
-  creator User? @relation("creator", fields: [creatorId], references: [id]) // have the creator user stored in db
+  creator User? @relation("creator", fields: [creatorId], references: [id])
   creatorId Int?
   receiver User? @relation("receiver", fields: [receiverId], references: [id])
   receiverId Int?
-  status String
+  fstatus String
+}
+
+enum fstatus {
+  pending
+  accepted
+  declined
+  blocked
 }
