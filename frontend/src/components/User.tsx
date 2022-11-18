@@ -20,7 +20,7 @@ const User = () => {
 	}
 
 	const handleLogin =  ()=> {
-		axios.get('http://localhost:3001/auth/42api');
+		axios.get('http://localhost:3000/auth/42api/login');
 	}
 
 	return (
