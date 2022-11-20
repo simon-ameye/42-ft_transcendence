@@ -7,7 +7,9 @@ const User = () => {
 	const [userPass, setUserPass] = useState('');
 	const [userDisplayName, setUserDisplayName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
-
+	
+	const [userToken, setUserToken] = useState('');
+	
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -16,7 +18,11 @@ const User = () => {
 			password: userPass,
 			displayName: userDisplayName,
 			imageUrl: userProfilePicture
-		}).then(res => console.log(res)).catch(err => console.log(err))
+		}).then(res => {
+			setUserToken(res.data.access_token);
+			//sessionStorage.setItem('token', JSON.stringify(userToken));
+			
+		}).catch(err => console.log(err))
 	}
 
 	const handleLogin =  ()=> {
