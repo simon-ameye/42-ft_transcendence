@@ -10,15 +10,17 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService,
 			private httpService: HttpService,
 			private jwtService: JwtService,
-			private configService: ConfigService) {}
+			private configService: ConfigService,
+			private eventEmitter: EventEmitter2) {}
 
-  async logUser42(token: string): Promise<{access_token: string}> {
+  async getIntraUser(token: string): Promise<{access_token: string}> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -158,6 +160,7 @@ export class AuthService {
 				secret: this.configService.get('JWT_SECRET')
 			}
 		);
+		this.eventEmitter.emit('connected');
 		return ({access_token: token});
 	}
 }

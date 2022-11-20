@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
+import { socket } from '../App';
 
 const User = () => {
 	const [userMail, setUserMail] = useState('');
@@ -19,8 +20,20 @@ const User = () => {
 		}).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
-	const handleLogin =  ()=> {
-		axios.get('http://localhost:3000/auth/42api/login');
+	const handleLogin = () => {
+		window.location.href = 'http://localhost:3001/auth/42api/login';
+	}
+
+	useEffect(() => {
+		socket.on("connected", connectedListener);
+		return () => {
+			socket.off("connected", connectedListener);
+		}
+	})
+
+	const connectedListener = () => {
+		window.location.href = 'http://localhost:3000';
+		console.log("connected");
 	}
 
 	return (

@@ -22,17 +22,13 @@ export class AuthController {
 	@UseGuards(AuthGuard('42API'))
 	@Get('42api/login')
 	login42(@Req() request: Request) {
-		console.log({request});
+		console.log("HELLOOO");
 	}
 
 	@UseGuards(AuthGuard('42API'))
-	@Get('42api/redirect')
-	async handleRedirect (
-			@Query() query: {code: string, state: string},
-			@GetUser() user: {token: string, refreshToken: string}) {
-		// query contains code and state from oauth.strategy
-		console.log(query);
-		return (this.authService.logUser42(user.token));
+	@Get('intra/getme')
+	async getIntraUser (@GetUser() user: {token: string, refreshToken: string}) {
+		return (this.authService.getIntraUser(user.token));
 	}
 
 	@Get('google2FA/signup')
