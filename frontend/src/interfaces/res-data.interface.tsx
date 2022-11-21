@@ -1,3 +1,3 @@
-export default interface	resDataInterface {
+export default interface	ResDataInterface {
 	access_token: string,
 }

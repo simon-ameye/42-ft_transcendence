@@ -10,23 +10,24 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { AuthUserInterface } from './interfaces';
 
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService,
 			private httpService: HttpService,
 			private jwtService: JwtService,
-			private configService: ConfigService,
-			private eventEmitter: EventEmitter2) {}
+			private configService: ConfigService) {}
 
-  async getIntraUser(token: string): Promise<{access_token: string}> {
+  async getIntraUser(token: string): Promise<AuthUserInterface> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
-				'https://api.intra.42.fr/v2/me',
-				{
-					headers: { Authorization: authStr }
+				'https://api.intra.42.fr/v2/me', {
+					headers: {
+						Authorization: authStr,
+						"Access-Control-Allow-Origin": '*'
+					}
 				}).pipe(map(response => response.data)));
 			var user = await this.prismaService.user.findUnique({
 				where: {
@@ -37,7 +38,7 @@ export class AuthService {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
-						displayName: String(res.log),
+						displayName: String(res.login),
 						imageUrl: String(res.image_url)
 					}
 				});
@@ -58,8 +59,10 @@ export class AuthService {
 							imageUrl: image_url,
 						},
 					})
-			}
-		return (this.signToken(user));
+				}
+			const jwtToken = await this.signJwtToken(user);
+			const authUser: AuthUserInterface = {access_token: jwtToken, pseudo: user.displayName};
+			return (authUser);
 		} catch(e) {
 			return (e.message);
 		}
@@ -160,7 +163,18 @@ export class AuthService {
 				secret: this.configService.get('JWT_SECRET')
 			}
 		);
-		this.eventEmitter.emit('connected');
 		return ({access_token: token});
+	}
+
+	async signJwtToken(user: UserDto): Promise<string> {
+		const data = {
+			id: user.id,
+			email: user.email
+		};
+		const token = await this.jwtService.signAsync(data, {
+				secret: this.configService.get('JWT_SECRET')
+			}
+		);
+		return (token);
 	}
 }
