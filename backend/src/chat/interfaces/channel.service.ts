@@ -16,6 +16,7 @@ export class ChannelService {
       mode: '',
       messages: [],
       authors: [],
+      dates: [],
       userSocketId: '',
       isProtected: false,
     };
@@ -38,6 +39,7 @@ export class ChannelService {
         var author = this.prisma.user.findUnique({ where: { id: (await message).authorId } });
         channelInterface.messages .push((await message) .text);
         channelInterface.authors  .push((await author)  .displayName);
+        channelInterface.dates    .push((await message) .date.toLocaleString());
       }
     }
     return (channelInterface);

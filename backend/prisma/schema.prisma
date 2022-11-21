@@ -45,10 +45,11 @@ model Message {
   id                Int         @id @default(autoincrement())
   text              String?
   authorId          Int                                        //one  to many field
+  date              DateTime    @default(now())
 }
 
 enum ChannelMode {
-  PUBLIC                                                       //everybody can join, but there may be a password. No password = password = ''
+  PUBLIC                                                       //everybody can join, but there may be a password. No password => password = ''
   DIRECT                                                       //direct messages between two users
   PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
 }

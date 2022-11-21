@@ -10,7 +10,7 @@ export class ChatService {
     private prisma: PrismaService,
   ) {}
 
-  async createChannel(userId : number, name : string, mode : ChannelMode, password : string)
+  async createChannel(userId : number, name : string, mode : ChannelMode, password : string, otherUserId : number)
   {
     var newowner = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await newowner)
