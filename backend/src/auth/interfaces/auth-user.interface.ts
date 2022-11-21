@@ -1,4 +1,4 @@
 export interface	AuthUserInterface {
-	access_token: string,
+	jwt_token: string,
 	pseudo: string
 }

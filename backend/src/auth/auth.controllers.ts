@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Post, UseGuards, Query } from "@nestjs/c
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
-import { GetUser } from "./decorator/get-user.decorator";
+import { GetUser } from "./decorators";
 import { AuthUserInterface } from './interfaces';
 
 @Controller('auth')

@@ -9,6 +9,7 @@ import Auth from './components/Auth';
 export const socket = io('http://localhost:4343');
 
 function App() {
+
   return (
     <BrowserRouter>
 		<Routes>

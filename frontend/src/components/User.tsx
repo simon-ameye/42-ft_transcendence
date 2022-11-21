@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
 import { socket } from '../App';
+import { useCookies } from 'react-cookie';
 
 const User = () => {
+	const [cookie, setCookie, removeCookie] = useCookies(['jwtToken', 'pseudo']);
 	const [userMail, setUserMail] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [userDisplayName, setUserDisplayName] = useState('');
@@ -24,16 +26,16 @@ const User = () => {
 		window.location.href = 'http://localhost:3001/auth/42api/login';
 	}
 
-	useEffect(() => {
-		socket.on("connected", connectedListener);
-		return () => {
-			socket.off("connected", connectedListener);
-		}
-	})
-
-	const connectedListener = () => {
-		window.location.href = 'http://localhost:3000';
-		console.log("connected");
+	const getSocketId = () => {
+		const authStr = "Bearer ".concat(cookie.jwtToken);
+		console.log({authorization: authStr});
+		axios.get('http://localhost:3001/user/getSocketId', {
+			headers: {
+				Authorization: authStr,
+			}
+		})
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
 	}
 
 	return (
@@ -82,6 +84,9 @@ const User = () => {
 					<p>Login with</p>
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>
+				<div>
+					<button onClick={getSocketId}>Get SocketID in Console</button>
+				</div>
 			</div>
 		</>
 	);

@@ -2,18 +2,24 @@ import { useState } from 'react';
 import axios from 'axios';
 import ResDataInterface from '../interfaces/res-data.interface';
 import AuthUserInterface from '../interfaces/auth-user.interface';
-import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { socket } from '../App';
 
 export default function Auth () {
 
 	// VARIABLES \\
 
+	const [cookie, setCookie, removeCookie] = useCookies(['jwtToken', 'pseudo']);
+	const axiosWithAuth = axios.create({
+		headers: {
+			Authorization: "Bearer ".concat(cookie.jwtToken),
+		}
+	});
 	const navigate = useNavigate();
 	const queryParameters = new URLSearchParams(window.location.search)
 	const code = queryParameters.get("code");
 	const state = queryParameters.get("state");
-	const [cookie, setCookie, removeCookie] = useCookies(['jwtToken', 'pseudo']);
 
 	// FUNCTIONS \\
 
@@ -42,6 +48,18 @@ export default function Auth () {
 		console.log(resData);
 		setCookie('jwtToken', resData.jwt_token, { path: '/' });
 		setCookie('pseudo', resData.pseudo, { path: '/' });
+		updateUserSocket();
+	}
+
+	const updateUserSocket = () => {
+		axios.put('http://localhost:3001/user/modifySocketId', {
+			headers: {
+				authorization: cookie.jwtToken
+			},
+			params : {
+				socketId: socket.id
+			}
+		});
 	}
 
 	const	goHome = () => {
@@ -54,7 +72,7 @@ export default function Auth () {
 				<h1>Hello {cookie.pseudo}!</h1>
 			</div>
 			<div>
-				<button onClick={() => goHome()}>Go to home page</button>
+				<button onClick={goHome}>Go to home page</button>
 			</div>
 		</>
 	)

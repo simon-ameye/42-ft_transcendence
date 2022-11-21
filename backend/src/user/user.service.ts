@@ -20,6 +20,21 @@ export class UserService {
       },
     })
   }
+
+	async modifySocketId(user: UserDto, socketId: string) {
+    if (!user) {
+      console.log("not expecred error");
+    }
+    const updateUser = await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        socketId,
+      },
+    })
+  }
+
   // create a function for searching a user by his token
   async upload(dto: UserDto, path: string) {
     if (!dto) {

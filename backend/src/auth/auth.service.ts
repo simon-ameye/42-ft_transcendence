@@ -61,7 +61,7 @@ export class AuthService {
 					})
 				}
 			const jwtToken = await this.signJwtToken(user);
-			const authUser: AuthUserInterface = {access_token: jwtToken, pseudo: user.displayName};
+			const authUser: AuthUserInterface = {jwt_token: jwtToken, pseudo: user.displayName};
 			return (authUser);
 		} catch(e) {
 			return (e.message);

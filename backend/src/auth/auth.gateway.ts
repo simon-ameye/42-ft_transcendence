@@ -1,12 +1,15 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { OnModuleInit } from '@nestjs/common';
-//import { PrismaService } from '../prisma/prisma.service';
+import { OnModuleInit, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { ConfigService } from '@nestjs/config';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 @WebSocketGateway(4343, {cors: '*'})
 export class AuthGateway implements OnModuleInit {
-	constructor(private authService: AuthService) {}
+	constructor(
+		private authService: AuthService,
+		private configService: ConfigService) {}
 
 	@WebSocketServer() server: Server;
 
@@ -17,8 +20,10 @@ export class AuthGateway implements OnModuleInit {
 		});
 	}
 
-	@SubscribeMessage('login with intra')
-	loginIntra(client) {
-		client.emit("connected");
+	@SubscribeMessage('auth done')
+	addSocketId(client, token: string): void {
+		console.log(token);
+		const decoded: string | JwtPayload = jwt.verify(token, this.configService.get<string>('JWT_SECRET'));
+		console.log(decoded);
 	}
 }

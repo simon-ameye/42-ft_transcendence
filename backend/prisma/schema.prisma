@@ -20,6 +20,7 @@ model User {
   imageUrl String?
   googleSecret String?
   // add path of the image
+	socketId String? @unique
   @@map("users")
 }
 
