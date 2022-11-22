@@ -56,9 +56,7 @@ export class UserController {
 
 	@UseGuards(AuthGuard('jwt'))
 	@Put('modifySocketId')
-//	modifySocketId(@Query() query: {socketId: string}, @GetUser() user: UserDto) {
-		modifySocketId(
-		@Body)() {
+		modifySocketId(@Query() query: {socketId: string}, @GetUser() user: UserDto) {
 		console.log({"new socketID": query.socketId});
 		return this.userService.modifySocketId(user, query.socketId);
 	}
