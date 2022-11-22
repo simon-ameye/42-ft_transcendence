@@ -24,6 +24,9 @@ export class ChatService {
       if (!otherUserId)
         return ('otherUserId must be specified for DIRECT');
 
+      if (otherUserId == userId)
+        return ('you cant create a channel between you and you');
+
       var otherUser = this.prisma.user.findUnique({ where: { id: otherUserId } });
       if (!await otherUser)
         return ('Mode is DIRECT but otherUser is not found');
