@@ -10,6 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
+import { AuthUserInterface } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -18,14 +19,16 @@ export class AuthService {
 			private jwtService: JwtService,
 			private configService: ConfigService) {}
 
-  async logUser42(token: string): Promise<{access_token: string}> {
+  async getIntraUser(token: string): Promise<AuthUserInterface> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
-				'https://api.intra.42.fr/v2/me',
-				{
-					headers: { Authorization: authStr }
+				'https://api.intra.42.fr/v2/me', {
+					headers: {
+						Authorization: authStr,
+					}
 				}).pipe(map(response => response.data)));
+			console.log({EMAIL: res.email});
 			var user = await this.prismaService.user.findUnique({
 				where: {
 					email: res.email,
@@ -35,7 +38,7 @@ export class AuthService {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
-						displayName: String(res.log),
+						displayName: String(res.login),
 						imageUrl: String(res.image_url)
 					}
 				});
@@ -56,8 +59,11 @@ export class AuthService {
 							imageUrl: image_url,
 						},
 					})
-			}
-		return (this.signToken(user));
+				}
+			const jwtToken = await this.signJwtToken(user);
+			const authUser: AuthUserInterface = {jwt_token: jwtToken, pseudo: user.displayName};
+			console.log({jwtToken: jwtToken});
+			return (authUser);
 		} catch(e) {
 			return (e.message);
 		}
@@ -159,5 +165,17 @@ export class AuthService {
 			}
 		);
 		return ({access_token: token});
+	}
+
+	async signJwtToken(user: UserDto): Promise<string> {
+		const data = {
+			id: user.id,
+			email: user.email
+		};
+		const token = await this.jwtService.signAsync(data, {
+				secret: this.configService.get('JWT_SECRET')
+			}
+		);
+		return (token);
 	}
 }

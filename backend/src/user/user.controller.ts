@@ -8,7 +8,8 @@ import { Controller,
   ParseFilePipe, 
   FileTypeValidator, 
   UseInterceptors,
-  UseGuards
+  UseGuards,
+	Query
 } from '@nestjs/common';
 
 import { Express } from 'express';
@@ -17,7 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { UserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/decorator/get-user.decorator';
+import { GetUser } from 'src/auth/decorators';
 
 // clean dependencies + unused dtos
 
@@ -28,6 +29,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('getEmail')
   getEmail(@GetUser() user: UserDto) {
+		console.log("HEYo");
     return user.email;
   }
 
@@ -38,11 +40,28 @@ export class UserController {
     return user.displayName;
   }
 
+  // DisplaySocketId
+  @UseGuards(AuthGuard('jwt'))
+  @Get('socketId')
+  getSocketId(@GetUser() user: UserDto) {
+    return user.socketId;
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Put('modifyName')
-  modifyName(@GetUser() user: UserDto, @Body() body: {displayName: string}) {
+  modifyName(@GetUser() user: UserDto,
+		@Body() body: {displayName: string}) {
     return this.userService.modifyName(user, body.displayName);
   }
+
+	@UseGuards(AuthGuard('jwt'))
+	@Put('modifySocketId')
+//	modifySocketId(@Query() query: {socketId: string}, @GetUser() user: UserDto) {
+		modifySocketId(
+		@Body)() {
+		console.log({"new socketID": query.socketId});
+		return this.userService.modifySocketId(user, query.socketId);
+	}
 
   //// IMAGE UPLOAD
   @UseGuards(AuthGuard('jwt'))

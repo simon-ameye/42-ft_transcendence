@@ -1,4 +1,10 @@
 .paddle {
+<<<<<<< HEAD
+	background-color: rgb(146, 79, 79);
+	border-radius: 3px;
+	width: 20px;
+	height: 120px;
+=======
 	--position: 50;
 	--hue: 200;
 	--staturation: 50%;
@@ -17,4 +23,5 @@
 
 .paddle.right {
 	right: 1vw;
+>>>>>>> main
 }

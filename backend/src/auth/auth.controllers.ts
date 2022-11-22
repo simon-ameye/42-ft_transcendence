@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Post, UseGuards, Req, Query } from "@nestjs/common";
-import { Request } from "express";
+import { Body, Controller, Delete, Get, Post, UseGuards, Query } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
-import { GetUser } from "./decorator/get-user.decorator";
+import { GetUser } from "./decorators";
+import { AuthUserInterface } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -21,18 +21,13 @@ export class AuthController {
 	// UseGuards determine if the request will be handled
 	@UseGuards(AuthGuard('42API'))
 	@Get('42api/login')
-	login42(@Req() request: Request) {
-		console.log({request});
+	login42() {
+		console.log("HELLOOO");
 	}
 
-	@UseGuards(AuthGuard('42API'))
-	@Get('42api/redirect')
-	async handleRedirect (
-			@Query() query: {code: string, state: string},
-			@GetUser() user: {token: string, refreshToken: string}) {
-		// query contains code and state from oauth.strategy
-		console.log(query);
-		return (this.authService.logUser42(user.token));
+	@Get('intra/getMe')
+	async getIntraUser (@Query() query: {token: string}): Promise<AuthUserInterface> {
+		return (this.authService.getIntraUser(query.token));
 	}
 
 	@Get('google2FA/signup')
