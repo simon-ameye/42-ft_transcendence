@@ -26,9 +26,9 @@ export class AuthService {
 				'https://api.intra.42.fr/v2/me', {
 					headers: {
 						Authorization: authStr,
-						"Access-Control-Allow-Origin": '*'
 					}
 				}).pipe(map(response => response.data)));
+			console.log({EMAIL: res.email});
 			var user = await this.prismaService.user.findUnique({
 				where: {
 					email: res.email,
@@ -62,6 +62,7 @@ export class AuthService {
 				}
 			const jwtToken = await this.signJwtToken(user);
 			const authUser: AuthUserInterface = {jwt_token: jwtToken, pseudo: user.displayName};
+			console.log({jwtToken: jwtToken});
 			return (authUser);
 		} catch(e) {
 			return (e.message);

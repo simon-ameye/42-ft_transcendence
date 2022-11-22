@@ -29,7 +29,7 @@ const User = () => {
 	const getSocketId = () => {
 		const authStr = "Bearer ".concat(cookie.jwtToken);
 		console.log({authorization: authStr});
-		axios.get('http://localhost:3001/user/getSocketId', {
+		axios.get('http://localhost:3001/user/socketId', {
 			headers: {
 				Authorization: authStr,
 			}

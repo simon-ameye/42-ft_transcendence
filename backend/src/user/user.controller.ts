@@ -9,7 +9,7 @@ import { Controller,
   FileTypeValidator, 
   UseInterceptors,
   UseGuards,
-	Param
+	Query
 } from '@nestjs/common';
 
 import { Express } from 'express';
@@ -56,8 +56,11 @@ export class UserController {
 
 	@UseGuards(AuthGuard('jwt'))
 	@Put('modifySocketId')
-	modifySocketId(@Param() param: {socketId: string}, @GetUser() user: UserDto) {
-		return this.userService.modifySocketId(user, param.socketId);
+//	modifySocketId(@Query() query: {socketId: string}, @GetUser() user: UserDto) {
+		modifySocketId(
+		@Body)() {
+		console.log({"new socketID": query.socketId});
+		return this.userService.modifySocketId(user, query.socketId);
 	}
 
   //// IMAGE UPLOAD

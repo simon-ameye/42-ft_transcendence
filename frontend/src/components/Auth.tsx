@@ -45,21 +45,24 @@ export default function Auth () {
 	}
 
 	const displayWelcomeMsg = (resData: AuthUserInterface) => {
-		console.log(resData);
 		setCookie('jwtToken', resData.jwt_token, { path: '/' });
 		setCookie('pseudo', resData.pseudo, { path: '/' });
-		updateUserSocket();
+		updateUserSocket(resData.jwt_token);
 	}
 
-	const updateUserSocket = () => {
+	const updateUserSocket = (jwtToken: string) => {
+		const authStr = 'Bearer '.concat(jwtToken);
+		console.log({authStr: authStr});
 		axios.put('http://localhost:3001/user/modifySocketId', {
-			headers: {
-				authorization: cookie.jwtToken
+			body: {
+				Authorization: authStr,
 			},
 			params : {
 				socketId: socket.id
 			}
-		});
+		})
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
 	}
 
 	const	goHome = () => {
