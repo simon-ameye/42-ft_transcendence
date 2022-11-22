@@ -1,10 +1,9 @@
 import { NavLink } from 'react-router-dom'
-import Navbar from '../components/Navbar'
+import AuthenticatedLayout from '../layouts/Authenticated'
 
 const NotFound = () => {
 	return (
-		<>
-			<Navbar />
+		<AuthenticatedLayout>
 			<div className="notFound">
 				<img src={require('../assets/pong_404.gif')} alt="404 pong gif"/>
 				<NavLink className="navlink" to="/">
@@ -12,7 +11,7 @@ const NotFound = () => {
 					<span>Acceuil</span>
 				</NavLink>
 			</div>
-		</>
+		</AuthenticatedLayout>
 	);
 };
 
