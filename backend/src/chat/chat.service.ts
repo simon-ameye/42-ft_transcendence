@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
-import { ChannelMode } from ".prisma/client";
+import { ChannelMode, User } from ".prisma/client";
 
 @Injectable()
 export class ChatService {
@@ -16,26 +16,54 @@ export class ChatService {
     if (!await newowner)
       return ('User not found');
 
-    if (name == '')
-      return ('Channel name must not be blank');
-
     if (!(mode in ChannelMode))
       return ('Unknown channel mode');
 
-    var channelsWithSameName = this.prisma.channel.findMany({ where: { name: name } });
-    if ((await channelsWithSameName).length != 0)
-      return ('Channel name already in use');
+    if (mode == ChannelMode.DIRECT)
+    {
+      if (!otherUserId)
+        return ('otherUserId must be specified for DIRECT');
 
-    var newChannel = await this.prisma.channel.create({
-      data: {
-        name: name,
-        mode: mode,
-        password: password,
-        ownerId: (await newowner).id,
-        userIds: (await newowner).id,
-        adminIds: (await newowner).id,
-      }
-    });
+      var otherUser = this.prisma.user.findUnique({ where: { id: otherUserId } });
+      if (!await otherUser)
+        return ('Mode is DIRECT but otherUser is not found');
+
+      var directChannelsWithSameUsers = this.prisma.channel.findMany({
+        where: {
+          mode: ChannelMode.DIRECT,
+          userIds : {hasEvery: [(await newowner).id, (await newowner).id]}
+        }});
+      if ((await directChannelsWithSameUsers).length != 0)
+        return ('Direct channel between the two users already exists');
+
+      var newChannel = await this.prisma.channel.create({
+        data: {
+          name: 'DIRECT channel',
+          mode: mode,
+          userIds: [(await newowner).id, (await otherUser).id],
+        }
+      });
+    }
+    else
+    {
+      if (name == '')
+        return ('Channel name must not be blank except for DIRECT');
+
+      var channelsWithSameName = this.prisma.channel.findMany({ where: { name: name } });
+      if ((await channelsWithSameName).length != 0)
+        return ('Channel name already in use');
+
+      var newChannel = await this.prisma.channel.create({
+        data: {
+          name: name,
+          mode: mode,
+          password: password,
+          ownerId:  (await newowner).id,
+          userIds:  (await newowner).id,
+          adminIds: (await newowner).id,
+        }
+      });
+    }
     return ('New channel created');
   }
 
@@ -137,7 +165,10 @@ export class ChatService {
   {
     var userLookup = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await userLookup)
+    {
+      console.log('A user with unknown token is trying to setConnection. Aborting');
       return ('User not found');
+    }
 
     const user = await this.prisma.user.update({
       where: { id: userId, },

@@ -6,6 +6,9 @@ import { Server } from 'socket.io';
 import { ChatService } from './chat.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ChannelService } from "./interfaces/channel.service";
+import { Body, Controller, Delete, Get, Post, UseGuards, Req, Query } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+
 
 //@Injectable()
 @WebSocketGateway()
@@ -17,7 +20,7 @@ export class ChatGateway implements OnModuleInit {
 	server: Server;
 
 	onModuleInit() {
-		this.server.on('connection', (socket) => {
+      this.server.on('connection', (socket) => {
 			//send all the messages for the user
 			console.log('A new client runs connection with socket ', socket.id);
 		})

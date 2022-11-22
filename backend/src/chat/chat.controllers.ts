@@ -14,7 +14,12 @@ export class ChatController {
   //soit publics, privés, ou protégés par mot de passe.
   //L’utilisateur qui crée un nouveau channel devient automatiquement son owner
   //(propriétaire). Ceci, jusqu’à ce qu’il le quitte.
-  //Ex: create a private channel without password:
+  //Ex: create a PUBLIC channel without password:
+  //  POST : {name: 'my channel', mode: 'PUBLIC', password: '', otherUserId: ''}
+  //Ex: create a PUBLIC channel with password:
+  //  POST : {name: 'my channel', mode: 'PUBLIC', password: 'my password', otherUserId: ''}
+  //Ex: create a DIRECT channel:
+  //  POST : {name: '', mode: 'DIRECT', password: '', otherUserId: '3'}
   @UseGuards(AuthGuard('jwt'))
   @Post('createChannel')
   createChannel(@Body() body: {name: string, mode: ChannelMode, password: string, otherUserId: number},

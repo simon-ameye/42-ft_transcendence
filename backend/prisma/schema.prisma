@@ -12,40 +12,40 @@ datasource db {
 
 model User {
   //User auth data
-  id            Int       @id @default(autoincrement())
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  email         String    @unique
-  hash          String?
-  displayName   String?
-  imageUrl      String?
-  googleSecret  String?
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  email           String    @unique
+  hash            String?
+  displayName     String?
+  imageUrl        String?
+  googleSecret    String?
   // add path of the image
 
-  socketId       String?
-  blockedUserIds     Int[]
+  socketId        String?
+  blockedUserIds  Int[]
   @@map("users")
 }
 
 model Channel{
-  id                Int         @id @default(autoincrement())
-  name              String      @default("unknown channel")
-  mode              ChannelMode @default(PUBLIC)
-  password          String      @default("")
-  ownerId           Int         @default(0)
-  adminIds          Int[]
-  banedUserIds      Int[]
-  messageIds        Int[]
-  userIds           Int[]
-  muteUserIds       Int[]
-  muteRelease       DateTime[]
+  id              Int         @id @default(autoincrement())
+  name            String      @default("unknown channel")
+  mode            ChannelMode @default(PUBLIC)
+  password        String      @default("")
+  ownerId         Int         @default(0)
+  adminIds        Int[]
+  banedUserIds    Int[]
+  messageIds      Int[]
+  userIds         Int[]
+  muteUserIds     Int[]
+  muteRelease     DateTime[]
 }
 
 model Message {
-  id                Int         @id @default(autoincrement())
-  text              String?
-  authorId          Int                                        //one  to many field
-  date              DateTime    @default(now())
+  id              Int         @id @default(autoincrement())
+  text            String?
+  authorId        Int                                        //one  to many field
+  date            DateTime    @default(now())
 }
 
 enum ChannelMode {

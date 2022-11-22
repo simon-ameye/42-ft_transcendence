@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { ChannelMode } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ChannelInterface } from "./channel.interfaces"
 
@@ -26,9 +27,17 @@ export class ChannelService {
 
     channelInterface.userSocketId = (await user).socketId;
     channelInterface.id           = (await channel).id;
-    channelInterface.name         = (await channel).name;
     channelInterface.mode         = (await channel).mode;
     channelInterface.isProtected  = (await channel).password != '';
+    if ((await channel).mode == ChannelMode.DIRECT)
+    {
+      channelInterface.name       = "# " +
+      (await this.prisma.user   .findUnique({ where: { id: (await channel).userIds[0]} })).displayName
+      + " & " +
+      (await this.prisma.user   .findUnique({ where: { id: (await channel).userIds[1]} })).displayName;
+    }
+    else
+      channelInterface.name         = (await channel).name;
 
     let messageIds = (await channel).messageIds;
     for (let messageId of messageIds)
