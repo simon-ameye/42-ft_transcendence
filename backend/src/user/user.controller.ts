@@ -9,10 +9,11 @@ import { Controller,
   FileTypeValidator, 
   UseInterceptors,
   UseGuards,
-	Query
+	Query,
+	Req
 } from '@nestjs/common';
 
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
@@ -54,9 +55,10 @@ export class UserController {
     return this.userService.modifyName(user, body.displayName);
   }
 
-	@UseGuards(AuthGuard('jwt'))
+//	@UseGuards(AuthGuard('jwt'))
 	@Put('modifySocketId')
-		modifySocketId(@Query() query: {socketId: string}, @GetUser() user: UserDto) {
+	modifySocketId(@Req() req: Request, @Query() query: {socketId: string}, @GetUser() user: UserDto) {
+		console.log({"REQ COOKIES": req.cookies});
 		console.log({"new socketID": query.socketId});
 		return this.userService.modifySocketId(user, query.socketId);
 	}

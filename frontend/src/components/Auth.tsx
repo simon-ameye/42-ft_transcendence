@@ -54,12 +54,7 @@ export default function Auth () {
 		const authStr = 'Bearer '.concat(jwtToken);
 		console.log({authStr: authStr});
 		axios.put('http://localhost:3001/user/modifySocketId', {
-			body: {
-				Authorization: authStr,
-			},
-			params : {
-				socketId: socket.id
-			}
+			withCredentials: true
 		})
 			.then(res => console.log(res))
 			.catch(err => console.log(err));

@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Post, UseGuards, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, UseGuards, Query, Res } from "@nestjs/common";
+import { Response } from 'express';
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
@@ -26,8 +27,8 @@ export class AuthController {
 	}
 
 	@Get('intra/getMe')
-	async getIntraUser (@Query() query: {token: string}): Promise<AuthUserInterface> {
-		return (this.authService.getIntraUser(query.token));
+	async getIntraUser (@Query() query: {token: string}, @Res() res: Response): Promise<AuthUserInterface> {
+		return (this.authService.getIntraUser(query.token, res));
 	}
 
 	@Get('google2FA/signup')

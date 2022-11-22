@@ -11,7 +11,7 @@ export const socket = io('http://localhost:4343');
 function App() {
 
   return (
-    <BrowserRouter>
+   <BrowserRouter>
 		<Routes>
 			<Route path="/" element={<Home />} />
 			<Route path="/user" element={<User />} />

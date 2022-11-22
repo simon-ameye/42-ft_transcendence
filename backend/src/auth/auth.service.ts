@@ -19,7 +19,7 @@ export class AuthService {
 			private jwtService: JwtService,
 			private configService: ConfigService) {}
 
-  async getIntraUser(token: string): Promise<AuthUserInterface> {
+  async getIntraUser(token: string, res: Response): Promise<AuthUserInterface> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -63,6 +63,7 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			const authUser: AuthUserInterface = {jwt_token: jwtToken, pseudo: user.displayName};
 			console.log({jwtToken: jwtToken});
+			res.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			return (authUser);
 		} catch(e) {
 			return (e.message);
