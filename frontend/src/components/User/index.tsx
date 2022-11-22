@@ -24,14 +24,6 @@ const User = () => {
 			setUserToken(res.data.access_token);
 			//sessionStorage.setItem('token', JSON.stringify(userToken));
 		}).catch(err => console.log(err))
-		setTimeout(() => {}, 1000)
-		axios.post('http://localhost:3001/auth/signin', {
-			email: userMail,
-			password: userPass
-		}).then (res => {
-			console.log(res.config.data);
-		}).catch(err => console.log(err)
-		)
 	}
 
 	return (
