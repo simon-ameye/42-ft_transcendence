@@ -22,6 +22,9 @@ const Navbar = () => {
 					<span>User</span>
 				</NavLink>
 			</nav>
+			<span>
+				<span className='login'>Login</span>
+			</span>
 		</header>
 	);
 };
