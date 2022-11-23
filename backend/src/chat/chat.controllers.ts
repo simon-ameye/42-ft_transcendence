@@ -112,17 +112,17 @@ export class ChatController {
     return ("request threated")
   }
 
-  @Get('getChannelTable')
-  async getChannelTable() {
-    let { ids, names, isPrivates } = await this.chatService.getChannelTable();
+  @Get('getPublicChannelTable')
+  async getPublicChannelTable() {
+    let { ids, names, isPrivates } = await this.chatService.getPublicChannelTable();
     console.log(ids, names, isPrivates);
     return { ids: ids, names: names, isPrivates: isPrivates };
   }
-
-  //@Get('getChannelTable')
-  //async getUserChannelTable() {
-  //  let { ids, names, isPrivates } = await this.chatService.getChannelTable();
-  //  console.log(ids, names, isPrivates);
-  //  return { ids: ids, names: names, isPrivates: isPrivates };
-  //}
+  @UseGuards(AuthGuard('jwt'))
+  @Get('getUserChannelTable')
+  async getUserChannelTable(@GetUser() user: UserDto){
+    let { ids, names, isPrivates } = await this.chatService.getUserChannelTable(user.id);
+    console.log(ids, names, isPrivates);
+    return { ids: ids, names: names, isPrivates: isPrivates };
+  }
 }

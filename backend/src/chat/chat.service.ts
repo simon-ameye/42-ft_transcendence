@@ -226,13 +226,29 @@ export class ChatService {
     return ('Password modified');
   }
 
-  async getChannelTable()
+  async getPublicChannelTable()
   {
     var ids         : number[]  = [];
     var names       : string[]  = [];
     var isPrivates  : boolean[] = [];
 
     let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC },})
+    for (let channel of channels)
+    {
+      ids         .push(channel.id);
+      names       .push(channel.name);
+      isPrivates  .push(channel.password != '');
+    }
+    return {ids, names, isPrivates};
+  }
+
+  async getUserChannelTable(userId: number)
+  {
+    var ids         : number[]  = [];
+    var names       : string[]  = [];
+    var isPrivates  : boolean[] = [];
+
+    let channels = await this.prisma.channel.findMany({ where: { userIds: {has : userId}},})
     for (let channel of channels)
     {
       ids         .push(channel.id);
