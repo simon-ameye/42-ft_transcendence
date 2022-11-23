@@ -13,7 +13,7 @@ async function bootstrap() {
 		methods: ['POST', 'PUT', 'DELETE', 'GET'],
 		credentials: true
 	});
-  app.useGlobalPipes(new ValidationPipe({
+  app.useGlobalPipes(new ValidationPipe( {
     whitelist: true,
   }));
   app.use(session({
