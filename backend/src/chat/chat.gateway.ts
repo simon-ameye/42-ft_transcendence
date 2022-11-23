@@ -40,15 +40,7 @@ export class ChatGateway implements OnModuleInit {
 
     for (let channelInterface of channelInterfaces)
     {
-      this.server.to(channelInterface.userSocketId).emit('channelInterface', {
-        id:           channelInterface.id,
-        name:         channelInterface.name,
-        mode:         channelInterface.mode,
-        messages:     channelInterface.messages,
-        authors:      channelInterface.authors,
-        dates:        channelInterface.dates,
-        isProtected:  channelInterface.isProtected,
-      })
+      this.server.to(channelInterface.userSocketId).emit('channelInterface', channelInterface)
     }
   }
 }
