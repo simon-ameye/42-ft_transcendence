@@ -26,7 +26,6 @@ function App() {
 			<Route path="/auth" element={<Auth />} />
       <Route path="/ChatBox" element={<ChatBox />} />
 			<Route path="/Chat" element={<Chat />} />
-			<Route path="/Channel" element={<Channel />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>
 	</BrowserRouter>
