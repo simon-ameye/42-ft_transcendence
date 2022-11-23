@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react"
-
+import useKey from "../hooks/useKey";
+import "./style.scss"
 export interface Position {
 	x: number;
 	y: number;
@@ -7,11 +8,16 @@ export interface Position {
 
 interface ObjectSize extends Position { };
 
+
 export interface GameConfig {
 	paddleSize: ObjectSize;
 	paddleOffset: number;
 	canvasSize: ObjectSize;
 	ballSize: ObjectSize;
+	scoreP1: number,
+	scoreP2: number,
+	p1PosY: number,
+	p2PosY: number,
 	bgColor: string;
 	fgColor: string;
 };
@@ -19,7 +25,7 @@ export interface GameConfig {
 const LINE_WIDTH = 1;
 const LINE_OFFSET = 30;
 
-const GameDisplay = (props: { p1y: number, p2y: number, ball: Position, config: GameConfig }) => {
+const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 	const canvas = useRef<HTMLCanvasElement>(null);
 
 	const { canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize } = props.config;
@@ -48,15 +54,22 @@ const GameDisplay = (props: { p1y: number, p2y: number, ball: Position, config: 
 		);
 
 		// P1
-		drawRect(context, { x: paddleOffset, y: props.p1y }, paddleSize, fgColor);
+		drawRect(context, { x: paddleOffset, y: props.config.p1PosY }, paddleSize, fgColor);
 
 		// P2
-		drawRect(context, { x: canvasSize.x - paddleOffset * 2, y: props.p2y }, paddleSize, fgColor);
+		drawRect(context, { x: canvasSize.x - paddleOffset * 2, y: props.config.p2PosY }, paddleSize, fgColor);
 
 		// Ball
 		drawRect(context, props.ball, ballSize, fgColor);
+		// TMP
 
-	}, [props.ball, props.p1y, props.p2y, canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize])
+		// TOP LEFT
+		context.fillStyle = "#2596be";
+		context.fillRect(paddleOffset, props.config.p1PosY, 2, 2);
+		// BOTTOM RIGHT
+		context.fillStyle = "#03fc41";
+		context.fillRect(paddleOffset * 2, props.config.paddleSize.y + props.config.p1PosY, 2, 2);
+	}, [props.ball, props.config.p1PosY, props.config.p2PosY, canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize])
 
 	useEffect(() => {
 		const canvasCurrentRef = canvas.current
@@ -69,7 +82,16 @@ const GameDisplay = (props: { p1y: number, p2y: number, ball: Position, config: 
 
 	}, [canvas, drawAll])
 
-	return <canvas width={canvasSize.x} height={canvasSize.y} ref={canvas}></canvas>
+	return (
+		<>
+			<div className="score" style={{ width: canvasSize.x }}>
+				<h1 className="score-1">{props.config.scoreP1}</h1>
+				<h1 className="score-p2">{props.config.scoreP2}</h1>
+			</div>
+			<canvas tabIndex={0} width={canvasSize.x} height={canvasSize.y} ref={canvas}></canvas>
+
+		</>
+	)
 }
 
 export default GameDisplay

@@ -18,6 +18,10 @@ const Game = () => {
 			x: 30,
 			y: 30
 		},
+		scoreP1: 0,
+		scoreP2: 0,
+		p1PosY: 300 - (175 / 2),
+		p2PosY: 300 - (175 / 2),
 		bgColor: '#333',
 		fgColor: '#fff'
 	}), [])
@@ -25,8 +29,6 @@ const Game = () => {
 	return (
 		<AuthenticatedLayout>
 			<GameEngine
-				p1y={0}
-				p2y={0}
 				config={gameConfig}
 			/>
 		</AuthenticatedLayout>
