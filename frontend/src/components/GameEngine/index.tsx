@@ -63,6 +63,10 @@ const GameEngine = (props: { config: GameConfig }) => {
 			else if (isGoalP2)
 				scored("P2")
 			setBall({ x: ball.x + ballDirection.x, y: ball.y + ballDirection.y });
+			if (props.config.p2PosY > 0)
+				props.config.p2PosY -= 5;
+			else if (props.config.p2PosY <= 0)
+				props.config.p2PosY = props.config.canvasSize.y
 		}, 10)
 		return () => clearInterval(interval);
 	});
@@ -74,3 +78,12 @@ const GameEngine = (props: { config: GameConfig }) => {
 }
 
 export default GameEngine
+
+/* 
+
+TODO: 
+	- better cpu paddle
+	- fix ball stuck on paddle (=> check all ball area not just corner)
+	- moving paddle with key
+
+*/
