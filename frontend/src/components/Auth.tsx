@@ -1,7 +1,4 @@
-import { useState } from 'react';
 import axios from 'axios';
-import ResDataInterface from '../interfaces/res-data.interface';
-import AuthUserInterface from '../interfaces/auth-user.interface';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { socket } from '../App';
@@ -10,12 +7,7 @@ export default function Auth () {
 
 	// VARIABLES \\
 
-	const [cookie, setCookie, removeCookie] = useCookies(['jwtToken', 'pseudo']);
-	const axiosWithAuth = axios.create({
-		headers: {
-			Authorization: "Bearer ".concat(cookie.jwtToken),
-		}
-	});
+	const [cookie, setCookie] = useCookies(['jwtToken', 'pseudo']);
 	const navigate = useNavigate();
 	const queryParameters = new URLSearchParams(window.location.search)
 	const code = queryParameters.get("code");
@@ -26,7 +18,7 @@ export default function Auth () {
 	axios.post('https://api.intra.42.fr/oauth/token', {
 		grant_type: "authorization_code",
 		client_id: "u-s4t2ud-648c51ea9e1ba58cce46cff68acc6882c3fc4382864770ac7e8f610111a703ec",
-		client_secret: "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",
+		client_secret: "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",
 		code: code,
 		state: state,
 		redirect_uri: "http://localhost:3000/auth"
@@ -34,27 +26,24 @@ export default function Auth () {
 		.then(res => getIntraMe(res.data))
 		.catch(err => console.log(err));
 
-	const getIntraMe = (resData: ResDataInterface) => {
+	const getIntraMe = (data: {access_token: string}) => {
 		axios.get('http://localhost:3001/auth/intra/getMe', {
 			params: {
-				token: resData.access_token
+				token: data.access_token
 			}
 		})
 			.then(res => displayWelcomeMsg(res.data))
 			.catch(err => console.log(err));
 	}
 
-	const displayWelcomeMsg = (resData: AuthUserInterface) => {
-		setCookie('jwtToken', resData.jwt_token, { path: '/' });
-		setCookie('pseudo', resData.pseudo, { path: '/' });
-		updateUserSocket(resData.jwt_token);
+	const displayWelcomeMsg = (pseudo: string) => {
+		setCookie('pseudo', pseudo, { path: '/' });
+		updateUserSocket();
 	}
 
-	const updateUserSocket = (jwtToken: string) => {
-		const authStr = 'Bearer '.concat(jwtToken);
-		console.log({authStr: authStr});
+	const updateUserSocket = () => {
 		axios.put('http://localhost:3001/user/modifySocketId', {
-			withCredentials: true
+			socketId: socket.id
 		})
 			.then(res => console.log(res))
 			.catch(err => console.log(err));

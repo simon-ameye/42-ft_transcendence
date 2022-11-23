@@ -4,7 +4,6 @@ import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "./decorators";
-import { AuthUserInterface } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -22,12 +21,13 @@ export class AuthController {
 	// UseGuards determine if the request will be handled
 	@UseGuards(AuthGuard('42API'))
 	@Get('42api/login')
-	login42() {
-		console.log("HELLOOO");
-	}
+	login42() {}
 
 	@Get('intra/getMe')
-	async getIntraUser (@Query() query: {token: string}, @Res() res: Response): Promise<AuthUserInterface> {
+	async getIntraUser (
+			@Query() query: {token: string},
+			@Res({ passthrough: true} ) res: Response
+		): Promise<string> {
 		return (this.authService.getIntraUser(query.token, res));
 	}
 

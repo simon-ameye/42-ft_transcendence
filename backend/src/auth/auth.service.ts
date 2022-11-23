@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, Res } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto, UserDto } from "./dto";
 import { Prisma } from ".prisma/client";
@@ -10,7 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
-import { AuthUserInterface } from './interfaces';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +19,10 @@ export class AuthService {
 			private jwtService: JwtService,
 			private configService: ConfigService) {}
 
-  async getIntraUser(token: string, res: Response): Promise<AuthUserInterface> {
+  async getIntraUser(
+			token: string,
+			@Res({ passthrough: true }) response: Response
+		): Promise<string> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -28,7 +31,6 @@ export class AuthService {
 						Authorization: authStr,
 					}
 				}).pipe(map(response => response.data)));
-			console.log({EMAIL: res.email});
 			var user = await this.prismaService.user.findUnique({
 				where: {
 					email: res.email,
@@ -61,10 +63,8 @@ export class AuthService {
 					})
 				}
 			const jwtToken = await this.signJwtToken(user);
-			const authUser: AuthUserInterface = {jwt_token: jwtToken, pseudo: user.displayName};
-			console.log({jwtToken: jwtToken});
-			res.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-			return (authUser);
+			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			return (user.displayName);
 		} catch(e) {
 			return (e.message);
 		}

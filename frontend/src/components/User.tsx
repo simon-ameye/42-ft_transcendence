@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
-import { socket } from '../App';
-import { useCookies } from 'react-cookie';
 
 const User = () => {
-	const [cookie, setCookie, removeCookie] = useCookies(['jwtToken', 'pseudo']);
 	const [userMail, setUserMail] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [userDisplayName, setUserDisplayName] = useState('');
@@ -27,12 +24,7 @@ const User = () => {
 	}
 
 	const getSocketId = () => {
-		const authStr = "Bearer ".concat(cookie.jwtToken);
-		console.log({authorization: authStr});
 		axios.get('http://localhost:3001/user/socketId', {
-			headers: {
-				Authorization: authStr,
-			}
 		})
 			.then(res => console.log(res))
 			.catch(err => console.log(err));

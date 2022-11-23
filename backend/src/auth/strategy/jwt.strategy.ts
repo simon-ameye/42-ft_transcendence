@@ -21,12 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	}
 
 	private static extractJWT(@Req() req: Request): string | null {
-		console.log("CHECKING COOKIES");
-		if (req.cookies)
-			console.log(req.cookies);
 		if (req.cookies && 'jwtToken' in req.cookies)
 			return (req.cookies.jwtToken);
-		console.log("NO COOKIES");
     return null;
   }
 

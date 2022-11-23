@@ -30,7 +30,6 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('getEmail')
   getEmail(@GetUser() user: UserDto) {
-		console.log("HEYo");
     return user.email;
   }
 
@@ -55,12 +54,10 @@ export class UserController {
     return this.userService.modifyName(user, body.displayName);
   }
 
-//	@UseGuards(AuthGuard('jwt'))
+	@UseGuards(AuthGuard('jwt'))
 	@Put('modifySocketId')
-	modifySocketId(@Req() req: Request, @Query() query: {socketId: string}, @GetUser() user: UserDto) {
-		console.log({"REQ COOKIES": req.cookies});
-		console.log({"new socketID": query.socketId});
-		return this.userService.modifySocketId(user, query.socketId);
+	modifySocketId(@Body() body: {socketId: string}, @GetUser() user: UserDto) {
+		return this.userService.modifySocketId(user, body.socketId);
 	}
 
   //// IMAGE UPLOAD

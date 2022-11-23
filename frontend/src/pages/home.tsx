@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 
 const Home = () => {
 
-	const [cookie, setCookie, removeCookie] = useCookies(['jwtToken', 'pseudo']);
+	const [cookie] = useCookies(['pseudo']);
 
 	return (
 		<>
