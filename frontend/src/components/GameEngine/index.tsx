@@ -43,13 +43,12 @@ const GameEngine = (props: { config: GameConfig }) => {
 	}
 
 	const isLeftPaddle = () => {
-		const ballTopLeft = { x: ball.x + props.config.ballSize.x, y: ball.y }
+		const ballTopLeft = { x: ball.x + ballDirection.x, y: ball.y }
 		const rect = { x: props.config.paddleOffset, y: props.config.p1PosY, w: props.config.paddleOffset * 2, h: props.config.paddleSize.y + props.config.p1PosY }
 
 		const isIn: boolean = (
 			(ballTopLeft.x > rect.x && ballTopLeft.x < rect.w) && (ballTopLeft.y > rect.y && ballTopLeft.y < rect.h)
 		)
-		console.log(isIn)
 		return isIn
 	}
 
@@ -57,9 +56,7 @@ const GameEngine = (props: { config: GameConfig }) => {
 		const interval = setInterval(() => {
 			if (yTopBorder || yBottomBorder)
 				bounceY()
-			else if (isRightPaddle())
-				bounceX()
-			else if (isLeftPaddle())
+			else if (isRightPaddle() || isLeftPaddle())
 				bounceX()
 			else if (isGoalP1)
 				scored("P1")

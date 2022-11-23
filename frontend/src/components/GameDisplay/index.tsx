@@ -8,7 +8,6 @@ export interface Position {
 
 interface ObjectSize extends Position { };
 
-
 export interface GameConfig {
 	paddleSize: ObjectSize;
 	paddleOffset: number;
@@ -61,14 +60,7 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 
 		// Ball
 		drawRect(context, props.ball, ballSize, fgColor);
-		// TMP
 
-		// TOP LEFT
-		context.fillStyle = "#2596be";
-		context.fillRect(paddleOffset, props.config.p1PosY, 2, 2);
-		// BOTTOM RIGHT
-		context.fillStyle = "#03fc41";
-		context.fillRect(paddleOffset * 2, props.config.paddleSize.y + props.config.p1PosY, 2, 2);
 	}, [props.ball, props.config.p1PosY, props.config.p2PosY, canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize])
 
 	useEffect(() => {
