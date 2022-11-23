@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { UserService } from '../user/user.service';
 import { OppenentsInterface, PlayerInterface } from './interfaces';
 
 @Injectable()
 export class GameService {
-	constructor(private prismaService: PrismaService) {}
+	constructor(
+			private prismaService: PrismaService,
+			private userService: UserService
+	) {}
 
 	async getQueue(): Promise<string[]> {
 		const queue = await this.prismaService.matching.findMany();
 		const len = queue.length;
-		let ids: string[] = new Array(len);
+		let users: string[] = new Array(len);
 		for (let i = 0; i < len; ++i)
-			ids[i] = queue[i].socketId;
-		return (ids);
+			users[i] = await this.userService.getNameById(queue[i].userId);
+		return (users);
 	}
 
 	async getList(): Promise<string[]> {
@@ -20,7 +24,7 @@ export class GameService {
 		const len = games.length;
 		let versus: string[] = new Array(len);
 		for (let i = 0; i < len; ++i) {
-			let players = await this.prismaService.player.findMany({
+			let players = await this.prismaService.user.findMany({
 				where: {
 					gameId: games[i].id
 				}
@@ -30,28 +34,36 @@ export class GameService {
 		return (versus);
 	}
 
-	async addClientToMatchingQueue(id: string): Promise<void> {
-		const matching = await this.prismaService.matching.create({
+	async addClientToMatchingQueue(socketId: string): Promise<void> {
+		const matchingUser = this.prismaService.user.update({
+			where: {
+				socketId,
+			},
 			data: {
-				socketId: id
+				matching: {
+					create: {}
+				}
 			}
 		});
 	}
 
 	async startGame(oppenents: OppenentsInterface): Promise<string> {
+		const	players = await this.prismaService.user.findMany({
+			where: {
+				OR: [{ socketId: oppenents.one }, { socketId: oppenents.two }],
+			}
+		});
 		const deleteUsers = await this.prismaService.matching.deleteMany({
 			where: {
-				OR: [{socketId: oppenents.one }, { socketId: oppenents.two }],
+				OR: [{ user: players[0] }, { user: players[1] }],
 			},
 		});
 		const game = await this.prismaService.game.create({
 			data: {
-				players: {
-					create: [
-						{socketId: oppenents.one},
-						{socketId: oppenents.two}
-					]
-				}
+				players: [
+					{user: players[0]},
+					{user: players[1]}
+				]
 			}
 		});
 		const gameRoom = "game".concat(String(game.id));

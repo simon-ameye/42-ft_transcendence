@@ -3,6 +3,7 @@ import User from './components/User';
 import NotFound from './pages/notFound';
 import Home from './pages/home';
 import Game from './pages/Game';
+import LiveGame from './components/AbrunGame/live-game.component';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
@@ -19,6 +20,7 @@ function App() {
 			<Route path="/" element={<Home />} />
 			<Route path="/user" element={<User />} />
 			<Route path="/game" element={<Game />} />
+			<Route path="/game/live" element={<LiveGame />} />
 			<Route path="/auth" element={<Auth />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>

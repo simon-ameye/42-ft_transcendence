@@ -17,9 +17,8 @@ export class OAuthStrategy extends PassportStrategy(Strategy, '42API') {
 			scope: ['public']
 		});
 	}
-	// method called when authentification succeeded
+
 	async validate(token: string, refreshToken: string) {
-		console.log("VALIDATE");
 		return ({token, refreshToken});
 	}
 }

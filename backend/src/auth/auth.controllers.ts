@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Post, UseGuards, Query, Res } from "@nestjs/common";
-import { Response } from 'express';
+import { Body, Controller, Delete, Get, Post, UseGuards, Query, Res, Req } from "@nestjs/common";
+import { Response, Request } from 'express';
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
@@ -10,15 +10,17 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('signup')
-  signup(@Body() dto: AuthDto) {
-    return this.authService.signup(dto);
+  signup(
+			@Body() dto: AuthDto,
+			@Res({ passthrough: true} ) response: Response
+	) {
+    return this.authService.signup(dto, response);
   }
   @Post('signin')
   signin(@Body() dto: AuthDto) {
     return this.authService.signin(dto);
   }
 
-	// UseGuards determine if the request will be handled
 	@UseGuards(AuthGuard('42API'))
 	@Get('42api/login')
 	login42() {}
@@ -26,9 +28,9 @@ export class AuthController {
 	@Get('intra/getMe')
 	async getIntraUser (
 			@Query() query: {token: string},
-			@Res({ passthrough: true} ) res: Response
+			@Res({ passthrough: true} ) response: Response
 		): Promise<string> {
-		return (this.authService.getIntraUser(query.token, res));
+		return (this.authService.getIntraUser(query.token, response));
 	}
 
 	@Get('google2FA/signup')
