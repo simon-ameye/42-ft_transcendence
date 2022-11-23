@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@hookstate/core": "^4.0.0-rc21",
+    "@mui/icons-material": "^5.10.15",
+    "@mui/material": "^5.10.15",
     "@react-rxjs/core": "^0.10.3",
     "@react-rxjs/utils": "^0.9.5",
     "@testing-library/jest-dom": "^5.16.5",

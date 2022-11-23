@@ -11,7 +11,7 @@ import { AuthGuard } from "@nestjs/passport";
 
 
 //@Injectable()
-@WebSocketGateway()
+@WebSocketGateway(4343, {cors: '*'})
 export class ChatGateway implements OnModuleInit {
   constructor(private chatService: ChatService,
               private channelService : ChannelService) {}

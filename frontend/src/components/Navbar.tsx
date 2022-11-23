@@ -13,7 +13,7 @@ const Navbar = () => {
 					<i className="fa-solid fa-table-tennis-paddle-ball"></i>
 					<span>Game</span>
 				</NavLink>
-				<NavLink to="/chat">
+				<NavLink to="/ChatBox">
 					<i className="fa-solid fa-comment"></i>
 					<span>Chat</span>
 				</NavLink>

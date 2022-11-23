@@ -24,6 +24,7 @@ export class ChatController {
   @Post('createChannel')
   createChannel(@Body() body: {name: string, mode: ChannelMode, password: string, otherUserId: number},
   @GetUser() user: UserDto) {
+    console.log('new channel creation request : ', body.name, body.mode, body.password);
     return (this.chatService.createChannel(user.id, body.name, body.mode, body.password, Number(body.otherUserId)));
   }
 

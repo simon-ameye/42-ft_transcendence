@@ -67,6 +67,7 @@ export class ChatService {
         }
       });
     }
+    this.eventEmitter.emit('flushAllChannels');
     return ('New channel created');
   }
 

@@ -1,0 +1,41 @@
+.chatbox{
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .chatbox-container{
+        border-radius: 10px;
+        border-style: double;
+        width: 800px;
+        height: 800px;
+        display: flex;
+        overflow: hidden;
+        border: 1px solid #48b15f;
+        .Sidebar{
+            flex: 1.5;
+            border-right: 1px solid #48b15f;
+            background-color: black;
+            .button_create_channel{
+                background-color: #48b15f;
+                border-radius: 10px;
+            }
+        }
+        .directmessage{
+            width: 600px;
+            height: 700px;
+            text-align: left;
+            overflow: overlay;
+            border-radius: 0px;      
+        }
+        .messageInput{
+            textarea{
+                resize: none;
+                width: 560px;
+                height: 90px;
+                border: none;
+                
+            }
+        }
+        
+    }
+}
