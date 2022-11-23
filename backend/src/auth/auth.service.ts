@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, Res } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto, UserDto } from "./dto";
 import { Prisma } from ".prisma/client";
@@ -10,6 +10,7 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -18,13 +19,17 @@ export class AuthService {
 			private jwtService: JwtService,
 			private configService: ConfigService) {}
 
-  async logUser42(token: string): Promise<{access_token: string}> {
+  async getIntraUser(
+			token: string,
+			@Res({ passthrough: true }) response: Response
+		): Promise<string> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
-				'https://api.intra.42.fr/v2/me',
-				{
-					headers: { Authorization: authStr }
+				'https://api.intra.42.fr/v2/me', {
+					headers: {
+						Authorization: authStr,
+					}
 				}).pipe(map(response => response.data)));
 			var user = await this.prismaService.user.findUnique({
 				where: {
@@ -35,7 +40,7 @@ export class AuthService {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
-						displayName: String(res.log),
+						displayName: String(res.login),
 						imageUrl: String(res.image_url)
 					}
 				});
@@ -56,8 +61,10 @@ export class AuthService {
 							imageUrl: image_url,
 						},
 					})
-			}
-		return (this.signToken(user));
+				}
+			const jwtToken = await this.signJwtToken(user);
+			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			return (user.displayName);
 		} catch(e) {
 			return (e.message);
 		}
@@ -159,5 +166,17 @@ export class AuthService {
 			}
 		);
 		return ({access_token: token});
+	}
+
+	async signJwtToken(user: UserDto): Promise<string> {
+		const data = {
+			id: user.id,
+			email: user.email
+		};
+		const token = await this.jwtService.signAsync(data, {
+				secret: this.configService.get('JWT_SECRET')
+			}
+		);
+		return (token);
 	}
 }

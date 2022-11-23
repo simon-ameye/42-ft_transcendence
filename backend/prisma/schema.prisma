@@ -22,7 +22,7 @@ model User {
   googleSecret    String?
   // add path of the image
 
-  socketId        String?
+  socketId        String? @unique
   blockedUserIds  Int[]
   @@map("users")
 }

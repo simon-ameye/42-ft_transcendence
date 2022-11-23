@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, UseGuards, Req, Query } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ChannelMode } from "@prisma/client";
-import { GetUser } from "src/auth/decorator/get-user.decorator";
+import { GetUser } from "src/auth/decorators/get-user.decorator";
 import { UserDto } from "src/auth/dto";
 import { ChatService } from "./chat.service";
 

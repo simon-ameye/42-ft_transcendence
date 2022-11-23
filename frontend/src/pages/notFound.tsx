@@ -1,19 +1,18 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom'
-import Navbar from '../components/Navbar';
+import Navbar from '../components/Navbar'
 
 const NotFound = () => {
 	return (
-		<div className="notFound">
+		<>
 			<Navbar />
-			<div className="notFoundContent">
-				<h3>404 page</h3>
-				<NavLink to="/">
+			<div className="notFound">
+				<img src={require('../assets/pong_404.gif')} alt="404 pong gif"/>
+				<NavLink className="navlink" to="/">
 					<i className="fas fa-home"></i>
 					<span>Acceuil</span>
 				</NavLink>
 			</div>
-		</div>
+		</>
 	);
 };
 

@@ -46,3 +46,6 @@ CREATE TABLE "Message" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_socketId_key" ON "users"("socketId");
