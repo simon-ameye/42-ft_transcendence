@@ -1,9 +1,9 @@
-import AuthenticatedLayout from '../layouts/Authenticated';
-import { GameConfig } from '../components/GameDisplay';
+import AuthenticatedLayout from '../../layouts/Authenticated';
+import { GameConfig } from '../GameDisplay';
 import { useMemo } from 'react';
-import GameEngine from '../components/GameEngine';
+import GameEngine from '../GameEngine';
 
-const GamePage = () => {
+const Game = () => {
 	const gameConfig: GameConfig = useMemo(() => ({
 		canvasSize: {
 			x: 1000,
@@ -33,4 +33,4 @@ const GamePage = () => {
 	);
 };
 
-export default GamePage;
+export default Game;

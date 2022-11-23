@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from './components/Home';
 import User from './components/User';
-import NotFound from './pages/NotFound';
-import Home from './pages/Home';
-import Game from './pages/Game';
+import Game from './components/GameSetup';
+import NotFound from './components/NotFound';
 
 function App() {
   return (

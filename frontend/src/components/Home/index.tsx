@@ -1,4 +1,5 @@
-import AuthenticatedLayout from '../layouts/Authenticated';
+import AuthenticatedLayout from '../../layouts/Authenticated';
+import './style.scss'
 
 const Home = () => {
 	return (
