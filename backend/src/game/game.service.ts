@@ -16,15 +16,16 @@ export class GameService {
 		let users: string[] = new Array(len);
 		for (let i = 0; i < len; ++i)
 			users[i] = await this.userService.getNameById(queue[i].userId);
+		console.log({users: users});
 		return (users);
 	}
 
-	async getList(): Promise<string[]> {
+	async getGameList(): Promise<string[]> {
 		const games = await this.prismaService.game.findMany();
 		const len = games.length;
 		let versus: string[] = new Array(len);
 		for (let i = 0; i < len; ++i) {
-			let players = await this.prismaService.user.findMany({
+			let players = await this.prismaService.player.findMany({
 				where: {
 					gameId: games[i].id
 				}
@@ -35,7 +36,7 @@ export class GameService {
 	}
 
 	async addClientToMatchingQueue(socketId: string): Promise<void> {
-		const matchingUser = this.prismaService.user.update({
+		const matchingUser = await this.prismaService.user.update({
 			where: {
 				socketId,
 			},
@@ -60,20 +61,22 @@ export class GameService {
 		});
 		const game = await this.prismaService.game.create({
 			data: {
-				players: [
-					{user: players[0]},
-					{user: players[1]}
-				]
+				players: {
+					create: [
+						{ userId: players[0].id, displayName: players[0].displayName },
+						{ userId: players[1].id, displayName: players[1].displayName }
+					]
+				}
 			}
 		});
 		const gameRoom = "game".concat(String(game.id));
 		return (gameRoom);
 	}
 
-	async	updateScore(socketId: string, n: number): Promise<string> {
+	async	updateScore(userId: number, n: number): Promise<string> {
 		const	player = await this.prismaService.player.update({
 			where: {
-				socketId,
+				userId,
 			},
 			data: {
 				score: {
@@ -95,15 +98,20 @@ export class GameService {
 	}
 
 	getStrGame(players: PlayerInterface[]): string {
-		let strGame = players[0].socketId.concat(" vs ");
-		strGame = strGame.concat(players[1].socketId);
+		let strGame = players[0].displayName.concat(" vs ");
+		strGame = strGame.concat(players[1].displayName);
 		return (strGame);
 	}
 
-	async getPlayers(playerIds: string[]): Promise<PlayerInterface[]> {
-		const players = await this.prismaService.player.findMany({
+	async getPlayersBySIds(socketIds: string[]): Promise<PlayerInterface[]> {
+		const users = await this.prismaService.user.findMany({
 			where: {
-				OR: [{socketId: playerIds[0] }, { socketId: playerIds[1] }],
+				OR: [{ socketId: socketIds[0] }, { socketId: socketIds[1] }],
+			}
+		});
+		const	players = await this.prismaService.player.findMany({
+			where: {
+				OR: [{ userId: users[0].id }, { userId: users[1].id }]
 			}
 		});
 		return (players);

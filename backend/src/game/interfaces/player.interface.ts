@@ -1,5 +1,6 @@
 export interface	PlayerInterface {
-	socketId: string,
+	userId: number,
+	displayName: string,
 	score: number,
 	gameId: number
 }

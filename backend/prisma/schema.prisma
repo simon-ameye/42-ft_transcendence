@@ -25,10 +25,7 @@ model User {
 	matching Matching?
 
 	inGame	Boolean @default(false)
-	score	Int @default(0)
 	victories	Int @default(0)
-	game	Game? @relation("players", fields: [gameId], references: [id])
-	gameId	Int?
 
   @@map("users")
 }
@@ -40,7 +37,15 @@ model	Matching {
 	userId Int @unique
 }
 
+model	Player {
+	userId	Int @unique
+	displayName String
+	score	Int @default(0)
+	game	Game? @relation("players", fields: [gameId], references: [id])
+	gameId Int?
+}
+
 model	Game {
   id Int @id @default(autoincrement())
-	players User[] @relation("players")
+	players Player[] @relation("players")
 }

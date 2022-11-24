@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import User from './components/User';
 import NotFound from './pages/notFound';
@@ -10,9 +11,26 @@ import axios from 'axios';
 
 axios.defaults.withCredentials = true;
 
-export const socket = io('http://localhost:4343');
+export let socket = io('http://localhost:4343', { withCredentials: true });
 
 function App() {
+
+	socket.emit('hello');
+
+	useEffect(() => {
+		socket.on("heyo", heyoListener);
+		return () => {
+			socket.off("heyo", heyoListener);
+		}
+	})
+
+	const heyoListener = () => {
+		axios.put('http://localhost:3001/user/modifySocketId', {
+			socketId: socket.id
+		})
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
+	}
 
   return (
    <BrowserRouter>

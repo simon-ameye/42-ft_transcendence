@@ -45,8 +45,8 @@ export default function	InvitPopup() {
 
 	// LISTENER \\
 
-	const invitListener = (socketId: string) => {
-		setInvitText("You receive an invitation to pong game from ".concat(socketId));
+	const invitListener = (senderName: string) => {
+		setInvitText("You receive an invitation to pong game from ".concat(senderName));
 		setInvit(true);
 	}
 

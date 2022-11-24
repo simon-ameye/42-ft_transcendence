@@ -5,11 +5,13 @@ import OppenentsInterface from '../../interfaces/oppenents.interface';
 import PlayerInterface from '../../interfaces/player.interface';
 import InvitPopup from './invit-popup.component';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 export default function GameHome() {
 
 		// VARIABLES \\
 	
+	const [cookie] = useCookies(['pseudo']);
 	const navigate = useNavigate();
 	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
 	const [gameList, setGameList] = useState<string[]>([]);
@@ -17,7 +19,7 @@ export default function GameHome() {
 		// FUNCTIONS \\
 	
 	const	addToQueue = () => {
-		if (!matchingQueue.includes(socket.id)) {
+		if (!matchingQueue.includes(cookie.pseudo)) {
 			socket.emit("matchingQueue");
 		}
 	}
@@ -80,8 +82,8 @@ export default function GameHome() {
 
 		// LISTENER \\
 	
-	const matchingQueueListener = (socketId: string) => {
-			setMatchingQueue([...matchingQueue, socketId]);
+	const matchingQueueListener = (displayName: string) => {
+			setMatchingQueue([...matchingQueue, displayName]);
 	}
 
 	const deleteOppenentsListener = (oppenents: OppenentsInterface) => {
@@ -95,8 +97,8 @@ export default function GameHome() {
 	}
 
 	const updateGameListListener = (players: PlayerInterface[]) => {
-		let strGame = players[0].socketId.concat(" vs ");
-		strGame = strGame.concat(players[1].socketId);
+		let strGame = players[0].displayName.concat(" vs ");
+		strGame = strGame.concat(players[1].displayName);
 		setGameList([...gameList, strGame]);
 	}
 

@@ -20,8 +20,8 @@ export class GameController {
 	}
 
 	@Get('list')
-	getList() {
-		return (this.gameService.getList());
+	getGameList() {
+		return (this.gameService.getGameList());
 	}
 	
 	@Get(':id')

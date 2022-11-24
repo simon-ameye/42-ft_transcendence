@@ -4,12 +4,20 @@ import { OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GameService } from './game.service';
 import { MatchingQueueInterface, PlayerInterface } from './interfaces';
+import { UserService } from '../user/user.service';
 
-@WebSocketGateway(4343, {cors: '*'})
+@WebSocketGateway(4343, {
+		cors: {
+			origin: 'http://localhost:3000',
+			credentials: true,
+		}
+	})
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
 	constructor(
 		private prismaService: PrismaService,
-		private gameService: GameService) {}
+		private gameService: GameService,
+		private userService: UserService
+	) {}
 
 	@WebSocketServer() server: Server;
 
@@ -17,7 +25,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
 	onModuleInit() {
 		this.server.on('connection', async (socket) => {
-			socket.emit('message', 'Hey i\'m new');
 			console.log({"socket.id": socket.id});
 			console.log('connected');
 		});
@@ -33,21 +40,24 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		this.server.emit('users', this.users);
 	}
 
-	@SubscribeMessage('message')
-		handleChat(client, msg): void {
-			console.log({"client": client.id});
-			this.server.emit('message', msg);
+	@SubscribeMessage('hello')
+		hello(client) {
+			this.server.to(client.id).emit('heyo');
 		}
 	
 	@SubscribeMessage('matchingQueue')
-		addToQueue(client): void {
-			this.server.emit('matchingQueue', client.id);
+		async addToQueue(client): Promise<void> {
+			const displayName = await this.userService.getNameBySId(client.id);
+			this.server.emit('matchingQueue', displayName);
 			this.gameService.addClientToMatchingQueue(client.id);
 		}
 
 	@SubscribeMessage('invitation')
-		invitSocket(client, receiverId: string): void {
-			this.server.to(receiverId).emit('send invitation', client.id);
+		async invitSocket(client, receiverName: string): Promise<void> {
+			console.log({invitationto: receiverName});
+			const receiverSId = await this.userService.getSIdByName(receiverName);
+			const clientName = await this.userService.getNameBySId(client.id);
+			this.server.to(receiverSId).emit('send invitation', clientName);
 		}
 	
 	@SubscribeMessage('invitation accepted')
@@ -65,21 +75,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		async acceptInvitSender(client, data: {gameRoom: string, oppenentId: string}): Promise<void> {
 			client.join(data.gameRoom);
 			const playerIds = [client.id, data.oppenentId];
-			const players = await this.gameService.getPlayers(playerIds);
+			const players = await this.gameService.getPlayersBySIds(playerIds);
 			this.server.to(data.gameRoom).emit('game started', players);
 			this.server.emit('update game list', players);
 		}
 
 	@SubscribeMessage('add point')
 		async addPoint(client, player: PlayerInterface): Promise<void> {
-			const gameRoom = await this.gameService.updateScore(player.socketId, +1);
+			const gameRoom = await this.gameService.updateScore(player.userId, +1);
 			player.score += 1;
 			this.server.to(gameRoom).emit('update score', player);
 		}
 
 	@SubscribeMessage('watch game')
 		async watchGame(client, playerIds: string[]): Promise<void> {
-			const players = await this.gameService.getPlayers(playerIds);
+			const players = await this.gameService.getPlayersBySIds(playerIds);
 			const gameRoom = "game".concat(String(players[0].gameId));
 			client.join(gameRoom);
 			this.server.to(client.id).emit('game started', players);

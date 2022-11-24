@@ -8,9 +8,9 @@ export default function	LiveGame() {
 	
 	const [rerender, setRerender] = useState<boolean>(false);
 	const [playerRight, setPlayerRight] =
-			useState<PlayerInterface>({socketId: "right", score: 0});
+			useState<PlayerInterface>({userId: 0, displayName: "right", score: 0});
 	const [playerLeft, setPlayerLeft] =
-			useState<PlayerInterface>({socketId: "left", score: 0});
+			useState<PlayerInterface>({userId: 0, displayName: "left", score: 0});
 	const [spectator, setSpectator] = useState<boolean>(false);
 
 	// FUNCTIONS \\
@@ -41,19 +41,21 @@ export default function	LiveGame() {
 	// LISTENER \\
 
 	const gameStartedListener = (players: PlayerInterface[]) => {
-		playerRight.socketId = players[0].socketId;
-		playerLeft.socketId = players[1].socketId;
+		playerRight.displayName = players[0].displayName;
+		playerLeft.displayName = players[1].displayName;
+		playerRight.userId = players[0].userId;
+		playerLeft.userId = players[1].userId;
 		playerRight.score = players[0].score;
 		playerLeft.score = players[1].score;
 		setPlayerRight(playerRight);
 		setPlayerLeft(playerLeft);
-		if (socket.id !== playerRight.socketId && socket.id !== playerLeft.socketId)
-			setSpectator(true);
+	//	if (socket.id !== playerRight.socketId && socket.id !== playerLeft.socketId)
+		//	setSpectator(true);
 		setRerender(!rerender);
 	}
 
 	const updateScoreListener = (player: PlayerInterface) => {
-		if (player.socketId === playerRight.socketId) {
+		if (player.userId === playerRight.userId) {
 			playerRight.score = player.score;
 			setPlayerRight(playerRight);
 		}
@@ -72,8 +74,8 @@ export default function	LiveGame() {
 				<h2>LIVE GAME AS SPECTATOR</h2>
 			</div>
 			<div>
-				<h5>{playerRight.socketId}: {playerRight.score}</h5>
-				<h5>{playerLeft.socketId}: {playerLeft.score}</h5>
+				<h5>{playerRight.displayName}: {playerRight.score}</h5>
+				<h5>{playerLeft.displayName}: {playerLeft.score}</h5>
 			</div>
 		</>
 	) : (
@@ -82,9 +84,9 @@ export default function	LiveGame() {
 				<h2>LIVE GAME</h2>
 			</div>
 			<div>
-				<h5>{playerRight.socketId}: {playerRight.score}</h5>
+				<h5>{playerRight.displayName}: {playerRight.score}</h5>
 				<button onClick={() => addPoint('right')}>RIGHT</button>
-				<h5>{playerLeft.socketId}: {playerLeft.score}</h5>
+				<h5>{playerLeft.displayName}: {playerLeft.score}</h5>
 				<button onClick={() => addPoint('left')}>LEFT</button>
 			</div>
 		</>
