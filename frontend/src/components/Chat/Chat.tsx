@@ -9,22 +9,6 @@ const Chat = () => {
 
 const [messages, setMessages] = useState<string[]>([])
 
-  const messageListener = (channelInterface: ChannelInterface) => {
-    console.log(channelInterface.id)
-    console.log(channelInterface.name)
-    console.log(channelInterface.mode)
-    console.log(channelInterface.messages)
-    console.log(channelInterface.authors)
-    console.log(channelInterface.dates)
-    console.log(channelInterface.isProtected)
-  }
-
-  useEffect(() => {
-    socket.on('channelInterface', messageListener)
-    return () => {
-    }
-  })
-
   return (
     <div>
       <DirectMessage messages={messages} />
