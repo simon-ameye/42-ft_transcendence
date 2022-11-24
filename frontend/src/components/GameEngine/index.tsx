@@ -33,22 +33,21 @@ const GameEngine = (props: { config: GameConfig }) => {
 	}
 
 	const isRightPaddle = () => {
-		const ballTopRight = { x: ball.x + props.config.ballSize.x + ballDirection.x, y: ball.y }
 		const rect = { x: props.config.canvasSize.x - props.config.paddleOffset * 2, y: props.config.p2PosY, w: props.config.canvasSize.x - props.config.paddleOffset, h: props.config.paddleSize.y + props.config.p2PosY }
 
-		const isIn: boolean = (
-			(ballTopRight.x > rect.x && ballTopRight.x < rect.w) && (ballTopRight.y > rect.y && ballTopRight.y < rect.h)
-		)
+		const isIn: boolean = 
+		(ball.x + props.config.ballSize.x > rect.x && ball.x + props.config.ballSize.x < rect.w) && (ball.y > rect.y && ball.y < rect.h)
+
 		return isIn
 	}
 
 	const isLeftPaddle = () => {
-		const ballTopLeft = { x: ball.x + ballDirection.x, y: ball.y }
 		const rect = { x: props.config.paddleOffset, y: props.config.p1PosY, w: props.config.paddleOffset * 2, h: props.config.paddleSize.y + props.config.p1PosY }
 
-		const isIn: boolean = (
-			(ballTopLeft.x > rect.x && ballTopLeft.x < rect.w) && (ballTopLeft.y > rect.y && ballTopLeft.y < rect.h)
-		)
+		const isIn: boolean = 
+		// Top left corner of ball
+		(ball.x + ballDirection.x > rect.x && ball.x + ballDirection.x < rect.w) && (ball.y > rect.y && ball.y < rect.h)
+		
 		return isIn
 	}
 
@@ -63,9 +62,9 @@ const GameEngine = (props: { config: GameConfig }) => {
 			else if (isGoalP2)
 				scored("P2")
 			setBall({ x: ball.x + ballDirection.x, y: ball.y + ballDirection.y });
-			if (props.config.p2PosY > 0)
+			if (props.config.p2PosY > 0 - props.config.paddleSize.y)
 				props.config.p2PosY -= 5;
-			else if (props.config.p2PosY <= 0)
+			else if (props.config.p2PosY + props.config.paddleSize.y <= 0)
 				props.config.p2PosY = props.config.canvasSize.y
 		}, 10)
 		return () => clearInterval(interval);
