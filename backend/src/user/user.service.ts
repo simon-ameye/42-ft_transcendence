@@ -68,10 +68,10 @@ export class UserService {
 		return (user.displayName);
 	}
 
-	async	getSIdByName(name: string): Promise<string> {
+	async	getSIdByName(displayName: string): Promise<string> {
 		const user = await this.prisma.user.findFirst({
 			where: {
-				displayName: name
+				displayName
 			},
 			select: {
 				socketId: true,

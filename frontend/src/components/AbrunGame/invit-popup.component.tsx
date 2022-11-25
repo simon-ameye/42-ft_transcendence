@@ -19,8 +19,8 @@ export default function	InvitPopup() {
 
 	const acceptInvit = () => {
 		const invitTextArray = invitText.split(" ");
-		const	senderId = invitTextArray[invitTextArray.length - 1];
-		socket.emit("invitation accepted", senderId);
+		const	senderDName = invitTextArray[invitTextArray.length - 1];
+		socket.emit("invitation accepted", senderDName);
 		navigate('/game/live');
 		setInvit(false);
 	}

@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime @updatedAt
   email String @unique
   hash String?
-  displayName String?
+  displayName String @unique
   imageUrl String?
   googleSecret String?
   // add path of the image

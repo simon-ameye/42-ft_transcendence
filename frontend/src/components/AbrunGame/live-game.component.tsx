@@ -12,11 +12,12 @@ export default function	LiveGame() {
 	const [playerLeft, setPlayerLeft] =
 			useState<PlayerInterface>({userId: 0, displayName: "left", score: 0});
 	const [spectator, setSpectator] = useState<boolean>(false);
+	const [playing, setPlaying] = useState<boolean>(false);
 
 	// FUNCTIONS \\
 
-	const addPoint = (ssocketIde: string) => {
-		if (ssocketIde === 'right')
+	const addPoint = (side: string) => {
+		if (side === 'right')
 			socket.emit("add point", playerRight);
 		else
 			socket.emit("add point", playerLeft);
@@ -38,6 +39,13 @@ export default function	LiveGame() {
 		}
 	});
 
+	useEffect(() => {
+		socket.on('is playing', isPlayingListener);
+		return () => {
+			socket.off('is playing', isPlayingListener);
+		}
+	});
+
 	// LISTENER \\
 
 	const gameStartedListener = (players: PlayerInterface[]) => {
@@ -52,6 +60,7 @@ export default function	LiveGame() {
 	//	if (socket.id !== playerRight.socketId && socket.id !== playerLeft.socketId)
 		//	setSpectator(true);
 		setRerender(!rerender);
+		setPlaying(true);
 	}
 
 	const updateScoreListener = (player: PlayerInterface) => {
@@ -66,6 +75,13 @@ export default function	LiveGame() {
 		setRerender(!rerender);
 	}
 
+	const	isPlayingListener = (playing: boolean) => {
+		setPlaying(playing);
+		console.log({playing: playing});
+		if (playing)
+			socket.emit('get players');
+	}
+
 	// RETURN \\
 
 	return (spectator) ? (
@@ -78,7 +94,7 @@ export default function	LiveGame() {
 				<h5>{playerLeft.displayName}: {playerLeft.score}</h5>
 			</div>
 		</>
-	) : (
+	) : (playing) ? (
 		<>
 			<div>
 				<h2>LIVE GAME</h2>
@@ -89,6 +105,10 @@ export default function	LiveGame() {
 				<h5>{playerLeft.displayName}: {playerLeft.score}</h5>
 				<button onClick={() => addPoint('left')}>LEFT</button>
 			</div>
+		</>
+	) : (
+		<>
+			<h1>You're not allowed to be here</h1>
 		</>
 	)
 }

@@ -64,7 +64,7 @@ export class AuthService {
 				}
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-			response.status(202).cookie('pseudo', user.displayName, { path: '/' });
+			response.status(202).cookie('displayName', user.displayName, { path: '/' });
 			return (user.displayName);
 		} catch(e) {
 			return (e.message);
@@ -87,7 +87,7 @@ export class AuthService {
       delete user.hash;
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-			response.status(202).cookie('pseudo', user.displayName, { path: '/' });
+			response.status(202).cookie('displayName', user.displayName, { path: '/' });
 			return (user.displayName);
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -126,13 +126,14 @@ export class AuthService {
 		return (this.signToken(user));
   }
 
-	async	signup2FA(email: string): Promise<string> {
+	async	signup2FA(data: {email: string, displayName: string}): Promise<string> {
 		const secret = speakeasy.generateSecret();
 		try {
 			const user = await this.prismaService.user.create({
 				data: {
-					email,
-					googleSecret: String(secret.base32)
+					email: data.email,
+					googleSecret: String(secret.base32),
+					displayName: data.displayName
 				},
 			});
 		} catch (error) {

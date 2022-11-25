@@ -16,7 +16,6 @@ export class GameService {
 		let users: string[] = new Array(len);
 		for (let i = 0; i < len; ++i)
 			users[i] = await this.userService.getNameById(queue[i].userId);
-		console.log({users: users});
 		return (users);
 	}
 
@@ -49,10 +48,18 @@ export class GameService {
 	}
 
 	async startGame(oppenents: OppenentsInterface): Promise<string> {
+		const	updated = await this.prismaService.user.updateMany({
+			where: {
+				OR: [{ socketId: oppenents.one }, { socketId: oppenents.two }],
+			},
+			data: {
+				inGame: true
+			}
+		});
 		const	players = await this.prismaService.user.findMany({
 			where: {
 				OR: [{ socketId: oppenents.one }, { socketId: oppenents.two }],
-			}
+			},
 		});
 		const deleteUsers = await this.prismaService.matching.deleteMany({
 			where: {
@@ -115,5 +122,39 @@ export class GameService {
 			}
 		});
 		return (players);
+	}
+
+	async isPlayingBySId(SId: string): Promise<boolean> {
+		const	user = await this.prismaService.user.findUnique({
+			where: {
+				socketId: SId
+			},
+			select: {
+				inGame: true
+			}
+		});
+			return (user.inGame);
+	}
+
+	async	getPlayerByOneSId(SId: string): Promise<PlayerInterface[]> {
+		const user = await this.prismaService.user.findUnique({
+			where: {
+				socketId: SId
+			}
+		});
+		const player = await this.prismaService.player.findUnique({
+			where: {
+				userId: user.id
+			}
+		});
+		const game = await this.prismaService.game.findUnique({
+			where: {
+				id: player.gameId
+			},
+			select: {
+				players: true
+			}
+		});
+		return (game.players);
 	}
 }

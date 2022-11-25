@@ -34,8 +34,8 @@ export class AuthController {
 	}
 
 	@Get('google2FA/signup')
-	async signup2FA(@Body() body: {email: string}) {
-		return (this.authService.signup2FA(body.email));
+	async signup2FA(@Body() body: {email: string, displayName: string}) {
+		return (this.authService.signup2FA(body));
 	}
 
 	@Post('google2FA/login')

@@ -28,7 +28,7 @@ function App() {
 		axios.put('http://localhost:3001/user/modifySocketId', {
 			socketId: socket.id
 		})
-			.then(res => console.log(res))
+			.then(res => socket.emit('is playing'))
 			.catch(err => console.log(err));
 	}
 

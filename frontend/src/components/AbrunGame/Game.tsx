@@ -11,7 +11,7 @@ export default function GameHome() {
 
 		// VARIABLES \\
 	
-	const [cookie] = useCookies(['pseudo']);
+	const [cookie] = useCookies(['displayName']);
 	const navigate = useNavigate();
 	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
 	const [gameList, setGameList] = useState<string[]>([]);
@@ -19,7 +19,7 @@ export default function GameHome() {
 		// FUNCTIONS \\
 	
 	const	addToQueue = () => {
-		if (!matchingQueue.includes(cookie.pseudo)) {
+		if (!matchingQueue.includes(cookie.displayName)) {
 			socket.emit("matchingQueue");
 		}
 	}
@@ -113,8 +113,8 @@ export default function GameHome() {
 				<h5>Matching Queue</h5>
 				<ul>
 					{matchingQueue.map((matchingQueue, index) => (
-						<li key={index}>{matchingQueue}     <button 
-								onClick={() => sendInvit(matchingQueue)}>Invit</button>
+						<li key={index}>{matchingQueue}    {matchingQueue !== cookie.displayName && <button 
+								onClick={() => sendInvit(matchingQueue)}>Invit</button>}
 						</li>
 					))}
 				</ul>
