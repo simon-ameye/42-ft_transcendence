@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import GameDisplay, { GameConfig } from "../GameDisplay"
+import { useKeyDown } from "../hooks/useKeyDown"
 
 const GameEngine = (props: { config: GameConfig }) => {
 	const ballInitialX = props.config.canvasSize.x / 2 - props.config.ballSize.x
@@ -12,6 +13,7 @@ const GameEngine = (props: { config: GameConfig }) => {
 	const isGoalP2: boolean = ball.x + ballDirection.x < 0
 	const yTopBorder: boolean = ball.y + ballDirection.y < 0;
 	const yBottomBorder: boolean = ball.y + props.config.ballSize.y + ballDirection.y > props.config.canvasSize.y;
+
 
 	const bounceY = () => {
 		setBallDirection({ x: ballDirection.x, y: ballDirection.y * -1 })
@@ -33,21 +35,22 @@ const GameEngine = (props: { config: GameConfig }) => {
 	}
 
 	const isRightPaddle = () => {
+		const ballTopRight = { x: ball.x + props.config.ballSize.x + ballDirection.x, y: ball.y }
 		const rect = { x: props.config.canvasSize.x - props.config.paddleOffset * 2, y: props.config.p2PosY, w: props.config.canvasSize.x - props.config.paddleOffset, h: props.config.paddleSize.y + props.config.p2PosY }
 
-		const isIn: boolean = 
-		(ball.x + props.config.ballSize.x > rect.x && ball.x + props.config.ballSize.x < rect.w) && (ball.y > rect.y && ball.y < rect.h)
-
+		const isIn: boolean = (
+			(ballTopRight.x > rect.x && ballTopRight.x < rect.w) && (ballTopRight.y > rect.y && ballTopRight.y < rect.h)
+		)
 		return isIn
 	}
 
 	const isLeftPaddle = () => {
+		const ballTopLeft = { x: ball.x + ballDirection.x, y: ball.y }
 		const rect = { x: props.config.paddleOffset, y: props.config.p1PosY, w: props.config.paddleOffset * 2, h: props.config.paddleSize.y + props.config.p1PosY }
 
-		const isIn: boolean = 
-		// Top left corner of ball
-		(ball.x + ballDirection.x > rect.x && ball.x + ballDirection.x < rect.w) && (ball.y > rect.y && ball.y < rect.h)
-		
+		const isIn: boolean = (
+			(ballTopLeft.x > rect.x && ballTopLeft.x < rect.w) && (ballTopLeft.y > rect.y && ballTopLeft.y < rect.h)
+		)
 		return isIn
 	}
 
@@ -62,13 +65,35 @@ const GameEngine = (props: { config: GameConfig }) => {
 			else if (isGoalP2)
 				scored("P2")
 			setBall({ x: ball.x + ballDirection.x, y: ball.y + ballDirection.y });
-			if (props.config.p2PosY > 0 - props.config.paddleSize.y)
-				props.config.p2PosY -= 5;
-			else if (props.config.p2PosY + props.config.paddleSize.y <= 0)
+			if (props.config.p2PosY > 0 - props.config.paddleSize.y) {
+				props.config.p2PosY = ball.y - props.config.paddleSize.y / 2
+			}
+			else if (props.config.p2PosY <= 0) {
 				props.config.p2PosY = props.config.canvasSize.y
+			}
 		}, 10)
 		return () => clearInterval(interval);
 	});
+	
+	const handleKeyUp = () => {
+		if (props.config.p1PosY > 0)
+			props.config.p1PosY -= 10;
+	}
+	const handleKeyDown = () => {
+		if (props.config.p1PosY < props.config.canvasSize.y - props.config.paddleSize.y)
+			props.config.p1PosY += 10;
+	}
+
+	// ARROW UP
+	useKeyDown(() => {
+		handleKeyUp();
+
+	}, ['ArrowUp'])
+	// ARROW DOWN
+	useKeyDown(() => {
+		handleKeyDown();
+
+	}, ['ArrowDown'])
 
 	return <GameDisplay
 		ball={ball}
@@ -81,8 +106,6 @@ export default GameEngine
 /* 
 
 TODO: 
-	- better cpu paddle
 	- fix ball stuck on paddle (=> check all ball area not just corner)
 	- moving paddle with key
-
 */

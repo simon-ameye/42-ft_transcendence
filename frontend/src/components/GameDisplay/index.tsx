@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react"
-import useKey from "../hooks/useKey";
 import "./style.scss"
+
 export interface Position {
 	x: number;
 	y: number;
