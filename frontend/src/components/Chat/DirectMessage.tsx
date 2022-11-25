@@ -10,10 +10,7 @@ const  DirectMessage = ({ messages }: { messages: string[] }) => {
      })
     return (
         <div className='directmessage' ref={Scroolmessage}>
-            {
-                messages.map((messages, index) => (
-                <div key={index} className='message'  >{messages}</div>
-            ))}
+     
         </div>
         
     )
