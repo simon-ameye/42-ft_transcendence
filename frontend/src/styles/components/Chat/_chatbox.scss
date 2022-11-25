@@ -14,10 +14,31 @@
         .Sidebar{
             flex: 1.5;
             border-right: 1px solid #48b15f;
-            background-color: black;
+            background-color: rgb(0, 0, 0);
             .button_create_channel{
                 background-color: #48b15f;
                 border-radius: 10px;
+            }
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            .ChannelList{
+              flex: 1.5;
+              border-top: 1px solid #48b15f;
+              background-color: rgb(0, 0, 0);
+              .button_create_channel{
+                  background-color: #48b15f;
+                  border-radius: 10px;
+              }
+            }
+            .PublicList{
+              flex: 1.5;
+              border-top: 1px solid #48b15f;
+              background-color: rgb(0, 0, 0);
+              .button_create_channel{
+                  background-color: #48b15f;
+                  border-radius: 10px;
+              }
             }
         }
         .directmessage{
@@ -25,7 +46,7 @@
             height: 700px;
             text-align: left;
             overflow: overlay;
-            border-radius: 0px;      
+            border-radius: 0px;
         }
         .messageInput{
             textarea{
@@ -33,9 +54,10 @@
                 width: 560px;
                 height: 90px;
                 border: none;
-                
+
             }
         }
-        
+
+
     }
 }

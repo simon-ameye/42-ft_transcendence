@@ -353,4 +353,10 @@ export class ChatService {
     this.eventEmitter.emit('flushAllChannels');
     return ('User muted')
   }
+
+  async sendAllChannelInterfaces()
+  {
+    this.eventEmitter.emit('flushAllChannels');
+    return ('Channels interfaces sent')
+  }
 }

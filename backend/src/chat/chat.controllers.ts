@@ -125,4 +125,9 @@ export class ChatController {
     console.log(ids, names, isPrivates);
     return { ids: ids, names: names, isPrivates: isPrivates };
   }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('sendAllChannelInterfaces')
+  async sendAllChannelInterfaces(@GetUser() user: UserDto){
+    return (this.chatService.sendAllChannelInterfaces());
+  }
 }

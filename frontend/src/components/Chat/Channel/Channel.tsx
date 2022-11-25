@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import {Dialog,
-  DialogActions, 
+  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   TextField,
-  InputAdornment, 
+  InputAdornment,
   IconButton} from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
@@ -50,8 +50,15 @@ const Channel = () => {
     handleClose()
     handleCreateChannel()
 }
+
+function sendAllChannelInterfaces() {
+  axios.get('http://localhost:3001/chat/sendAllChannelInterfaces',{
+  }).then(res => console.log(res)).catch(err => console.log(err))
+}
+
   return (
    <div>
+    <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>;
     <h2>New Channel <IoIosAdd className='button_create_channel' onClick={handleClickOpen} >
         </IoIosAdd>
         <Dialog open={open} onClose={handleClose}>

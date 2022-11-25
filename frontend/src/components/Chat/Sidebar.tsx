@@ -3,6 +3,7 @@ import ChannelInterface from './ChannelInterface';
 import { useEffect, useState } from "react";
 import { socket } from '../../App';
 import ChannelList from "./Channel/ChannelList";
+import PublicList from "./Channel/PublicList";
 
 
 const Sidebar = ({channelInterfaces}:{channelInterfaces: ChannelInterface[]}) => {
@@ -10,6 +11,7 @@ const Sidebar = ({channelInterfaces}:{channelInterfaces: ChannelInterface[]}) =>
       <div className='Sidebar'> sidebar
           <Channel/>
           <ChannelList channelInterfaces={channelInterfaces}/>
+          <PublicList/>
       </div>
   )
 }
