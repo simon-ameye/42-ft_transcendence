@@ -1,32 +1,15 @@
 import {ListItem} from '@mui/material'
 import ChannelInterface from '../ChannelInterface';
-import { useEffect, useState } from "react";
-import { socket } from '../../../App';
 
 
-const ChannelList = () =>{
-  const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
+export default function ChannelList ({channelInterfaces}:{channelInterfaces: ChannelInterface[]}) {
 
-    const messageListener = (channelInterface: ChannelInterface) => {
-        setchannelInterfaces([channelInterface, ...channelInterfaces])
-        console.log(channelInterface)
-    }
-    
-      useEffect(() => {
-        socket.on('channelInterface', messageListener)
-        return () => {
-          socket.off('channelInterface', messageListener)
-        }
-      },)
-
-return (
- 
-  <div>
-     {channelInterfaces.map((channelInterface) => {
-                      return   <ListItem key={channelInterface.id}>{channelInterface.name}</ListItem>
-                    })}
-  </div>
-)
+  return (
+    <div>
+      <h2>{"yodo"}</h2>
+      {channelInterfaces && channelInterfaces.map((c) => {
+        return <h3>{c.name}</h3>
+      })}
+    </div>
+  )
 }
-
-export default ChannelList;
