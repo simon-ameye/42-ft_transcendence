@@ -1,22 +1,20 @@
-.color-palette {
+.color {
 	margin: 2rem;
-	.color-list li {
-		display: inline;
-		margin: 1rem;
-		padding: 1vh 1vw;
-		border-radius: 50%;
-		border: 1px white solid;
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	input {
+		margin-top: 1rem;
 	}
-	.color1 {
-		background-color: black;
+	.background-color {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
-	.color2 {
-		background-color: #342264;
-	}
-	.color3 {
-		background-color: #30501d;
-	}
-	.color4 {
-		background-color: #333;
+	.pad-ball-color {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 }

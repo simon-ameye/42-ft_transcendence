@@ -1,30 +1,15 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { GameConfig } from "../interface/gameConfig";
+import { ObjectSize, Position } from "../interface/position";
 import "./style.scss"
-
-export interface Position {
-	x: number;
-	y: number;
-}
-
-interface ObjectSize extends Position { };
-
-export interface GameConfig {
-	paddleSize: ObjectSize;
-	paddleOffset: number;
-	canvasSize: ObjectSize;
-	ballSize: ObjectSize;
-	scoreP1: number,
-	scoreP2: number,
-	p1PosY: number,
-	p2PosY: number,
-	bgColor: string;
-	fgColor: string;
-};
 
 const LINE_WIDTH = 1;
 const LINE_OFFSET = 30;
 
 const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
+	const [backColor, setBackColor] = useState("#333333");
+	const [compColor, setCompColor] = useState("#ffffff");
+
 	const canvas = useRef<HTMLCanvasElement>(null);
 
 	const { canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize } = props.config;
@@ -74,13 +59,25 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 
 	}, [canvas, drawAll])
 
+	props.config.bgColor = backColor;
+	props.config.fgColor = compColor;
 	return (
 		<>
 			<div className="score" style={{ width: canvasSize.x }}>
 				<h1 className="score-1">{props.config.scoreP1}</h1>
 				<h1 className="score-p2">{props.config.scoreP2}</h1>
 			</div>
-			<canvas width={canvasSize.x} height={canvasSize.y} ref={canvas}></canvas>
+			<canvas width={canvasSize.x} height={canvasSize.y} ref={canvas} />
+			<div className="color" style={{ width: canvasSize.x }}>
+				<div className="background-color">
+					<label>background color :</label>
+					<input type="color" value={backColor} onChange={e => setBackColor(e.target.value)} />
+				</div>
+				<div className="pad-ball-color">
+					<label>pad/ball color :</label>
+					<input type="color" value={compColor} onChange={e => setCompColor(e.target.value)} />
+				</div>
+			</div>
 		</>
 	)
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import GameDisplay, { GameConfig } from "../GameDisplay"
+import GameDisplay from "../GameDisplay"
 import { useKeyDown } from "../hooks/useKeyDown"
+import { GameConfig } from "../interface/gameConfig"
 
 const GameEngine = (props: { config: GameConfig }) => {
 	const ballInitialX = props.config.canvasSize.x / 2 - props.config.ballSize.x
