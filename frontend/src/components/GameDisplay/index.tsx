@@ -80,8 +80,7 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 				<h1 className="score-1">{props.config.scoreP1}</h1>
 				<h1 className="score-p2">{props.config.scoreP2}</h1>
 			</div>
-			<canvas tabIndex={0} width={canvasSize.x} height={canvasSize.y} ref={canvas}></canvas>
-
+			<canvas width={canvasSize.x} height={canvasSize.y} ref={canvas}></canvas>
 		</>
 	)
 }
