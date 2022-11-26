@@ -47,7 +47,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	
 	@SubscribeMessage('join matching queue')
 		async addToQueue(client): Promise<void> {
-			const displayName = await this.userService.getNameBySId(client.id);
+			try {
+				const displayName = await this.userService.getNameBySId(client.id);
+			}
+			catch (e) {
+				console.log(e);
+			}
 			this.server.emit('join matching queue', displayName);
 			this.gameService.addClientToMatchingQueue(client.id);
 		}

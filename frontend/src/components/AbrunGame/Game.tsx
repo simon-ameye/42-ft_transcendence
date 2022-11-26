@@ -20,7 +20,7 @@ export default function GameHome() {
 	
 	const	addToQueue = () => {
 		if (!matchingQueue.includes(cookie.displayName)) {
-			socket.emit("matchingQueue");
+			socket.emit("join matching queue");
 		}
 	}
 
@@ -60,9 +60,9 @@ export default function GameHome() {
 	
 
 	useEffect(() => {
-		socket.on("matchingQueue", matchingQueueListener);
+		socket.on("join matching queue", joinMatchingQueueListener);
 		return () => {
-			socket.off("matchingQueue", matchingQueueListener);
+			socket.off("join matching queue", joinMatchingQueueListener);
 		}
 	})
 
@@ -82,7 +82,7 @@ export default function GameHome() {
 
 		// LISTENER \\
 	
-	const matchingQueueListener = (displayName: string) => {
+	const	joinMatchingQueueListener = (displayName: string) => {
 			setMatchingQueue([...matchingQueue, displayName]);
 	}
 
@@ -102,18 +102,24 @@ export default function GameHome() {
 		setGameList([...gameList, strGame]);
 	}
 
+	function MissedGoal() {
+ 	 return <h1>MISSED!</h1>;
+	}
+
 		// RETURN \\
 
 	return (
 		<>
-			<div>
-				<button onClick={() => addToQueue()}>Join game</button>
-			</div>
+			{cookie.displayName &&
+				<div>
+					<button onClick={() => addToQueue()}>Join game</button>
+				</div>
+			}
 			<div>
 				<h5>Matching Queue</h5>
 				<ul>
 					{matchingQueue.map((matchingQueue, index) => (
-						<li key={index}>{matchingQueue}    {matchingQueue !== cookie.displayName && <button 
+						<li key={index}>{matchingQueue}    {cookie.displayName && matchingQueue !== cookie.displayName && <button 
 								onClick={() => sendInvit(matchingQueue)}>Invit</button>}
 						</li>
 					))}

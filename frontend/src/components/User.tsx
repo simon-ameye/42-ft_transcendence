@@ -43,6 +43,10 @@ const User = () => {
 			.catch(err => console.log(err));
 	}
 
+	const	logout = () => {
+		console.log("want to log out");
+	}
+
 	return (
 		<>
 			<Navbar />
@@ -92,6 +96,9 @@ const User = () => {
 				<div>
 					<button onClick={getSocketId}>Get SocketID in Console</button>
 				</div>
+			</div>
+			<div>
+				<button onClick={logout}>LOGOUT</button>
 			</div>
 		</>
 	);

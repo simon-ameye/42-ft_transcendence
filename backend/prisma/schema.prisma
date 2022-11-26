@@ -20,12 +20,11 @@ model User {
   imageUrl String?
   googleSecret String?
   // add path of the image
-	socketId String? @unique
+  socketId String? @unique
+  matching Matching?
 
-	matching Matching?
-
-	inGame	Boolean @default(false)
-	victories	Int @default(0)
+  inGame Boolean @default(false)
+  victories Int @default(0)
 
   @@map("users")
 }
