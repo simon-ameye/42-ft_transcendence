@@ -11,19 +11,20 @@ datasource db {
 }
 
 model User {
-  id                     Int             @id @default(autoincrement())
-  createdAt              DateTime        @default(now())
-  updatedAt              DateTime        @updatedAt
-  email                  String          @unique
-  hash                   String?
-  displayName            String?
-  imageUrl               String?
-  googleSecret           String?
-  status                 String
-  countWin               Int
   // probably a command with all
   sentFriendRequests friendRequest[] @relation("creator")
   receivedFriendRequests friendRequest[] @relation("receiver")
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email String @unique
+  hash String?
+  displayName String?
+  imageUrl String?
+  googleSecret String?
+  status  String
+  // add path of the image
+	socketId String? @unique
   @@map("users")
 }
 

@@ -1,20 +1,6 @@
 .paddle {
-	--position: 50;
-	--hue: 200;
-	--staturation: 50%;
-	--paddle-color: hsl(var(--hue), var(--staturation), 75%);
-	position: absolute;
-	background-color: var(--paddle-color);
-	top: calc(var(--position) * 1vh);
-	transform: translateY(-50%);
-	width: 1vh;
-	height: 10vh;
-}
-
-.paddle.left {
-	left: 1vw;
-}
-
-.paddle.right {
-	right: 1vw;
+	background-color: rgb(146, 79, 79);
+	border-radius: 3px;
+	width: 20px;
+	height: 120px;
 }

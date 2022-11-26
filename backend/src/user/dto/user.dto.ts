@@ -7,4 +7,5 @@ export class UserDto {
   displayName: string;
   imageUrl: string;
   id: number;
+	socketId: string;
 }

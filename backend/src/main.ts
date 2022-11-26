@@ -2,10 +2,17 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe( {
+	app.use(cookieParser());
+	app.enableCors({
+		origin: 'http://localhost:3000',
+		methods: ['POST', 'PUT', 'DELETE', 'GET'],
+		credentials: true
+	});
+  app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
   }));
   // please MODIFY this secret

@@ -9,16 +9,17 @@ import { Controller,
   FileTypeValidator, 
   UseInterceptors,
   UseGuards,
-  Req
+	Query,
+	Req
 } from '@nestjs/common';
 
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { UserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/decorator/get-user.decorator';
+import { GetUser } from 'src/auth/decorators';
 
 // clean dependencies + unused dtos
 
@@ -39,11 +40,25 @@ export class UserController {
     return user.displayName;
   }
 
+  // DisplaySocketId
+  @UseGuards(AuthGuard('jwt'))
+  @Get('socketId')
+  getSocketId(@GetUser() user: UserDto) {
+    return user.socketId;
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Put('modifyName')
-  modifyName(@GetUser() user: UserDto, @Body() body: {displayName: string}) {
+  modifyName(@GetUser() user: UserDto,
+		@Body() body: {displayName: string}) {
     return this.userService.modifyName(user, body.displayName);
   }
+
+	@UseGuards(AuthGuard('jwt'))
+	@Put('modifySocketId')
+	modifySocketId(@Body() body: {socketId: string}, @GetUser() user: UserDto) {
+		return this.userService.modifySocketId(user, body.socketId);
+	}
 
   //// IMAGE UPLOAD
   @UseGuards(AuthGuard('jwt'))
