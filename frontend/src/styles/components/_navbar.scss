@@ -19,4 +19,15 @@ nav span {
 	color: $nav_text;
 }
 
-
+@media only screen and (max-width: 800px) {
+	nav span {
+		display: none;
+	}
+	nav i {
+		padding-right: 2.5rem;
+		font-size: 30px;
+	}
+	h3 {
+		display: none;
+	}
+}
