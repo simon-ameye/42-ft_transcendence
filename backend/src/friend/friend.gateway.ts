@@ -8,9 +8,8 @@ import { FriendService } from "./friend.service";
 import { Logger } from '@nestjs/common';
 import { Socket } from "socket.io";
 import { AuthGuard } from "@nestjs/passport";
-import { GetUser } from "src/auth/decorator/get-user.decorator";
 
-@WebSocketGateway() // only for notifications and status or modification of the database in it ?
+@WebSocketGateway(4343) // only for notifications and status or modification of the database in it ?
 export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatewayConnection {
   constructor( private friendService: FriendService ) {}
 

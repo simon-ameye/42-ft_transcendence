@@ -22,7 +22,7 @@ model User {
   displayName String?
   imageUrl String?
   googleSecret String?
-  status  String
+  status  String?
   // add path of the image
 	socketId String? @unique
   @@map("users")
