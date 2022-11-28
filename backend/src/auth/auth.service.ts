@@ -78,6 +78,7 @@ export class AuthService {
           email: dto.email,
           hash,
 					status: "online",
+					displayName: dto.displayName
         },
       });
       delete user.hash;

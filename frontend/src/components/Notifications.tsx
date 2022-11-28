@@ -1,47 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
-import io from 'socket.io-client';
+import io, {Socket} from 'socket.io-client';
+import { EmitFlags } from 'typescript';
 
-const socket = io();
+/// just for testing everithing for friends
+
+const socket = io("http://localhost:3001");
 
 const Notifications = () => {
-	const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastPong, setLastPong] = useState(null);
-	
-  useEffect(() => {
-    socket.on('connect', () => {
-      setIsConnected(true);
-    });
+  const [Friendrequest, setFriendrequest] = useState("");
+  const [receivedRequest, setReceivedRequest] = useState("");
 
-    socket.on('disconnect', () => {
-      setIsConnected(false);
-    });
+  const sendFriendRequest = () => {
+    socket.emit("sendFriendRequest", { Friendrequest });
+  };
 
-    /*socket.on('pong', () => {
-      setLastPong(new Date().toISOString());
-    });*/
+  useEffect( () => {
+    socket.on("receiveFriendRequest", (data) => {
+      setReceivedRequest(data.Friendrequest); // here my friend request
+    })
+  }, [socket] )
 
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('pong');
-    };
-  }, []);
-
-  const sendPing = () => {
-    socket.emit('ping');
-  }
+  // here we will just need 
+  // notif + accept or not
+  /// do sending request on another button
 
   return (
-		<div className='button'>
-			<Navbar />
-    		<div>
-      		<p>Connected: { '' + isConnected }</p>
-      		<p>Last pong: { lastPong || '-' }</p>
-      		<button onClick={ sendPing }>Send ping</button>
-    		</div>
-		</div>
-  );
-};
+    <div>
+      <Navbar/>
+      <input
+        placeholder='Friendrequest'
+        onChange={(event) => {
+          setFriendrequest(event.target.value);
+        }}
+      />
+      <button onClick={sendFriendRequest}>Send Friendrequest</button>
+      <h1>Received Requests</h1>
+      {receivedRequest}
+      {/*<h1>Sent Requests</h1> */}
+      {/* {sentRequest} */}
+      { /*<button onClick={showFriendRequest}>Show Friendrequest</button> */}
+     </div>
+  )
+}
 
 export default Notifications;

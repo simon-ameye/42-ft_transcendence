@@ -23,8 +23,7 @@ const Navbar = () => {
 				</NavLink>
 				<NavLink to="/notifications">
 					<i className="fa-solid fa-bell"></i>
-					<button>
-					</button>
+					{ /* do a button instead of a navlink*/ }
 				</NavLink>
 			</nav>
 		</header>
