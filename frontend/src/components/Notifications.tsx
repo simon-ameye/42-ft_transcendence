@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import io, {Socket} from 'socket.io-client';
 import { EmitFlags } from 'typescript';
-
+import axios from 'axios';
 /// just for testing everithing for friends
 
 const socket = io("http://localhost:3001");
@@ -14,6 +14,13 @@ const Notifications = () => {
   const sendFriendRequest = () => {
     socket.emit("sendFriendRequest", { Friendrequest });
   };
+
+  const getUsers = () => {
+		axios.get('http://localhost:3001/user/users', {
+		})
+			.then(res => console.log(res))
+			.catch(err => console.log(err));
+	}
 
   useEffect( () => {
     socket.on("receiveFriendRequest", (data) => {
@@ -36,7 +43,7 @@ const Notifications = () => {
       />
       <button onClick={sendFriendRequest}>Send Friendrequest</button>
       <h1>Received Requests</h1>
-      {receivedRequest}
+      {receivedRequest}      
       {/*<h1>Sent Requests</h1> */}
       {/* {sentRequest} */}
       { /*<button onClick={showFriendRequest}>Show Friendrequest</button> */}

@@ -6,7 +6,15 @@ import { UserDto } from './dto';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
-  
+
+  async getUsers() {
+    const users = await this.prisma.user.findMany();
+    for ( let user of users ) {
+      delete user['hash']
+    }
+    return users;
+  }
+
   async modifyName(dto: UserDto, modif: string) {
     if (!dto) {
       console.log("not expecred error");

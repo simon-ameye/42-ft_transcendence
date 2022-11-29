@@ -26,11 +26,23 @@ import { GetUser } from 'src/auth/decorators';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
+  
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  getUser(@GetUser() user: UserDto) {
+    return user; // by now returns the token
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('getEmail')
   getEmail(@GetUser() user: UserDto) {
     return user.email;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('users')
+  getUsers() {
+    return this.userService.getUsers();
   }
 
   // DisplayName

@@ -8,6 +8,7 @@ import io from 'socket.io-client';
 import Game from './pages/Game';
 import Auth from './components/Auth';
 import axios from 'axios';
+import Profile from './components/Profile';
 
 axios.defaults.withCredentials = true;
 
@@ -23,6 +24,7 @@ function App() {
 				<Route path="/game" element={<Game />} />
 				<Route path="/chat" element={<Chat />} />
 				<Route path="/auth" element={<Auth />} />
+				<Route path="/profile" element={<Profile />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
 		</BrowserRouter>

@@ -31,11 +31,11 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
   }
 
   @SubscribeMessage('sendFriendRequest')
-  handleFriendRequest( client: Socket, Friendrequest: jwtToken) {
+  handleFriendRequest( client: Socket, message: string, jwtToken: string) {
     // we need the socket id to send the friendrequest
-    this.logger.log('Client message', Friendrequest);
+    this.logger.log('Client message', message);
     // create a service to update database
-    this.server.emit("receiveFriendRequest", Friendrequest); //emit the friend request to the good id
+    this.server.emit("receiveFriendRequest", message); //emit the friend request to the good id
   }
 
   @SubscribeMessage('acceptRequest')
