@@ -26,6 +26,8 @@ model User {
   inGame Boolean @default(false)
   victories Int @default(0)
 
+	log	Boolean @default(true)
+
   @@map("users")
 }
 

@@ -43,7 +43,8 @@ const User = () => {
 			.catch(err => console.log(err));
 	}
 
-	const	logout = () => {
+	const	logOut = () => {
+		socket.emit("log out");
 		console.log("want to log out");
 	}
 
@@ -98,7 +99,7 @@ const User = () => {
 				</div>
 			</div>
 			<div>
-				<button onClick={logout}>LOGOUT</button>
+				<button onClick={logOut}>LOGOUT</button>
 			</div>
 		</>
 	);

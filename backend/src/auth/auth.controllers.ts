@@ -4,6 +4,7 @@ import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "./decorators";
+import { UserDto } from "./dto";
 
 @Controller('auth')
 export class AuthController {
@@ -41,5 +42,11 @@ export class AuthController {
 	@Post('google2FA/login')
 	verify2FA(@Body() body: {email: string, code: string}) {
 		return (this.authService.verify2FA(body));
+	}
+
+	@UseGuards(AuthGuard('jwt'))
+	@Delete('logout')
+	async logout(@GetUser() user: UserDto) {
+		return (this.authService.logout(user));
 	}
 }

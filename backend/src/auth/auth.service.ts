@@ -188,4 +188,15 @@ export class AuthService {
 		);
 		return (token);
 	}
+
+	async logout(user: UserDto) {
+		const updatedUser = this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				log: false
+			}
+		});
+	}
 }
