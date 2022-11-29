@@ -12,11 +12,11 @@ async function bootstrap() {
 		methods: ['POST', 'PUT', 'DELETE', 'GET'],
 		credentials: true
 	});
-  app.useGlobalPipes(new ValidationPipe({
+  app.useGlobalPipes(new ValidationPipe( {
     whitelist: true,
   }));
-  // please MODIFY this secret
-  
+  console.log("testing 42API");
+  // please modify this secret
   app.use(
     session({
 	    secret: 'use random string',

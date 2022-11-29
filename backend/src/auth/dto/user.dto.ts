@@ -1,4 +1,4 @@
-import { IsEmail, IsInt } from "class-validator";
+import { IsEmail, IsInt, IsBoolean } from "class-validator";
 
 export class	UserDto {
 
@@ -7,4 +7,7 @@ export class	UserDto {
 
 	@IsEmail()
 	email: string;
+
+	@IsBoolean()
+	inGame: boolean
 }

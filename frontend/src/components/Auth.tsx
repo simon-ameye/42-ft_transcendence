@@ -7,7 +7,7 @@ export default function Auth () {
 
 	// VARIABLES \\
 
-	const [cookie, setCookie] = useCookies(['jwtToken', 'pseudo']);
+	const [cookie, setCookie] = useCookies(['jwtToken', 'displayName']);
 	const navigate = useNavigate();
 	const queryParameters = new URLSearchParams(window.location.search)
 	const code = queryParameters.get("code");
@@ -36,8 +36,8 @@ export default function Auth () {
 			.catch(err => console.log(err));
 	}
 
-	const displayWelcomeMsg = (pseudo: string) => {
-		setCookie('pseudo', pseudo, { path: '/' });
+	const displayWelcomeMsg = (displayName: string) => {
+		setCookie('displayName', displayName, { path: '/' });
 		updateUserSocket();
 	}
 
@@ -56,7 +56,7 @@ export default function Auth () {
 	return (
 		<>
 			<div>
-				<h1>Hello {cookie.pseudo}!</h1>
+				<h1>Hello {cookie.displayName}!</h1>
 			</div>
 			<div>
 				<button onClick={goHome}>Go to home page</button>

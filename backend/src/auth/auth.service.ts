@@ -28,7 +28,7 @@ export class AuthService {
 			const res = await firstValueFrom(this.httpService.get(
 				'https://api.intra.42.fr/v2/me', {
 					headers: {
-						Authorization: authStr,
+						Authorization: authStr
 					}
 				}).pipe(map(response => response.data)));
 			var user = await this.prismaService.user.findUnique({
@@ -44,45 +44,55 @@ export class AuthService {
 						imageUrl: String(res.image_url)
 					}
 				});
-				const fs = require('fs');
-				const fetch = require('node-fetch');
+			//	const fs = require('fs');
+			//	const fetch = require('node-fetch');
 
-				const url = user.imageUrl;
-  			const response = await fetch(url);
- 				const buffer = await response.buffer();
-				const image_url = `./uploads/` + user.id;
-  			fs.writeFile(image_url, buffer, () =>
-					console.log('finished downloading!'));
-					const updateUser = await this.prismaService.user.update({
-						where: {
-							id: user.id,
-						},
-						data: {
-							imageUrl: image_url,
-						},
-					})
+			//	const url = user.imageUrl;
+  		//	const response = await fetch(url);
+ 			//	const buffer = await response.buffer();
+			//	const image_url = `./uploads/` + user.id;
+  		//	fs.writeFile(image_url, buffer, () =>
+			//		console.log('finished downloading!'));
+			//		const updateUser = await this.prismaService.user.update({
+			//			where: {
+			//				id: user.id,
+			//			},
+			//			data: {
+			//				imageUrl: image_url,
+			//			},
+			//		})
 				}
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			response.status(202).cookie('displayName', user.displayName, { path: '/' });
 			return (user.displayName);
 		} catch(e) {
 			return (e.message);
 		}
   }
 
-  async signup(dto: AuthDto): Promise<{access_token: string}> {
+  async signup(
+			dto: AuthDto,
+			@Res({ passthrough: true }) response: Response
+		): Promise<string> {
     const hash = await argon.hash(dto.password);
     try {
       const user = await this.prismaService.user.create({
         data: {
           email: dto.email,
           hash,
+<<<<<<< HEAD
 					status: "online",
+=======
+>>>>>>> main
 					displayName: dto.displayName
         },
       });
       delete user.hash;
-			return (this.signToken(user));
+			const jwtToken = await this.signJwtToken(user);
+			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			return (user.displayName);
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -120,14 +130,20 @@ export class AuthService {
 		return (this.signToken(user));
   }
 
-	async	signup2FA(email: string): Promise<string> {
+	async	signup2FA(data: {email: string, displayName: string}): Promise<string> {
 		const secret = speakeasy.generateSecret();
 		try {
 			const user = await this.prismaService.user.create({
 				data: {
+<<<<<<< HEAD
 					email,
 					googleSecret: String(secret.base32),
 					status: "online",
+=======
+					email: data.email,
+					googleSecret: String(secret.base32),
+					displayName: data.displayName
+>>>>>>> main
 				},
 			});
 		} catch (error) {
@@ -154,9 +170,9 @@ export class AuthService {
 			encoding: 'base32',
 			token: payload.code
 		});
-		if (verify)
-			return (this.signToken(user))
-		throw new ForbiddenException('Credentials invalid');
+		if (!verify)
+			throw new ForbiddenException('Credentials invalid');
+		return (this.signToken(user))
 	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {
@@ -181,5 +197,16 @@ export class AuthService {
 			}
 		);
 		return (token);
+	}
+
+	async logout(user: UserDto) {
+		const updatedUser = this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				log: false
+			}
+		});
 	}
 }
