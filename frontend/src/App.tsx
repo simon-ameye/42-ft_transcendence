@@ -42,6 +42,7 @@ function App() {
 			<Route path="/game" element={<Game />} />
 			<Route path="/game/live" element={<LiveGame />} />
 			<Route path="/auth" element={<Auth />} />
+			<Route path="/notifications" element={<Notifications />} />
 			<Route path="/profile" element={<Profile />} />
 			<Route path="*" element={<NotFound />} />
 		</Routes>

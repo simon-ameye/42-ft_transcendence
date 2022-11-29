@@ -22,7 +22,8 @@ const Navbar = () => {
 					<span>User</span>
 				</NavLink>
 				<NavLink to="/notifications">
-					<i className="fa-solid fa-bell"></i>
+					<i className="fa-solid fa-user"></i>
+					<span>notifications</span>
 					{ /* do a button instead of a navlink*/ }
 				</NavLink>
 				<NavLink to="/profile">

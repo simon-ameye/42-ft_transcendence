@@ -9,13 +9,7 @@ export class AuthDto {
   @IsNotEmpty()
   password: string;
 
-<<<<<<< HEAD
   @IsString()
   @IsNotEmpty()
   displayName: string;
-=======
-	@IsString()
-	@IsNotEmpty()
-	displayName: string;
->>>>>>> main
 }

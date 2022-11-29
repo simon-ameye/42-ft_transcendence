@@ -81,10 +81,6 @@ export class AuthService {
         data: {
           email: dto.email,
           hash,
-<<<<<<< HEAD
-					status: "online",
-=======
->>>>>>> main
 					displayName: dto.displayName
         },
       });
@@ -135,15 +131,9 @@ export class AuthService {
 		try {
 			const user = await this.prismaService.user.create({
 				data: {
-<<<<<<< HEAD
-					email,
-					googleSecret: String(secret.base32),
-					status: "online",
-=======
 					email: data.email,
 					googleSecret: String(secret.base32),
 					displayName: data.displayName
->>>>>>> main
 				},
 			});
 		} catch (error) {
