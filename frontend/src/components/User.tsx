@@ -44,8 +44,9 @@ const User = () => {
 	}
 
 	const	logOut = () => {
-		socket.emit("log out");
-		console.log("want to log out");
+		axios.delete('http://localhost:3001/auth/logout')
+			.then(res => navigate('/'))
+			.catch(err => console.log(err));
 	}
 
 	return (

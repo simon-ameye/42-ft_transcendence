@@ -46,7 +46,7 @@ export class AuthController {
 
 	@UseGuards(AuthGuard('jwt'))
 	@Delete('logout')
-	async logout(@GetUser() user: UserDto) {
-		return (this.authService.logout(user));
+	async logout(@GetUser() user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+		return (this.authService.logout(user, response));
 	}
 }

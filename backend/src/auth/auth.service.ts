@@ -189,7 +189,7 @@ export class AuthService {
 		return (token);
 	}
 
-	async logout(user: UserDto) {
+	async logout(user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
 		const updatedUser = this.prismaService.user.update({
 			where: {
 				id: user.id
@@ -198,5 +198,7 @@ export class AuthService {
 				log: false
 			}
 		});
+		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
+		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
 	}
 }
