@@ -4,6 +4,7 @@ import { ChannelMode } from "@prisma/client";
 import { GetUser } from "src/auth/decorators/get-user.decorator";
 import { UserDto } from "src/auth/dto";
 import { ChatService } from "./chat.service";
+import { ChannelsInterface } from "./interfaces/channels.interface";
 
 @Controller('chat')
 export class ChatController {
@@ -114,9 +115,9 @@ export class ChatController {
 
   @Get('getPublicChannelTable')
   async getPublicChannelTable() {
-    let { ids, names, isPrivates } = await this.chatService.getPublicChannelTable();
-    console.log(ids, names, isPrivates);
-    return { ids: ids, names: names, isPrivates: isPrivates };
+    let { channelsInterfaces } = await this.chatService.getPublicChannelTable();
+    console.log(channelsInterfaces);
+    return { channelsInterfaces : channelsInterfaces };
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('getUserChannelTable')

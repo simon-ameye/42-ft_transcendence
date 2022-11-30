@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User } from ".prisma/client";
+import { ChannelsInterface } from "./interfaces/channels.interface";
 
 @Injectable()
 export class ChatService {
@@ -228,18 +229,26 @@ export class ChatService {
 
   async getPublicChannelTable()
   {
-    var ids         : number[]  = [];
-    var names       : string[]  = [];
-    var isPrivates  : boolean[] = [];
+    //var ids         : number[]  = [];
+    //var names       : string[]  = [];
+    //var isPrivates  : boolean[] = [];
+//
+    //let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC },})
+    //for (let channel of channels)
+    //{
+    //  ids         .push(channel.id);
+    //  names       .push(channel.name);
+    //  isPrivates  .push(channel.password != '');
+    //}
+    //return {ids, names, isPrivates};
 
+    var channelsInterfaces : ChannelsInterface[] = [];
     let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC },})
     for (let channel of channels)
     {
-      ids         .push(channel.id);
-      names       .push(channel.name);
-      isPrivates  .push(channel.password != '');
+      channelsInterfaces.push({id : channel.id, name : channel.name, isProtected : channel.password != ''});
     }
-    return {ids, names, isPrivates};
+    return {channelsInterfaces};
   }
 
   async getUserChannelTable(userId: number)
