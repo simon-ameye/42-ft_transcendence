@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { TbKey, TbKeyOff } from 'react-icons/tb';
 
 export default function PublicList() {
 
@@ -56,7 +57,8 @@ export default function PublicList() {
   }
 
   const channelList = channelsInterfaces.map((c, i) => (
-    <ListItem button key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <div>P-</div> : <div>N-</div>} {c.name}
+    //<ListItem button key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <div>P-</div> : <div>N-</div>} {c.name}
+    <ListItem button key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <TbKey /> : <TbKeyOff />} {c.name}
     </ListItem>
   ))
 
