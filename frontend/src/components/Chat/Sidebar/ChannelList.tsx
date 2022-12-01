@@ -16,18 +16,21 @@ export default function ChannelList({ channelInterfaces }: { channelInterfaces: 
     }).then(res => console.log(res)).catch(err => console.log(err))
   }
 
-  function handleClickOpen() {}
+  function handleClickOpen() {
+
+  }
 
   const channelList = channelInterfaces.map((c, i) => (
-    //<ListItem button key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <div>P-</div> : <div>N-</div>} {c.name}
-    <ListItem button key={i} onClick={event => handleClickOpen()} >{c.isProtected ? <TbKey /> : <TbKeyOff />} {c.name}
+    <ListItem button key={i} onClick={event => handleClickOpen()} > {c.name}
     </ListItem>
   ))
 
   return (
     <div className='ChannelList'>
       <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
-      {channelList}
+      <div>
+        {channelList}
+      </div>
     </div>
   )
 }

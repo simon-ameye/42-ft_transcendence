@@ -57,7 +57,6 @@ export default function PublicList() {
   }
 
   const channelList = channelsInterfaces.map((c, i) => (
-    //<ListItem button key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <div>P-</div> : <div>N-</div>} {c.name}
     <ListItem button key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <TbKey /> : <TbKeyOff />} {c.name}
     </ListItem>
   ))
