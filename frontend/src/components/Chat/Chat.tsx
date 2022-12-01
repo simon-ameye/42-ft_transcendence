@@ -7,12 +7,12 @@ import ChannelInterface from './ChannelInterface'
 
 const Chat = () => {
 
-const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<string[]>([])
 
   return (
     <div>
       <DirectMessage messages={messages} />
-      <InputMessage/>
+      <InputMessage />
     </div>
   )
 }

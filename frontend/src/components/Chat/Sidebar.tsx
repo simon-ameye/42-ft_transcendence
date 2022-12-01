@@ -6,13 +6,13 @@ import ChannelList from "./Channel/ChannelList";
 import PublicList from "./Channel/PublicList";
 
 
-const Sidebar = ({channelInterfaces}:{channelInterfaces: ChannelInterface[]}) => {
+const Sidebar = ({ channelInterfaces }: { channelInterfaces: ChannelInterface[] }) => {
   return (
-      <div className='Sidebar'> sidebar
-          <Channel/>
-          <ChannelList channelInterfaces={channelInterfaces}/>
-          <PublicList/>
-      </div>
+    <div className='Sidebar'> sidebar
+      <Channel />
+      <ChannelList channelInterfaces={channelInterfaces} />
+      <PublicList />
+    </div>
   )
 }
 export default Sidebar;

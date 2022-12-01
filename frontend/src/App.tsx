@@ -17,17 +17,17 @@ console.log("socket value", socket);
 function App() {
 
   return (
-   <BrowserRouter>
-		<Routes>
-			<Route path="/" element={<Home />} />
-			<Route path="/user" element={<User />} />
-			<Route path="/game" element={<Game />} />
-			<Route path="/auth" element={<Auth />} />
-      <Route path="/ChatBox" element={<ChatBox />} />
-			<Route path="/Chat" element={<Chat />} />
-			<Route path="*" element={<NotFound />} />
-		</Routes>
-	</BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/ChatBox" element={<ChatBox />} />
+        <Route path="/Chat" element={<Chat />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

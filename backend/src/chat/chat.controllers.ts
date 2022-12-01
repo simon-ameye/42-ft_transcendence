@@ -8,7 +8,7 @@ import { ChannelsInterface } from "./interfaces/channels.interface";
 
 @Controller('chat')
 export class ChatController {
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService) { }
 
 
   //L’utilisateur doit pouvoir créer des channels (salons de discussion) pouvant être
@@ -23,23 +23,23 @@ export class ChatController {
   //  POST : {name: '', mode: 'DIRECT', password: '', otherUserId: '3'}
   @UseGuards(AuthGuard('jwt'))
   @Post('createChannel')
-  createChannel(@Body() body: {name: string, mode: ChannelMode, password: string, otherUserId: number},
-  @GetUser() user: UserDto) {
+  createChannel(@Body() body: { name: string, mode: ChannelMode, password: string, otherUserId: number },
+    @GetUser() user: UserDto) {
     console.log('new channel creation request : ', body.name, body.mode, body.password);
     return (this.chatService.createChannel(user.id, body.name, body.mode, body.password, Number(body.otherUserId)));
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('joinChannel')
-  joinChannel(@Body() body: {channelId: number, password: string},
-  @GetUser() user: UserDto) {
+  joinChannel(@Body() body: { channelId: number, password: string },
+    @GetUser() user: UserDto) {
     return (this.chatService.joinChannel(user.id, Number(body.channelId), body.password));
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('leaveChannel')
-  leaveChannel(@Body() body: {channelId: number},
-  @GetUser() user: UserDto) {
+  leaveChannel(@Body() body: { channelId: number },
+    @GetUser() user: UserDto) {
     return (this.chatService.leaveChannel(user.id, Number(body.channelId)));
   }
 
@@ -47,8 +47,8 @@ export class ChatController {
   //+channels
   @UseGuards(AuthGuard('jwt'))
   @Post('sendMessage')
-  sendMessage(@Body() body: {channelId: number, text: string},
-  @GetUser() user: UserDto) {
+  sendMessage(@Body() body: { channelId: number, text: string },
+    @GetUser() user: UserDto) {
     return (this.chatService.sendMessage(user.id, Number(body.channelId), body.text));
   }
 
@@ -56,8 +56,8 @@ export class ChatController {
   //envoyés par les comptes qu’il aura bloqués.
   @UseGuards(AuthGuard('jwt'))
   @Post('blockUser')
-  blockUser(@Body() body: {blockedUserId: number},
-  @GetUser() user: UserDto) {
+  blockUser(@Body() body: { blockedUserId: number },
+    @GetUser() user: UserDto) {
     return (this.chatService.blockUser(user.id, Number(body.blockedUserId)));
   }
 
@@ -65,8 +65,8 @@ export class ChatController {
   //au channel, le modifier, et le retirer.
   @UseGuards(AuthGuard('jwt'))
   @Post('setChannelPassword')
-  setChannelPassword(@Body() body: {channelId: number, newPassword: string},
-  @GetUser() user: UserDto) {
+  setChannelPassword(@Body() body: { channelId: number, newPassword: string },
+    @GetUser() user: UserDto) {
     return (this.chatService.setChannelPassword(user.id, Number(body.channelId), body.newPassword));
   }
 
@@ -74,8 +74,8 @@ export class ChatController {
   //rôle d’administrateur à d’autres utilisateurs.
   @UseGuards(AuthGuard('jwt'))
   @Post('makeUserAdmin')
-  makeUserAdmin(@Body() body: {channelId: number, newAdminId: number},
-  @GetUser() user: UserDto) {
+  makeUserAdmin(@Body() body: { channelId: number, newAdminId: number },
+    @GetUser() user: UserDto) {
     return (this.chatService.makeUserAdmin(user.id, Number(body.channelId), Number(body.newAdminId)));
   }
 
@@ -83,8 +83,8 @@ export class ChatController {
   //pendant une durée déterminée.
   @UseGuards(AuthGuard('jwt'))
   @Post('banUser')
-  banUser(@Body() body: {channelId: number, banedId: number},
-  @GetUser() user: UserDto) {
+  banUser(@Body() body: { channelId: number, banedId: number },
+    @GetUser() user: UserDto) {
     return (this.chatService.banUser(user.id, Number(body.channelId), Number(body.banedId)));
   }
 
@@ -92,8 +92,8 @@ export class ChatController {
   //pendant une durée déterminée.
   @UseGuards(AuthGuard('jwt'))
   @Post('muteUser')
-  muteUser(@Body() body: {channelId: number, muteId: number, minutes: number},
-  @GetUser() user: UserDto) {
+  muteUser(@Body() body: { channelId: number, muteId: number, minutes: number },
+    @GetUser() user: UserDto) {
     return (this.chatService.muteUser(user.id, Number(body.channelId), Number(body.muteId), Number(body.minutes)));
   }
 
@@ -117,18 +117,18 @@ export class ChatController {
   async getPublicChannelTable() {
     let { channelsInterfaces } = await this.chatService.getPublicChannelTable();
     console.log(channelsInterfaces);
-    return { channelsInterfaces : channelsInterfaces };
+    return { channelsInterfaces: channelsInterfaces };
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('getUserChannelTable')
-  async getUserChannelTable(@GetUser() user: UserDto){
+  async getUserChannelTable(@GetUser() user: UserDto) {
     let { ids, names, isPrivates } = await this.chatService.getUserChannelTable(user.id);
     console.log(ids, names, isPrivates);
     return { ids: ids, names: names, isPrivates: isPrivates };
   }
   @UseGuards(AuthGuard('jwt'))
   @Get('sendAllChannelInterfaces')
-  async sendAllChannelInterfaces(@GetUser() user: UserDto){
+  async sendAllChannelInterfaces(@GetUser() user: UserDto) {
     return (this.chatService.sendAllChannelInterfaces());
   }
 }
