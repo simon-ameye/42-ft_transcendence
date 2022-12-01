@@ -1,9 +1,9 @@
-import Channel from "./Channel/Channel";
+import Channel from "./Sidebar/Channel";
 import ChannelInterface from './ChannelInterface';
 import { useEffect, useState } from "react";
 import { socket } from '../../App';
-import ChannelList from "./Channel/ChannelList";
-import PublicList from "./Channel/PublicList";
+import ChannelList from "./Sidebar/ChannelList";
+import PublicList from "./Sidebar/PublicList";
 
 
 const Sidebar = ({ channelInterfaces }: { channelInterfaces: ChannelInterface[] }) => {
