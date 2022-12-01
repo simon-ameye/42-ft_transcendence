@@ -24,7 +24,6 @@ function App() {
         <Route path="/game" element={<Game />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
-        <Route path="/Chat" element={<Chat />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

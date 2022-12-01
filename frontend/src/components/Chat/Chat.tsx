@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react'
 import InputMessage from './InputMessage'
 import DirectMessage from './DirectMessage'
-import { socket } from '../../App'
 import ChannelInterface from './ChannelInterface'
 
-
-const Chat = () => {
-
-  const [messages, setMessages] = useState<string[]>([])
-
+const Chat = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
   return (
-    <div>
-      <DirectMessage messages={messages} />
-      <InputMessage />
+    <div className='Chat'> {actualChannelInterface ? actualChannelInterface.name : "no channel selected"}
+      <DirectMessage actualChannelInterface={actualChannelInterface} />
+      <InputMessage actualChannelInterface={actualChannelInterface} />
     </div>
   )
 }

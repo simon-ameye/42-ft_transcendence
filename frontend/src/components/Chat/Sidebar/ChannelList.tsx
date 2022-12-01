@@ -9,28 +9,25 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { TbKey, TbKeyOff } from 'react-icons/tb';
 
 
-export default function ChannelList({ channelInterfaces }: { channelInterfaces: ChannelInterface[] }) {
-
-  function sendAllChannelInterfaces() {
-    axios.get('http://localhost:3001/chat/sendAllChannelInterfaces', {
-    }).then(res => console.log(res)).catch(err => console.log(err))
-  }
-
-  function handleClickOpen() {
-
-  }
-
-  const channelList = channelInterfaces.map((c, i) => (
-    <ListItem button key={i} onClick={event => handleClickOpen()} > {c.name}
-    </ListItem>
-  ))
-
-  return (
-    <div className='ChannelList'>
-      <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
-      <div>
-        {channelList}
-      </div>
-    </div>
-  )
+export default function ChannelList() {
+//
+//  function sendAllChannelInterfaces() {
+//    axios.get('http://localhost:3001/chat/sendAllChannelInterfaces', {
+//    }).then(res => console.log(res)).catch(err => console.log(err))
+//  }
+//
+//  function handleClickOpen() {
+//  }
+//
+//  const channelList = channelInterfaces.map((c, i) => (
+//    <ListItem button key={i} onClick={event => handleClickOpen()} > {c.name}
+//    </ListItem>
+//  ))
+//
+//  return (
+//    <div className='ChannelList'>
+//      <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
+//        {channelList}
+//    </div>
+//  )
 }
