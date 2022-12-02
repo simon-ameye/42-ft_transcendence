@@ -12,7 +12,6 @@ export default function FriendList() {
   const [ friendsInterfaces, setfriendsInterfaces] = useState<FriendsInterface[]>([])
   const [open, setOpen] = useState(false);
 
-
   const handleStartConversation = (friendId : number) => {
     axios.post('http://localhost:3001/chat/createChannel', {
       name: "",
