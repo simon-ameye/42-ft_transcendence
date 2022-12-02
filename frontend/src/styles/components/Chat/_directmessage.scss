@@ -1,19 +1,18 @@
-.directmessage
-  {
-    text-align: center;
-    position: relative;
-    background-color: transparent;
-    border-style: double;
-    border: 1px solid #48b15f;
-	width: 600px;
-    height: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    box-sizing: border-box;
-    overflow: auto;
-    border-radius: 10px;
-    .message {
-        box-sizing: border-box;
-        position: center;
-    }
+
+.directmessageauthor {
+  color: lightslategray;
+  font-size: 15px;
+  text-align: left;
+}
+
+.directmessagedate {
+  color: grey;
+  font-size: 10px;
+  text-align: left;
+}
+
+.directmessagemessage {
+  color: rgb(255, 255, 255);
+  font-size: 13px;
+  text-align: right;
 }
