@@ -31,7 +31,7 @@ export default function FriendList() {
   }
 
   const friendList = friendsInterfaces.map((c, i) => (
-    <ListItem key={i} onClick={event => handleStartConversation(c.id)} >{ <TbKey /> } {c.name}
+    <ListItem key={i} onClick={event => handleStartConversation(c.id)} > {c.name}
     </ListItem>
   ))
 

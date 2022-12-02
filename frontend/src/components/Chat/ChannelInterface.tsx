@@ -1,4 +1,5 @@
 import MessageInterface from "./MessageInterface";
+import UserInterface from "./UserInterface";
 
 export default interface ChannelInterface {
   id: number,
@@ -10,4 +11,6 @@ export default interface ChannelInterface {
   messages: MessageInterface[],
   isProtected: boolean,
   userSocketId: string,
+  users: UserInterface[],
+
 }

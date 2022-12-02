@@ -1,4 +1,6 @@
 import { MessageInterface } from "./message.interface";
+import { UserInterface } from "./user.interface";
+
 
 export interface	ChannelInterface {
 	id: number,
@@ -10,4 +12,5 @@ export interface	ChannelInterface {
   messages: MessageInterface[],
   isProtected :boolean,
   userSocketId :string,
+  users: UserInterface[],
 }

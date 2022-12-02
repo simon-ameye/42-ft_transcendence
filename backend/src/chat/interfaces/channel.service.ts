@@ -3,6 +3,7 @@ import { ChannelMode } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ChannelInterface } from "./channel.interfaces"
 import { MessageInterface } from "./message.interface";
+import { UserInterface } from "./user.interface";
 
 @Injectable()
 export class ChannelService {
@@ -20,6 +21,7 @@ export class ChannelService {
       //dates: [],
       userSocketId: '',
       isProtected: false,
+      users: [],
     };
 
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
@@ -57,6 +59,11 @@ export class ChannelService {
         //channelInterface.dates    .push((await message) .date.toLocaleString());
         channelInterface.messages.push(messageInterface);
       }
+    }
+    for (let chanUserId of (await channel).userIds){
+      var chanUser = this.prisma.user.findUnique({ where: { id: chanUserId }})
+      let UserInterface: UserInterface = { id: chanUserId , name : (await chanUser).displayName}
+      channelInterface.users.push(UserInterface);
     }
     return (channelInterface);
   }
