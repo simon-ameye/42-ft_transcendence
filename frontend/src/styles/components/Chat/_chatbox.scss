@@ -1,4 +1,4 @@
-.chatbox {
+.chatbox{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,7 +66,9 @@
         border-top: 1px solid #48b15f;
         border-top-right-radius: 10px;
         border-bottom-right-radius: 10px;
-
+        .Chat_name{
+            background-color: #48b15f;
+        }
         .directmessage {
             width: 595px;
             height: 700px;
@@ -95,7 +97,7 @@
                     font-size: 13px;
                     text-align: right;
                 }
-        }
+    }
 
         .messageInput {
             margin-left: auto;
@@ -105,7 +107,7 @@
 
             textarea {
                 width: 560px;
-                height: 110px;
+                height: 90px;
                 resize: none;
                 background-color: transparent;
                 text-align: left;

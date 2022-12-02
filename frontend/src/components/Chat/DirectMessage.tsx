@@ -1,7 +1,15 @@
 import ChannelInterface from './ChannelInterface';
+import React, { useEffect } from 'react'
 
 const DirectMessage = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
 
+  const Scrollmessage = React.useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const domNode = Scrollmessage.current;
+    if (domNode) {
+      domNode.scrollTop = domNode.scrollHeight;
+    }
+  })
   const messageList =
     actualChannelInterface ? actualChannelInterface.messages.map((d) =>
       <li>
@@ -9,12 +17,14 @@ const DirectMessage = ({ actualChannelInterface }: { actualChannelInterface: Cha
           <div className="directmessagedate">{d.date}</div>
           <div className="directmessagemessage">{d.message}</div>
       </li>)
-      : <li>Please select a channel </li>;
+      : <li> Please select a channel </li>;
 
   return (
-    <div className='directmessage' >
+    <div className='sroll'>
+    <div className='directmessage' ref={Scrollmessage} >
       {messageList}
     </div>
+    </div >
   )
 }
 export default DirectMessage;
