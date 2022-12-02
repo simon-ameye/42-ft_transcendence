@@ -6,6 +6,8 @@
     .Left-side-chat {
         display: flex;
         flex-direction: column;
+        overflow: auto;
+        max-width: 300px;
         .chatbox-container {
             display: flex;
             flex-direction: column;
@@ -15,7 +17,7 @@
             height: 200px;
             min-height: 90vh;
             border: 1px solid #48b15f;
-            overflow: overlay;
+            overflow: auto;
             border-top-right-radius: 0px;
             border-bottom-right-radius: 0px;
 
@@ -49,6 +51,7 @@
 
                 .button_create_channel {
                     background-color: #48b15f;
+                    overflow: auto;
                 }
             }
         }
@@ -68,6 +71,11 @@
         border-bottom-right-radius: 10px;
         .Chat_name{
             background-color: #48b15f;
+            max-width: 600px;
+            overflow: auto
+        }
+        .channel_setting{
+            text-align: right;
         }
         .directmessage {
             width: 595px;
@@ -80,42 +88,40 @@
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
             .directmessageauthor {
-                    color: lightslategray;
-                    font-size: 15px;
-                    text-align: left;
-                }
-            
-                .directmessagedate {
-                    color: grey;
-                    font-size: 10px;
-                    text-align: left;
-                }
-            
-                .directmessagemessage {
-                    color: rgb(255, 255, 255);
-                    font-size: 13px;
-                    text-align: right;
-                }
-    }
-
-        .messageInput {
-            margin-left: auto;
-            margin-right: auto;
-            width: 600px;
-            height: 700px;
-
-            textarea {
-                width: 560px;
-                height: 90px;
-                resize: none;
-                background-color: transparent;
+                color: lightslategray;
+                font-size: 15px;
                 text-align: left;
-                overflow: auto;
-                border: none;
-                outline: none;
+                }
+            .directmessagedate {
+                color: grey;
+                font-size: 10px;
+                text-align: left;
+                }
+            
+            .directmessagemessage {
+                color: rgb(255, 255, 255);
+                font-size: 13px;
+                text-align: right;
+                }
+            }
+            .messageInput {
+                margin-left: auto;
+                margin-right: auto;
+                width: 600px;
+                height: 700px;
+                textarea {
+                    width: 560px;
+                    height: 60px;
+                    resize: none;
+                    background-color: transparent;
+                    text-align: left;
+                    overflow: auto;
+                    border: none;
+                    outline: none;
+                }
             }
         }
-
-    }
 }

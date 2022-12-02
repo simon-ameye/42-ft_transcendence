@@ -1,15 +1,18 @@
 import InputMessage from './InputMessage'
 import DirectMessage from './DirectMessage'
 import ChannelInterface from './ChannelInterface'
+import ChannelSetting from './ChannelSetting';
+
 
 const Chat = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
+ 
+
   return (
-    <div className='Chat'> 
-    <div className='Chat_name'>
-      <h1>
-        {actualChannelInterface ? actualChannelInterface.name : "No channel selected"}
+    <div> 
+        <h1 className='Chat_name'>
+        {actualChannelInterface ? actualChannelInterface.name : "No channel selected" }
       </h1>
-      </div>
+      <ChannelSetting actualChannelInterface={actualChannelInterface} />
       <DirectMessage actualChannelInterface={actualChannelInterface} />
       <InputMessage actualChannelInterface={actualChannelInterface} />
     </div>

@@ -20,11 +20,9 @@ const DirectMessage = ({ actualChannelInterface }: { actualChannelInterface: Cha
       : <li> Please select a channel </li>;
 
   return (
-    <div className='sroll'>
     <div className='directmessage' ref={Scrollmessage} >
       {messageList}
     </div>
-    </div >
   )
 }
 export default DirectMessage;

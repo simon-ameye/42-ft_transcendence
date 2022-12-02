@@ -7,7 +7,6 @@ import { ListItem } from '@mui/material'
 import axios from 'axios';
 import Channel from './Sidebar/Channel';
 import Sidebar from './Sidebar';
-import UserList from './UserList';
 
 const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
@@ -15,25 +14,28 @@ const Chatbox = () => {
 
 
   function sendAllChannelInterfaces() {
-    setchannelInterfaces([]);
-    setactualChannelInterface(undefined);
     axios.get('http://localhost:3001/chat/sendAllChannelInterfaces', {
     }).then(res => console.log(res)).catch(err => console.log(err))
   }
 
   function handleSelectChannel(channelId: number) {
-    setactualChannelInterface(channelInterfaces.find((obj) => {
-      return obj.id === channelId;
-    }))
+      setactualChannelInterface(channelInterfaces.find((obj) => {
+        return obj.id === channelId;
+      }))
+      console.log('yooo')
+      console.log(actualChannelInterface)
+      console.log('/yooo')
+
   }
 
   const channelList = channelInterfaces.map((c, i) => (
 
-    <ListItem button key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
-    </ListItem>
+      <ListItem button key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
+      </ListItem>
   ))
 
-  function refreshActualChannelInterface() {
+  function refreshActualChannelInterface()
+  {
     var channelId = actualChannelInterface?.id
     setactualChannelInterface(channelInterfaces.find((obj) => {
       return obj.id === channelId;
