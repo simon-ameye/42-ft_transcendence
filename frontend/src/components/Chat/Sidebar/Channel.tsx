@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import {
   Dialog,
   DialogActions,
@@ -13,7 +13,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { IoIosAdd } from "react-icons/io";
 import axios from 'axios';
-import ChannelList from './ChannelList';
 
 const Channel = () => {
   const [open, setOpen] = useState(false);

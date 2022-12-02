@@ -1,11 +1,12 @@
 import Navbar from '../Navbar';
 import Chat from './Chat';
-import Sidebar from './Sidebar';
 import ChannelInterface from './ChannelInterface';
 import { useEffect, useState } from "react";
 import { socket } from '../../App';
 import { ListItem } from '@mui/material'
 import axios from 'axios';
+import Channel from './Sidebar/Channel';
+import Sidebar from './Sidebar';
 
 const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
@@ -28,8 +29,9 @@ const Chatbox = () => {
   }
 
   const channelList = channelInterfaces.map((c, i) => (
-    <ListItem key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
-    </ListItem>
+
+      <ListItem button key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
+      </ListItem>
   ))
 
   function refreshActualChannelInterface()
@@ -73,12 +75,20 @@ const Chatbox = () => {
     <div>
       <Navbar />
       <div className='chatbox'>
-        <div className='ChannelList'>
-          <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
-          {channelList}
+        {/* Left Side */}
+        <div className='Left-side-chat'>
+          <div className='chatbox-container'>
+            <Channel />
+            <div className='ChannelList'>
+              <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
+              {channelList}
+              <Sidebar/>
+            </div>
+          </div>
         </div>
-        <div className='chatbox-container'>
-          <Sidebar />
+
+        {/* Right Side */}
+        <div className='Right-side-chat'>
           <Chat actualChannelInterface={actualChannelInterface} />
         </div>
       </div>

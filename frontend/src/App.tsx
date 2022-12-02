@@ -7,7 +7,6 @@ import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
 import ChatBox from './components/Chat/ChatBox'
-import Chat from './components/Chat/Chat';
 
 axios.defaults.withCredentials = true;
 

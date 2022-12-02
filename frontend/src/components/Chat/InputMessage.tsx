@@ -5,10 +5,6 @@ import ChannelInterface from './ChannelInterface';
 
 const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
   const [value, setValue] = useState<string>("");
-  const date = new Date();
-  const time = date.getHours()
-    + ':' + ((date.getMinutes() < 10 ? '0' : '') + date.getMinutes());
-
   const sendMessage = async () => {
     if (value === "") return false;
     console.log('debug')
@@ -19,14 +15,13 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
         channelId: actualChannelInterface.id,
         text: value,
       }).then(res => console.log(res)).catch(err => console.log(err))
+      setValue("");
     }
-
-
   }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.code === "Enter" && value !== "") {
       e.preventDefault();
-
+      sendMessage();
     }
   }
   return (
@@ -39,7 +34,6 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
         onKeyDown={handleKeyDown}
       />
       <IoSend size="40" onClick={sendMessage} className='iosend' />
-
     </div>
   )
 }
