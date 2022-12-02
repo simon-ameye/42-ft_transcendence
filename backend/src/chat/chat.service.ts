@@ -4,6 +4,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User } from ".prisma/client";
 import { ChannelsInterface } from "./interfaces/channels.interface";
 import { FriendsInterface } from "./interfaces/friends.interface";
+import * as argon from 'argon2'
 
 @Injectable()
 export class ChatService {
@@ -56,11 +57,12 @@ export class ChatService {
       if ((await channelsWithSameName).length != 0)
         return ('Channel name already in use');
 
+      const hash = await argon.hash(password);
       var newChannel = await this.prisma.channel.create({
         data: {
           name: name,
           mode: mode,
-          password: password,
+          password: hash,
           ownerId: (await newowner).id,
           userIds: (await newowner).id,
           adminIds: (await newowner).id,
@@ -89,7 +91,11 @@ export class ChatService {
     if ((await channel).mode != ChannelMode.PUBLIC)
       return ('You can ONLY join a PUBLIC channel. PUBLIC channels may be protected by a pasword');
 
-    if (password != (await channel).password)
+    const pwMatch = await argon.verify(
+      (await channel).password,
+      password);
+
+    if (!pwMatch)
       return ('Wong password');
 
     const channelUpdate = await this.prisma.channel.update({
@@ -160,7 +166,7 @@ export class ChatService {
     })
 
     this.eventEmitter.emit('flushAllChannels');
-    return ('Message sent');
+    return ('');
   }
 
   async setConnection(userId: number, socketId: string) {
@@ -214,9 +220,10 @@ export class ChatService {
     if ((await channel).ownerId != userId)
       return ('You are not the owner of this channel.');
 
+    const hash = await argon.hash(newPassword);
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
-      data: { password: newPassword, },
+      data: { password: hash, },
     })
 
     this.eventEmitter.emit('flushAllChannels');
