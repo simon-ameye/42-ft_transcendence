@@ -1,3 +1,5 @@
+@import '../../styles/settings';
+
 .color {
 	margin: 2rem;
 	align-items: center;
@@ -16,5 +18,24 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+}
+
+.gameMode {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	button {
+		margin-top: 1%;
+		padding: 1%;
+		border-radius: 15px;
+		width: 15%;
+		background-color: inherit;
+		border: solid 1px white;
+		font-weight: 600;
+	}
+	button:active {
+		transform: translateY(-1px);
 	}
 }

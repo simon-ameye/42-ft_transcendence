@@ -1,3 +1,4 @@
+import { configure } from "@testing-library/react"
 import { useEffect, useState } from "react"
 import GameDisplay from "../GameDisplay"
 import { useKeyDown } from "../hooks/useKeyDown"
@@ -15,7 +16,6 @@ const GameEngine = (props: { config: GameConfig }) => {
 	const yTopBorder: boolean = ball.y + ballDirection.y < 0;
 	const yBottomBorder: boolean = ball.y + props.config.ballSize.y + ballDirection.y > props.config.canvasSize.y;
 
-
 	const bounceY = () => {
 		setBallDirection({ x: ballDirection.x, y: ballDirection.y * -1 })
 	}
@@ -25,14 +25,14 @@ const GameEngine = (props: { config: GameConfig }) => {
 	}
 
 	const scored = (player: string) => {
+		// Add points to player
+		if (player === "P1")
+		props.config.scoreP1++
+		else
+		props.config.scoreP2++
 		//Reset ball position to center
 		setBall({ x: ball.x = ballInitialX, y: ball.y = Math.floor(Math.random() * (props.config.canvasSize.y - props.config.ballSize.x + ballDirection.x)) + 1 })
 		setBallDirection({ x: ballDirection.x, y: ballDirection.y * -1 })
-		// Add points to player
-		if (player === "P1")
-			props.config.scoreP1++
-		else
-			props.config.scoreP2++
 	}
 
 	const isRightPaddle = () => {
@@ -53,15 +53,6 @@ const GameEngine = (props: { config: GameConfig }) => {
 		return isIn
 	}
 
-	const botMovements = () => {
-		if (props.config.p2PosY > 0 - props.config.paddleSize.y) {
-			props.config.p2PosY = ball.y - props.config.paddleSize.y / 2
-		}
-		else if (props.config.p2PosY <= 0) {
-			props.config.p2PosY = props.config.canvasSize.y
-		}
-	}
-
 	useEffect(() => {
 		const interval = setInterval(() => {
 			if (yTopBorder || yBottomBorder)
@@ -73,7 +64,6 @@ const GameEngine = (props: { config: GameConfig }) => {
 			else if (isGoalP2)
 				scored("P2")
 			setBall({ x: ball.x + ballDirection.x, y: ball.y + ballDirection.y })
-			botMovements()
 		}, 10)
 		return () => clearInterval(interval);
 	});
@@ -87,17 +77,34 @@ const GameEngine = (props: { config: GameConfig }) => {
 			props.config.p1PosY += 20;
 	}
 
+	const handleKeyUpP2 = () => {
+		if (props.config.p2PosY > 0 && props.config.players == 2)
+			props.config.p2PosY -= 20;
+	}
+	const handleKeyDownP2 = () => {
+		if (props.config.p2PosY < props.config.canvasSize.y - props.config.paddleSize.y && props.config.players == 2)
+			props.config.p2PosY += 20;
+	}
+
 	// ARROW UP
 	useKeyDown(() => {
 		handleKeyUp();
-
 	}, ['ArrowUp'])
 
 	// ARROW DOWN
 	useKeyDown(() => {
 		handleKeyDown();
-
 	}, ['ArrowDown'])
+
+	// PLAYER 2 UP
+	useKeyDown(() => {
+		handleKeyUpP2();
+	}, ['w'])
+
+	// PLAYER 2 DOWN
+	useKeyDown(() => {
+		handleKeyDownP2();
+	}, ['s'])
 
 	return <GameDisplay
 		ball={ball}

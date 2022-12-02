@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom'
-import AuthenticatedLayout from '../../layouts/Authenticated'
+import Default from '../../layouts/Default'
 import './style.scss'
 
 const NotFound = () => {
 	return (
-		<AuthenticatedLayout>
+		<Default>
 			<div className="notFound">
 				<img src={require('../../assets/pong_404.gif')} alt="404 pong gif"/>
 				<NavLink className="navlink" to="/">
@@ -12,7 +12,7 @@ const NotFound = () => {
 					<span>Acceuil</span>
 				</NavLink>
 			</div>
-		</AuthenticatedLayout>
+		</Default>
 	);
 };
 

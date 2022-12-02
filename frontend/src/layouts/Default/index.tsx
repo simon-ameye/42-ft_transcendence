@@ -2,15 +2,15 @@ import { PropsWithChildren } from "react";
 import Navbar from "../../components/Navbar";
 import './style.scss'
 
-const AuthenticatedLayout = (props: PropsWithChildren) => {
+const Default = (props: PropsWithChildren) => {
 	return (
 		<>
 			<Navbar />
-			<div className="authenticated-layout">
+			<div className="default">
 				{props.children}
 			</div>
 		</>
 	);
 };
 
-export default AuthenticatedLayout;
+export default Default;
