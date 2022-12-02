@@ -18,7 +18,7 @@ export default function FriendList() {
       mode: "DIRECT",
       password: "",
       otherUserId: friendId,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
 
   function getUserFriendTable() {

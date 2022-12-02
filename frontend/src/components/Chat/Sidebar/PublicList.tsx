@@ -40,7 +40,7 @@ export default function PublicList() {
     axios.post('http://localhost:3001/chat/joinChannel', {
       channelId: values.channelId,
       password: values.password,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const handleSubmit = () => {
     handleClose()

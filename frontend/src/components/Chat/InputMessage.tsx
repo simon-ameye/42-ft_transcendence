@@ -14,7 +14,7 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
       axios.post('http://localhost:3001/chat/sendMessage', {
         channelId: actualChannelInterface.id,
         text: value,
-      }).then(res => console.log(res)).catch(err => console.log(err))
+      }).then(res => alert(res.data)).catch(err => alert(err))
       setValue("");
     }
   }

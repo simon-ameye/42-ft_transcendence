@@ -37,25 +37,25 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
     axios.post('http://localhost:3001/chat/banUser', {
       channelId: actualChannelInterface?.id,
       banedId: values.userId,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const blockUser = () => {
     axios.post('http://localhost:3001/chat/blockUser', {
       blockedUserId: values.userId,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const makeUserAdmin = () => {
     axios.post('http://localhost:3001/chat/makeUserAdmin', {
       channelId: actualChannelInterface?.id,
       newAdminId: values.userId,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const muteUser = () => {
     axios.post('http://localhost:3001/chat/muteUser', {
       channelId: actualChannelInterface?.id,
       muteId: values.userId,
       minutes: values.minutes,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const inviteToGame = () => {
     alert('not done yet')

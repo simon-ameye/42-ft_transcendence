@@ -45,7 +45,7 @@ const Channel = () => {
       mode: 'PUBLIC',
       password: values.password,
       otherUserId: '',
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const handleSubmit = () => {
     handleClose()
