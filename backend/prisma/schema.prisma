@@ -24,6 +24,7 @@ model User {
 
   socketId        String? @unique
   blockedUserIds  Int[]
+  friends         Int[]
   @@map("users")
 }
 

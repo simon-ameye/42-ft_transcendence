@@ -3,16 +3,16 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User } from ".prisma/client";
 import { ChannelsInterface } from "./interfaces/channels.interface";
+import { FriendsInterface } from "./interfaces/friends.interface";
 
 @Injectable()
 export class ChatService {
   constructor(
     private eventEmitter: EventEmitter2,
     private prisma: PrismaService,
-  ) {}
+  ) { }
 
-  async createChannel(userId : number, name : string, mode : ChannelMode, password : string, otherUserId : number)
-  {
+  async createChannel(userId: number, name: string, mode: ChannelMode, password: string, otherUserId: number) {
     var newowner = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await newowner)
       return ('User not found');
@@ -20,8 +20,7 @@ export class ChatService {
     if (!(mode in ChannelMode))
       return ('Unknown channel mode');
 
-    if (mode == ChannelMode.DIRECT)
-    {
+    if (mode == ChannelMode.DIRECT) {
       if (!otherUserId)
         return ('otherUserId must be specified for DIRECT');
 
@@ -35,8 +34,9 @@ export class ChatService {
       var directChannelsWithSameUsers = this.prisma.channel.findMany({
         where: {
           mode: ChannelMode.DIRECT,
-          userIds : {hasEvery: [(await newowner).id, (await newowner).id]}
-        }});
+          userIds: { hasEvery: [(await newowner).id, (await otherUser).id] }
+        }
+      });
       if ((await directChannelsWithSameUsers).length != 0)
         return ('Direct channel between the two users already exists');
 
@@ -48,8 +48,7 @@ export class ChatService {
         }
       });
     }
-    else
-    {
+    else {
       if (name == '')
         return ('Channel name must not be blank except for DIRECT');
 
@@ -62,8 +61,8 @@ export class ChatService {
           name: name,
           mode: mode,
           password: password,
-          ownerId:  (await newowner).id,
-          userIds:  (await newowner).id,
+          ownerId: (await newowner).id,
+          userIds: (await newowner).id,
           adminIds: (await newowner).id,
         }
       });
@@ -72,8 +71,7 @@ export class ChatService {
     return ('New channel created');
   }
 
-  async joinChannel(userId : number, channelId : number, password : string)
-  {
+  async joinChannel(userId: number, channelId: number, password: string) {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
     if (!await channel)
       return ('Channel not found');
@@ -96,14 +94,14 @@ export class ChatService {
 
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
-      data: { userIds : { push: userId, }, }, })
+      data: { userIds: { push: userId, }, },
+    })
 
     this.eventEmitter.emit('flushAllChannels');
     return ('Channel joined');
   }
 
-  async leaveChannel(userId : number, channelId : number)
-  {
+  async leaveChannel(userId: number, channelId: number) {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
     if (!await channel)
       return ('Channel not found');
@@ -118,9 +116,9 @@ export class ChatService {
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
       data: {
-        userIds   : {set: (await channel).userIds .filter((id) => id !== userId)},
-        adminIds  : {set: (await channel).adminIds.filter((id) => id !== userId)},
-        ownerId   : {set: (await channel).ownerId == userId ? 0 : (await channel).ownerId},
+        userIds: { set: (await channel).userIds.filter((id) => id !== userId) },
+        adminIds: { set: (await channel).adminIds.filter((id) => id !== userId) },
+        ownerId: { set: (await channel).ownerId == userId ? 0 : (await channel).ownerId },
       },
     })
 
@@ -128,8 +126,7 @@ export class ChatService {
     return ('Channel left');
   }
 
-  async sendMessage(userId : number, channelId : number, text : string)
-  {
+  async sendMessage(userId: number, channelId: number, text: string) {
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
     if (!await channel)
       return ('Channel not found');
@@ -145,10 +142,9 @@ export class ChatService {
     var actualDate = new Date();
     let muteUserIds = (await channel).muteUserIds;
     let muteRelease = (await channel).muteRelease;
-    for (let i = 0; i < muteUserIds.length; i++)
-    {
+    for (let i = 0; i < muteUserIds.length; i++) {
       if (muteUserIds[i] == userId && actualDate < muteRelease[i])
-      return ('You are muted');
+        return ('You are muted');
     }
 
     var newMessage = await this.prisma.message.create({
@@ -160,30 +156,29 @@ export class ChatService {
 
     const updateChannel = await this.prisma.channel.update({
       where: { id: channelId, },
-      data: { messageIds : { push: (await newMessage).id, }, }, })
+      data: { messageIds: { push: (await newMessage).id, }, },
+    })
 
     this.eventEmitter.emit('flushAllChannels');
     return ('Message sent');
   }
 
-  async setConnection(userId : number, socketId : string)
-  {
+  async setConnection(userId: number, socketId: string) {
     var userLookup = this.prisma.user.findUnique({ where: { id: userId } });
-    if (!await userLookup)
-    {
+    if (!await userLookup) {
       console.log('A user with unknown token is trying to setConnection. Aborting');
       return ('User not found');
     }
 
     const user = await this.prisma.user.update({
       where: { id: userId, },
-      data: { socketId : socketId, }, })
+      data: { socketId: socketId, },
+    })
     this.eventEmitter.emit('flushAllChannels');
     return ('User socketId is now set');
   }
 
-  async blockUser(userId: number, blockedUserId: number)
-  {
+  async blockUser(userId: number, blockedUserId: number) {
     var user = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await user)
       return ('User not found');
@@ -200,14 +195,14 @@ export class ChatService {
 
     const updateUser = await this.prisma.user.update({
       where: { id: userId, },
-      data: { blockedUserIds : { push: blockedUserId, } }, })
+      data: { blockedUserIds: { push: blockedUserId, } },
+    })
 
     this.eventEmitter.emit('flushAllChannels');
     return ('User is now blocked');
   }
 
-  async setChannelPassword(userId: number, channelId: number , newPassword: string)
-  {
+  async setChannelPassword(userId: number, channelId: number, newPassword: string) {
     var user = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await user)
       return ('User not found');
@@ -221,18 +216,18 @@ export class ChatService {
 
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
-      data: { password : newPassword, }, })
+      data: { password: newPassword, },
+    })
 
     this.eventEmitter.emit('flushAllChannels');
     return ('Password modified');
   }
 
-  async getPublicChannelTable()
-  {
+  async getPublicChannelTable() {
     //var ids         : number[]  = [];
     //var names       : string[]  = [];
     //var isPrivates  : boolean[] = [];
-//
+    //
     //let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC },})
     //for (let channel of channels)
     //{
@@ -242,33 +237,29 @@ export class ChatService {
     //}
     //return {ids, names, isPrivates};
 
-    var channelsInterfaces : ChannelsInterface[] = [];
-    let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC },})
-    for (let channel of channels)
-    {
-      channelsInterfaces.push({id : channel.id, name : channel.name, isProtected : channel.password != ''});
+    var channelsInterfaces: ChannelsInterface[] = [];
+    let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC }, })
+    for (let channel of channels) {
+      channelsInterfaces.push({ id: channel.id, name: channel.name, isProtected: channel.password != '' });
     }
-    return {channelsInterfaces};
+    return { channelsInterfaces };
   }
 
-  async getUserChannelTable(userId: number)
-  {
-    var ids         : number[]  = [];
-    var names       : string[]  = [];
-    var isPrivates  : boolean[] = [];
+  //  async getUserChannelTable(userId: number) {
+  //    var ids: number[] = [];
+  //    var names: string[] = [];
+  //    var isPrivates: boolean[] = [];
+  //
+  //    let channels = await this.prisma.channel.findMany({ where: { userIds: { has: userId } }, })
+  //    for (let channel of channels) {
+  //      ids.push(channel.id);
+  //      names.push(channel.name);
+  //      isPrivates.push(channel.password != '');
+  //    }
+  //    return { ids, names, isPrivates };
+  //  }
 
-    let channels = await this.prisma.channel.findMany({ where: { userIds: {has : userId}},})
-    for (let channel of channels)
-    {
-      ids         .push(channel.id);
-      names       .push(channel.name);
-      isPrivates  .push(channel.password != '');
-    }
-    return {ids, names, isPrivates};
-  }
-
-  async makeUserAdmin(userId: number, channelId: number, newAdminId: number)
-  {
+  async makeUserAdmin(userId: number, channelId: number, newAdminId: number) {
     var user = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await user)
       return ('User not found');
@@ -289,13 +280,13 @@ export class ChatService {
 
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
-      data: { adminIds : { push: newAdminId, }, }, })
+      data: { adminIds: { push: newAdminId, }, },
+    })
 
     return ('New admin set')
   }
 
-  async banUser(userId: number, channelId: number, banedId: number)
-  {
+  async banUser(userId: number, channelId: number, banedId: number) {
     var user = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await user)
       return ('User not found');
@@ -317,10 +308,10 @@ export class ChatService {
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
       data: {
-        userIds       : {set: (await channel).userIds .filter((id) => id !== banedId)},
-        adminIds      : {set: (await channel).adminIds.filter((id) => id !== banedId)},
-        ownerId       : {set: (await channel).ownerId == banedId ? 0 : (await channel).ownerId},
-        banedUserIds  : {push: banedId},
+        userIds: { set: (await channel).userIds.filter((id) => id !== banedId) },
+        adminIds: { set: (await channel).adminIds.filter((id) => id !== banedId) },
+        ownerId: { set: (await channel).ownerId == banedId ? 0 : (await channel).ownerId },
+        banedUserIds: { push: banedId },
       },
     })
 
@@ -328,8 +319,7 @@ export class ChatService {
     return ('User baned')
   }
 
-  async muteUser(userId: number, channelId: number, muteId: number, minutes: number)
-  {
+  async muteUser(userId: number, channelId: number, muteId: number, minutes: number) {
     var user = this.prisma.user.findUnique({ where: { id: userId } });
     if (!await user)
       return ('User not found');
@@ -354,8 +344,8 @@ export class ChatService {
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
       data: {
-        muteUserIds : {push: muteId},
-        muteRelease : {push: muteRelease},
+        muteUserIds: { push: muteId },
+        muteRelease: { push: muteRelease },
       },
     })
 
@@ -363,9 +353,28 @@ export class ChatService {
     return ('User muted')
   }
 
-  async sendAllChannelInterfaces()
-  {
+  async sendAllChannelInterfaces() {
     this.eventEmitter.emit('flushAllChannels');
     return ('Channels interfaces sent')
+  }
+
+  async getUserFriendTable(userId: number) { //MAYBE NEEDS PROTECTION !
+    var friendsInterfaces: FriendsInterface[] = [];
+    var friend: User;
+
+    var user = await this.prisma.user.findUnique({ where: { id: userId }, })
+    if (!user)
+      return { friendsInterfaces };
+    console.log("debug");
+    console.log(userId);
+    console.log("debug");
+    for (let friendId of user.friends) {
+      friend = await this.prisma.user.findUnique({ where: { id: friendId }, })
+      if (!friend)
+        return { friendsInterfaces };
+      var friendInterface: FriendsInterface = { id: friendId, name: friend.displayName };
+      friendsInterfaces.push(friendInterface);
+    }
+    return { friendsInterfaces };
   }
 }

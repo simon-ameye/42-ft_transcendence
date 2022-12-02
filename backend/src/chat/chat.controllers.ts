@@ -5,6 +5,7 @@ import { GetUser } from "src/auth/decorators/get-user.decorator";
 import { UserDto } from "src/auth/dto";
 import { ChatService } from "./chat.service";
 import { ChannelsInterface } from "./interfaces/channels.interface";
+import { FriendsInterface } from "./interfaces/friends.interface"
 
 @Controller('chat')
 export class ChatController {
@@ -119,13 +120,22 @@ export class ChatController {
     console.log(channelsInterfaces);
     return { channelsInterfaces: channelsInterfaces };
   }
+
+//  @UseGuards(AuthGuard('jwt'))
+//  @Get('getUserChannelTable')
+//  async getUserChannelTable(@GetUser() user: UserDto) {
+//    let { ids, names, isPrivates } = await this.chatService.getUserChannelTable(user.id);
+//    console.log(ids, names, isPrivates);
+//    return { ids: ids, names: names, isPrivates: isPrivates };
+//  }
+
   @UseGuards(AuthGuard('jwt'))
-  @Get('getUserChannelTable')
-  async getUserChannelTable(@GetUser() user: UserDto) {
-    let { ids, names, isPrivates } = await this.chatService.getUserChannelTable(user.id);
-    console.log(ids, names, isPrivates);
-    return { ids: ids, names: names, isPrivates: isPrivates };
+  @Get('getUserFriendTable')
+  async getUserFriendTable(@GetUser() user: UserDto) {
+    let { friendsInterfaces } = await this.chatService.getUserFriendTable(user.id);
+    return { friendsInterfaces: friendsInterfaces };
   }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('sendAllChannelInterfaces')
   async sendAllChannelInterfaces(@GetUser() user: UserDto) {
