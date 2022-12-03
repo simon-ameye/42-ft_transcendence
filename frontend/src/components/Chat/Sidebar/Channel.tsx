@@ -57,33 +57,33 @@ const Channel = () => {
       <h2>New Channel <IoIosAdd className='button_create_channel' onClick={handleClickOpen} >
       </IoIosAdd>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Create Channel</DialogTitle>
+          <DialogTitle><span style={{ color: 'black' }}>Create Channel</span></DialogTitle>
           <DialogContent>
             <DialogContentText>
               Enter your channel name, and optionally password
+              <br></br>
             </DialogContentText>
             <TextField
               type="username"
-              fullWidth
               label="Enter channel name"
               placeholder="Name"
               variant="outlined"
               required
               style={{
-                padding: 5
+                padding: 10
               }}
+              inputProps={{ maxLength: 20 }}
               onChange={(e: any) => {
                 setValues({ ...values, name: e.target.value })
               }}
             />
             <TextField
               type={values.showpass ? "text" : "password"}
-              fullWidth
               label="Password"
               placeholder="Password"
               variant="outlined"
               style={{
-                padding: 5
+                padding: 10
               }}
               InputProps={{
                 endAdornment: (

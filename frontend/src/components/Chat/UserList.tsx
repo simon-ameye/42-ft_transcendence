@@ -5,7 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, T
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { TbKey, TbKeyOff } from 'react-icons/tb';
-import ChannelInterface from './ChannelInterface';
+import ChannelInterface from './Interface/ChannelInterface';
 
 export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
 
@@ -65,18 +65,19 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
   }
 
   const userList = actualChannelInterface?.users.map((c, i) => (
-    <ListItem key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
+    <ListItem button key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
     </ListItem>
   ))
 
   return (
     <div className='PublicList'>
       <div>
+        <br></br>
         User list
         {userList}
         <h2>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Chose action</DialogTitle>
+            <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>
             <DialogActions>
               <button onClick={banUser}>banUser</button>
             </DialogActions>
@@ -88,6 +89,9 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
             </DialogActions>
             <TextField
               type={"number"}
+              InputProps={{
+                inputProps: { min: 0 }
+              }}
               label="mute time in minutes"
               style={{
                 padding: 5

@@ -1,6 +1,6 @@
 import Navbar from '../Navbar';
 import Chat from './Chat';
-import ChannelInterface from './ChannelInterface';
+import ChannelInterface from './Interface/ChannelInterface';
 import { useEffect, useState } from "react";
 import { socket } from '../../App';
 import { ListItem } from '@mui/material'

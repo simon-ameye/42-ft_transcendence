@@ -1,5 +1,5 @@
 import { ListItem } from '@mui/material'
-import ChannelsInterface from '../ChannelsInterface';
+import ChannelsInterface from '../Interface/ChannelsInterface';
 import axios from 'axios';
 import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
@@ -65,10 +65,11 @@ export default function PublicList() {
     <div className='PublicList'>
       <button onClick={getPublicChannelTable}>refresh public channels</button>
       <div>
+        <br></br>
         {channelList}
         <h2>
           <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Join Channel</DialogTitle>
+            <DialogTitle><span style={{ color: 'black' }}>Join Channel</span></DialogTitle>
             <DialogContent>
               <DialogContentText>
                 Enter channel password

@@ -17,9 +17,9 @@
             height: 200px;
             min-height: 90vh;
             border: 1px solid #48b15f;
-            overflow: auto;
             border-top-right-radius: 0px;
             border-bottom-right-radius: 0px;
+            overflow: auto;
 
             .button_create_channel {
                 background-color: #48b15f;
@@ -48,10 +48,10 @@
                 flex: 1.5;
                 border-top: 1px solid #48b15f;
                 background-color: rgb(0, 0, 0);
+                text-align: center;
 
                 .button_create_channel {
                     background-color: #48b15f;
-                    overflow: auto;
                 }
             }
         }
@@ -72,7 +72,6 @@
         .Chat_name{
             background-color: #48b15f;
             max-width: 600px;
-            overflow: auto
         }
         .channel_setting{
             text-align: right;
@@ -93,19 +92,30 @@
             .directmessageauthor {
                 color: lightslategray;
                 font-size: 15px;
-                text-align: left;
+                text-align: right;
                 }
+                
             .directmessagedate {
                 color: grey;
                 font-size: 10px;
-                text-align: left;
+                text-align: right;
                 }
             
             .directmessagemessage {
-                color: rgb(255, 255, 255);
                 font-size: 13px;
+                padding: 10px 10px;
+                border-radius: 25px;
+                color: white;
+                background-color:#48b15f;
+                width: fit-content;
+                border: 2px solid #48b15f;
+                position: relative;
+                margin: 5px 0;
+                word-break: break-all;
                 text-align: right;
-                }
+                float: right;
+                
+            }
             }
             .messageInput {
                 margin-left: auto;

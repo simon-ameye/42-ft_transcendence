@@ -14,7 +14,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import axios from 'axios';
 import { AiFillSetting } from 'react-icons/ai';
-import ChannelInterface from './ChannelInterface'
+import ChannelInterface from './Interface/ChannelInterface'
 
 
 const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
@@ -35,11 +35,15 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
       showpass: !values.showpass,
     });
   };
-  const handleClickSetting = async () => {
-    if (actualChannelInterface)
+  const handleLeaveChannel= async () => {
+    if (actualChannelInterface?.id)
       axios.post('http://localhost:3001/chat/leaveChannel', {
         channelId: actualChannelInterface.id,
-      }).then(res => console.log(res)).catch(err => console.log(err))
+      }).then(res => alert(res.data)).catch(err => alert(err))
+    handleClose();
+  }
+
+  const handleRemovePass = () => { 
     handleClose();
   }
 
@@ -52,7 +56,7 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     axios.post('http://localhost:3001/chat/setChannelPassword', {
       channelId: actualChannelInterface.id,
       newPassword: values.newpassword,
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => alert(res.data)).catch(err => alert(err))
   }
 
   const handleSubmit = () => {
@@ -64,9 +68,11 @@ return (
   <div className="channel_setting" >
     <AiFillSetting size="30" onClick={handleClickOpen}></AiFillSetting>
     <Dialog open={open} onClose={handleClose}>
-    <DialogTitle>Channel Setting</DialogTitle>
+      <DialogTitle><span style={{ color: 'black' }}> Channel Setting</span></DialogTitle>
     <DialogContent>
-      <Button onClick={handleClickSetting}>Leave Channel</Button>
+        <Button onClick={handleLeaveChannel}>Leave Channel</Button>
+        <br></br>
+        <Button onClick={handleRemovePass}>Remove Password</Button>
         <DialogContentText>
           <br></br>
           Change password

@@ -1,5 +1,5 @@
 import MessageInterface from "./MessageInterface";
-import UserInterface from "./UserInterface";
+import UserInterface from "../Interface/UserInterface";
 
 export default interface ChannelInterface {
   id: number,

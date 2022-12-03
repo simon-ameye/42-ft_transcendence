@@ -1,5 +1,5 @@
 import { ListItem } from '@mui/material'
-import FriendsInterface from '../FriendsInterface';
+import FriendsInterface from '../Interface/FriendsInterface';
 import axios from 'axios';
 import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
@@ -39,6 +39,7 @@ export default function FriendList() {
     <div className='PublicList'>
       <button onClick={getUserFriendTable}>refresh friends</button>
       <div>
+        <br></br>
         {friendList}
       </div>
     </div>

@@ -1,6 +1,6 @@
 import InputMessage from './InputMessage'
 import DirectMessage from './DirectMessage'
-import ChannelInterface from './ChannelInterface'
+import ChannelInterface from './Interface/ChannelInterface'
 import ChannelSetting from './ChannelSetting';
 
 
