@@ -4,6 +4,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User } from ".prisma/client";
 import { ChannelsInterface } from "./interfaces/channels.interface";
 import { FriendsInterface } from "./interfaces/friends.interface";
+import { UserInterface } from "./interfaces/user.interface";
 import * as argon from 'argon2'
 
 @Injectable()
@@ -31,6 +32,9 @@ export class ChatService {
       var otherUser = this.prisma.user.findUnique({ where: { id: otherUserId } });
       if (!await otherUser)
         return ('Mode is DIRECT but otherUser is not found');
+
+      if (!(await newowner).friends.includes(otherUserId))
+        return ('This user is not your friend. Cant create DIRECT channel !');
 
       var directChannelsWithSameUsers = this.prisma.channel.findMany({
         where: {
@@ -383,5 +387,16 @@ export class ChatService {
       friendsInterfaces.push(friendInterface);
     }
     return { friendsInterfaces };
+  }
+
+  async getUserTable(userId: number) { //MAYBE NEEDS PROTECTION !
+    var usersInterfaces: UserInterface[] = [];
+    //var user: User;
+
+    var users = await this.prisma.user.findMany();
+    for (let user of users) {
+      usersInterfaces.push({ id: user.id, name: user.displayName })
+    }
+    return { usersInterfaces };
   }
 }

@@ -137,6 +137,13 @@ export class ChatController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Get('getUserTable')
+  async getUserTable(@GetUser() user: UserDto) {
+    let { usersInterfaces } = await this.chatService.getUserTable(user.id);
+    return { usersInterfaces: usersInterfaces };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get('sendAllChannelInterfaces')
   async sendAllChannelInterfaces(@GetUser() user: UserDto) {
     return (this.chatService.sendAllChannelInterfaces());
