@@ -20,7 +20,10 @@ model User {
   imageUrl String?
   googleSecret String?
   // add path of the image
-  socketId String? @unique
+
+  socketId        String? @unique
+  blockedUserIds  Int[]
+  friends         Int[]
   matching Matching?
 
   inGame Boolean @default(false)
@@ -31,7 +34,32 @@ model User {
   @@map("users")
 }
 
-// mode Channels ( many to many relations with Users )
+model Channel{
+  id              Int         @id @default(autoincrement())
+  name            String      @default("unknown channel")
+  mode            ChannelMode @default(PUBLIC)
+  password        String      @default("")
+  ownerId         Int         @default(0)
+  adminIds        Int[]
+  banedUserIds    Int[]
+  messageIds      Int[]
+  userIds         Int[]
+  muteUserIds     Int[]
+  muteRelease     DateTime[]
+}
+
+model Message {
+  id              Int         @id @default(autoincrement())
+  text            String?
+  authorId        Int                                        //one  to many field
+  date            DateTime    @default(now())
+}
+
+enum ChannelMode {
+  PUBLIC                                                       //everybody can join, but there may be a password. No password => password = ''
+  DIRECT                                                       //direct messages between two users
+  PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
+}
 
 model	Matching {
 	user User @relation(fields: [userId], references: [id])
