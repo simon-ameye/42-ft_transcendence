@@ -61,7 +61,7 @@ export class ChannelService {
         };
         messageInterface.message = ((await message).text);
         messageInterface.author = ((await author).displayName);
-        messageInterface.date = ((await message).date.toLocaleString());
+        messageInterface.date = ((await message).date.toLocaleString('fr-FH', { timeZone: "CET" }));
         //channelInterface.messages .push((await message) .text);
         //channelInterface.authors  .push((await author)  .displayName);
         //channelInterface.dates    .push((await message) .date.toLocaleString());
