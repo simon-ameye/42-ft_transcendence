@@ -1,7 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// middleware: it links apps, data and users
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
 
@@ -13,13 +12,13 @@ async function bootstrap() {
 		methods: ['POST', 'PUT', 'DELETE', 'GET'],
 		credentials: true
 	});
-  app.useGlobalPipes(new ValidationPipe({
+  app.useGlobalPipes(new ValidationPipe( {
     whitelist: true,
   }));
-  app.use(session({
-	secret: 'use random string',
-	resave: false,
-	saveUninitialized: false}),);
+	app.use(session({
+		secret: 'use random string',
+		resave: false,
+		saveUninitialized: false}),);
   console.log("testing 42API");
   
   await app.listen(3001);

@@ -1,11 +1,13 @@
 YML	= docker-compose.yml
 
-all:	clean
-	docker-compose -f $(YML) build
-	docker-compose -f $(YML) up
+all:
+	docker-compose -f $(YML) up --build -d
 
-relaunch:
-	docker-compose -f $(YML) up
+logBackend:
+	docker-compose logs -f backend
+
+logFrontend:
+	docker-compose logs -f frontend
 
 down:
 	docker-compose -f $(YML) down

@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 
 const Home = () => {
 
-	const [cookie] = useCookies(['pseudo']);
+	const [cookie] = useCookies(['displayName']);
 
 	return (
 		<>
@@ -15,7 +15,7 @@ const Home = () => {
 				</p>
 			</div>
 			<div>
-				<h1> Hello {cookie.pseudo}!</h1>
+				<h1> Hello {cookie.displayName}!</h1>
 			</div>
 		</>
 	);

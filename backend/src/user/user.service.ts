@@ -30,7 +30,7 @@ export class UserService {
         id: user.id,
       },
       data: {
-        socketId,
+        socketId: socketId,
       },
     })
   }
@@ -49,4 +49,34 @@ export class UserService {
       },
     })
   }
+
+	async getNameById(id: number): Promise<string> {
+		const	user = await this.prisma.user.findUnique({
+			where: {
+				id
+			}
+		});
+		return (user.displayName);
+	}
+
+	async getNameBySId(socketId: string): Promise<string> {
+		const	user = await this.prisma.user.findUnique({
+			where: {
+				socketId
+			}
+		});
+		return (user.displayName);
+	}
+
+	async	getSIdByName(displayName: string): Promise<string> {
+		const user = await this.prisma.user.findFirst({
+			where: {
+				displayName
+			},
+			select: {
+				socketId: true,
+			}
+		});
+		return (user.socketId);
+	}
 }

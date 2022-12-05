@@ -11,20 +11,26 @@ datasource db {
 }
 
 model User {
-  //User auth data
-  id              Int       @id @default(autoincrement())
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  email           String    @unique
-  hash            String?
-  displayName     String?
-  imageUrl        String?
-  googleSecret    String?
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email String @unique
+  hash String?
+  displayName String @unique
+  imageUrl String?
+  googleSecret String?
   // add path of the image
 
   socketId        String? @unique
   blockedUserIds  Int[]
   friends         Int[]
+  matching Matching?
+
+  inGame Boolean @default(false)
+  victories Int @default(0)
+
+	log	Boolean @default(true)
+
   @@map("users")
 }
 
@@ -53,4 +59,22 @@ enum ChannelMode {
   PUBLIC                                                       //everybody can join, but there may be a password. No password => password = ''
   DIRECT                                                       //direct messages between two users
   PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
+}
+
+model	Matching {
+	user User @relation(fields: [userId], references: [id])
+	userId Int @unique
+}
+
+model	Player {
+	userId	Int @unique
+	displayName String
+	score	Int @default(0)
+	game	Game? @relation("players", fields: [gameId], references: [id])
+	gameId Int?
+}
+
+model	Game {
+  id Int @id @default(autoincrement())
+	players Player[] @relation("players")
 }
