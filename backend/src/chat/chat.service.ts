@@ -96,7 +96,7 @@ export class ChatService {
       password);
 
     if (!pwMatch)
-      return ('Wong password');
+      return ('Wrong password');
 
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },

@@ -7,6 +7,7 @@ import { ListItem } from '@mui/material'
 import axios from 'axios';
 import Channel from './Sidebar/Channel';
 import Sidebar from './Sidebar';
+import ChannelPrivate from './Sidebar/ChannelPrivate'
 
 const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
@@ -76,7 +77,11 @@ const Chatbox = () => {
         {/* Left Side */}
         <div className='Left-side-chat'>
           <div className='chatbox-container'>
+            <>username</>
+            <div className='button_channel'>
             <Channel />
+            <ChannelPrivate/>
+          </div>
             <div className='ChannelList'>
               <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
               {channelList}

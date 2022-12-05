@@ -1,4 +1,4 @@
-import  { useState } from 'react'
+import { useState } from 'react'
 import {
   Dialog,
   DialogActions,
@@ -11,11 +11,10 @@ import {
 } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { IoIosAdd } from "react-icons/io";
+import { RiChatPrivateFill } from "react-icons/ri";
 import axios from 'axios';
-import { AiFillWechat } from 'react-icons/ai';
 
-const Channel = () => {
+const ChannelPrivate = () => {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState({
     name: '',
@@ -40,25 +39,25 @@ const Channel = () => {
     setOpen(false)
   }
 
-  const handleCreateChannel = () => {
+  const handleCreatePrivateChannel = () => {
     axios.post('http://localhost:3001/chat/createChannel', {
       name: values.name,
-      mode: 'PUBLIC',
+      mode: 'PRIVATE',
       password: values.password,
       otherUserId: '',
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const handleSubmit = () => {
     handleClose()
-    handleCreateChannel()
+    handleCreatePrivateChannel()
   }
 
   return (
     <div>
-      <h2> <AiFillWechat size="30" className='button_create_channel' onClick={handleClickOpen} >
-      </AiFillWechat>
+      <h2><RiChatPrivateFill size="30" className='button_create_channel_private' onClick={handleClickOpen} >
+      </RiChatPrivateFill>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle><span style={{ color: 'black' }}>Create Public Channel</span></DialogTitle>
+          <DialogTitle><span style={{ color: 'black' }}>Create Private Channel</span></DialogTitle>
           <DialogContent>
             <DialogContentText>
               Enter your channel name, and optionally password
@@ -111,4 +110,4 @@ const Channel = () => {
     </div>
   )
 }
-export default Channel;
+export default ChannelPrivate;
