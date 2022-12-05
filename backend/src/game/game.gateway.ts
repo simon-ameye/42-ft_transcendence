@@ -54,7 +54,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
 	@SubscribeMessage('invitation')
 		async invitSocket(client, receiverName: string): Promise<void> {
-			console.log({invitationto: receiverName});
 			const receiverSId = await this.userService.getSIdByName(receiverName);
 			const clientName = await this.userService.getNameBySId(client.id);
 			this.server.to(receiverSId).emit('send invitation', clientName);
@@ -80,7 +79,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	@SubscribeMessage('invitation accepted sender')
 		async acceptInvitSender(client, data: {gameRoom: string, oppenentId: string}): Promise<void> {
 			client.join(data.gameRoom);
-			console.log({'game room acceptInvitSender': data.gameRoom});
 			const playerIds = [client.id, data.oppenentId];
 			const players = await this.gameService.getPlayersBySIds(playerIds);
 			this.server.to(data.gameRoom).emit('game started', players);
@@ -90,7 +88,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	@SubscribeMessage('add point')
 		async addPoint(client, player: PlayerInterface): Promise<void> {
 			const gameRoom = await this.gameService.updateScore(player.userId, +1);
-			console.log({'game room addPoint': gameRoom});
 			player.score += 1;
 			this.server.to(gameRoom).emit('update score', player);
 		}
