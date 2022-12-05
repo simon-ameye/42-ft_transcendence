@@ -14,6 +14,8 @@ const Chatbox = () => {
 
 
   function sendAllChannelInterfaces() {
+    setchannelInterfaces([]);
+    setactualChannelInterface(undefined);
     axios.get('http://localhost:3001/chat/sendAllChannelInterfaces', {
     }).then(res => console.log(res)).catch(err => console.log(err))
   }
@@ -22,10 +24,6 @@ const Chatbox = () => {
       setactualChannelInterface(channelInterfaces.find((obj) => {
         return obj.id === channelId;
       }))
-      console.log('yooo')
-      console.log(actualChannelInterface)
-      console.log('/yooo')
-
   }
 
   const channelList = channelInterfaces.map((c, i) => (

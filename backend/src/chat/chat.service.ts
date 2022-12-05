@@ -247,7 +247,7 @@ export class ChatService {
     var channelsInterfaces: ChannelsInterface[] = [];
     let channels = await this.prisma.channel.findMany({ where: { mode: ChannelMode.PUBLIC }, })
     for (let channel of channels) {
-      channelsInterfaces.push({ id: channel.id, name: channel.name, isProtected: channel.password != '' });
+      channelsInterfaces.push({ id: channel.id, name: channel.name, isProtected: !(await argon.verify((channel).password, '')) });
     }
     return { channelsInterfaces };
   }
