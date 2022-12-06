@@ -50,7 +50,7 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     if (actualChannelInterface)
     axios.post('http://localhost:3001/chat/setChannelPassword', {
       channelId: actualChannelInterface.id,
-      newPassword: "",
+      newPassword: values.newpassword,
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
 
