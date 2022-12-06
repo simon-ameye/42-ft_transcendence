@@ -1,4 +1,4 @@
-import  { useState } from 'react'
+import { useState } from 'react'
 import {
   Dialog,
   DialogActions,
@@ -53,60 +53,59 @@ const Channel = () => {
   }
 
   return (
-    <div>
-      <h2> <AiFillWechat size="30" className='button_create_channel' onClick={handleClickOpen} >
+    <div className='buttonl'>
+      <AiFillWechat size="30" onClick={handleClickOpen} >
       </AiFillWechat>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle><span style={{ color: 'black' }}>Create Public Channel</span></DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Enter your channel name, and optionally password
-              <br></br>
-            </DialogContentText>
-            <TextField
-              type="username"
-              label="Enter channel name"
-              placeholder="Name"
-              variant="outlined"
-              required
-              style={{
-                padding: 10
-              }}
-              inputProps={{ maxLength: 20 }}
-              onChange={(e: any) => {
-                setValues({ ...values, name: e.target.value })
-              }}
-            />
-            <TextField
-              type={values.showpass ? "text" : "password"}
-              label="Password"
-              placeholder="Password"
-              variant="outlined"
-              style={{
-                padding: 10
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleVisibility}
-                      aria-label="toggle password"
-                      edge="end">
-                      {values.showpass ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              onChange={(e: any) => {
-                setValues({ ...values, password: e.target.value })
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <button onClick={handleClose}>Cancel</button>
-            <button onClick={handleSubmit}>Create</button>
-          </DialogActions>
-        </Dialog>
-      </h2>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle><span style={{ color: 'black' }}>Create Public Channel</span></DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter your channel name, and optionally password
+            <br></br>
+          </DialogContentText>
+          <TextField
+            type="username"
+            label="Enter channel name"
+            placeholder="Name"
+            variant="outlined"
+            required
+            style={{
+              padding: 10
+            }}
+            inputProps={{ maxLength: 20 }}
+            onChange={(e: any) => {
+              setValues({ ...values, name: e.target.value })
+            }}
+          />
+          <TextField
+            type={values.showpass ? "text" : "password"}
+            label="Password"
+            placeholder="Password"
+            variant="outlined"
+            style={{
+              padding: 10
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleVisibility}
+                    aria-label="toggle password"
+                    edge="end">
+                    {values.showpass ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            onChange={(e: any) => {
+              setValues({ ...values, password: e.target.value })
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <button onClick={handleClose}>Cancel</button>
+          <button onClick={handleSubmit}>Create</button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

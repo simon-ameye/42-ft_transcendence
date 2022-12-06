@@ -6,11 +6,11 @@ import UserList from "./UserList";
 
 const Sidebar = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
   return (
-    <div>
-      <PublicList />
+    <>
       <ChannelUserList actualChannelInterface={actualChannelInterface} />
+      <PublicList />
       <UserList actualChannelInterface={actualChannelInterface} />
-    </div>
+    </>
   )
 }
 export default Sidebar;

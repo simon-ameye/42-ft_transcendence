@@ -17,11 +17,9 @@ const ChannelPrivate = () => {
     password: '',
     showpass: false
   })
-  
   const handleClickOpen = () => {
     setOpen(true);
   }
-
   const handleClose = () => {
     setValues({
       name: '',
@@ -45,37 +43,36 @@ const ChannelPrivate = () => {
   }
 
   return (
-    <div>
-      <h2><RiChatPrivateFill size="30" className='button_create_channel_private' onClick={handleClickOpen} >
+    <div className='button'>
+      <RiChatPrivateFill size="30" onClick={handleClickOpen} >
       </RiChatPrivateFill>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle><span style={{ color: 'black' }}>Create Private Channel</span></DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Enter your channel name
-              <br></br>
-            </DialogContentText>
-            <TextField
-              type="username"
-              label="Enter channel name"
-              placeholder="Name"
-              variant="outlined"
-              required
-              style={{
-                padding: 10
-              }}
-              inputProps={{ maxLength: 20 }}
-              onChange={(e: any) => {
-                setValues({ ...values, name: e.target.value })
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <button onClick={handleClose}>Cancel</button>
-            <button onClick={handleSubmit}>Create</button>
-          </DialogActions>
-        </Dialog>
-      </h2>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle><span style={{ color: 'black' }}>Create Private Channel</span></DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter your channel name
+            <br></br>
+          </DialogContentText>
+          <TextField
+            type="username"
+            label="Enter channel name"
+            placeholder="Name"
+            variant="outlined"
+            required
+            style={{
+              padding: 10
+            }}
+            inputProps={{ maxLength: 20 }}
+            onChange={(e: any) => {
+              setValues({ ...values, name: e.target.value })
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <button onClick={handleClose}>Cancel</button>
+          <button onClick={handleSubmit}>Create</button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { TbKey, TbKeyOff } from 'react-icons/tb';
 import ChannelInterface from './Interface/ChannelInterface';
 import UserInterface from './Interface/UserInterface';
+import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
 
 export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
   const [userInterfaces, setuserInterfaces] = useState<UserInterface[]>([])
@@ -43,8 +43,7 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const addUserToChannel = () => {
-    if (!actualChannelInterface || !values)
-    {
+    if (!actualChannelInterface || !values) {
       alert('Options not completed')
       return;
     }
@@ -55,7 +54,7 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
   }
 
   const userList = userInterfaces.map((c, i) => (
-    <ListItem button key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
+    <ListItem key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
     </ListItem>
   ))
 
@@ -69,28 +68,26 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
   }
 
   return (
-    <div className='PublicList'>
-      <div>
-        <br></br>
-        Complete User list
-        <button onClick={getUserTable}>refresh users</button>
-
-        {userList}
-        <h2>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>
-            <DialogActions>
-              <button onClick={startDirectConv}>start DIRECT conv</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={addUserToChannel}>addUserToChannel</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={handleClose}>Cancel</button>
-            </DialogActions>
-          </Dialog>
-        </h2>
-      </div >
+    <div className='ChannelList'>
+      <div className='header'>
+        <div className='title'>All users</div>
+        <TbRefresh className='refreshButton' onClick={getUserTable}>refresh users</TbRefresh>
+      </div>
+      <div className='list'>{userList}</div>
+      <h2>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>
+          <DialogActions>
+            <button onClick={startDirectConv}>start DIRECT conv</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={addUserToChannel}>addUserToChannel</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={handleClose}>Cancel</button>
+          </DialogActions>
+        </Dialog>
+      </h2>
     </div >
   )
 }

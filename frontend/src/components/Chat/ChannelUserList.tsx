@@ -66,59 +66,56 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
   }
 
   const userList = actualChannelInterface?.users.map((c, i) => (
-    <ListItem button key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
+    <ListItem key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
     </ListItem>
   ))
 
 
   return (
-    <div className='PublicList'>
-      <div>
-        <br></br>
-        Channel User list
-        <br></br>
-        {userList}
-        <br></br>
-        <h2>
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>
-            <DialogActions>
-              <button onClick={banUser}>banUser</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={blockUser}>blockUser</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={makeUserAdmin}>makeUserAdmin</button>
-            </DialogActions>
-            <TextField
-              type={"number"}
-              InputProps={{
-                inputProps: { min: 0 }
-              }}
-              label="mute time in minutes"
-              style={{
-                padding: 5
-              }}
-              onChange={(e: any) => {
-                setValues({ ...values, minutes: e.target.value })
-              }}
-            />
-            <DialogActions>
-              <button onClick={muteUser}>muteUser</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={inviteToGame}>inviteToGame</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={accessUserProfile}>accessUserProfile</button>
-            </DialogActions>
-            <DialogActions>
-              <button onClick={handleClose}>Cancel</button>
-            </DialogActions>
-          </Dialog>
-        </h2>
-      </div >
+    <div className='ChannelList'>
+      <div className='header'>
+        <div className='title'>Channel users</div>
+      </div>
+      <div className='list'>{userList}</div>
+      <h2>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>
+          <DialogActions>
+            <button onClick={banUser}>banUser</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={blockUser}>blockUser</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={makeUserAdmin}>makeUserAdmin</button>
+          </DialogActions>
+          <TextField
+            type={"number"}
+            InputProps={{
+              inputProps: { min: 0 }
+            }}
+            label="mute time in minutes"
+            style={{
+              padding: 5
+            }}
+            onChange={(e: any) => {
+              setValues({ ...values, minutes: e.target.value })
+            }}
+          />
+          <DialogActions>
+            <button onClick={muteUser}>muteUser</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={inviteToGame}>inviteToGame</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={accessUserProfile}>accessUserProfile</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={handleClose}>Cancel</button>
+          </DialogActions>
+        </Dialog>
+      </h2>
     </div >
   )
 }

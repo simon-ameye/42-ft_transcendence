@@ -8,13 +8,14 @@ import axios from 'axios';
 import Channel from './Sidebar/Channel';
 import Sidebar from './Sidebar';
 import ChannelPrivate from './Sidebar/ChannelPrivate'
+import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
+
 
 const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
   const [actualChannelInterface, setactualChannelInterface] = useState<ChannelInterface | undefined>()
 
-
-  function sendAllChannelInterfaces() {
+  function refreshAllChannelInterfaces() {
     setchannelInterfaces([]);
     setactualChannelInterface(undefined);
     axios.get('http://localhost:3001/chat/sendAllChannelInterfaces', {
@@ -22,19 +23,17 @@ const Chatbox = () => {
   }
 
   function handleSelectChannel(channelId: number) {
-      setactualChannelInterface(channelInterfaces.find((obj) => {
-        return obj.id === channelId;
-      }))
+    setactualChannelInterface(channelInterfaces.find((obj) => {
+      return obj.id === channelId;
+    }))
   }
 
   const channelList = channelInterfaces.map((c, i) => (
-
-      <ListItem button key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
-      </ListItem>
+    <ListItem key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
+    </ListItem>
   ))
 
-  function refreshActualChannelInterface()
-  {
+  function refreshActualChannelInterface() {
     var channelId = actualChannelInterface?.id
     setactualChannelInterface(channelInterfaces.find((obj) => {
       return obj.id === channelId;
@@ -78,18 +77,21 @@ const Chatbox = () => {
         <div className='Left-side-chat'>
           <div className='chatbox-container'>
             <div className='button_channel'>
-            <Channel />
-            <ChannelPrivate/>
-          </div>
-            <div className='ChannelList'>
-              <button onClick={sendAllChannelInterfaces}>Refresh Channels</button>
-              {channelList}
+              <Channel />
+              <ChannelPrivate />
+            </div>
+            <div className='sidebar'>
+              <div className='ChannelList'>
+                <div className='header'>
+                  <div className='title'>Your channels</div>
+                  <TbRefresh className='refreshButton' onClick={refreshAllChannelInterfaces}></TbRefresh>
+                </div>
+                <div className='list'>{channelList}</div>
+              </div>
               <Sidebar actualChannelInterface={actualChannelInterface} />
             </div>
           </div>
         </div>
-
-        {/* Right Side */}
         <div className='Right-side-chat'>
           <Chat actualChannelInterface={actualChannelInterface} />
         </div>

@@ -33,7 +33,7 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
         rows={3}
         onKeyDown={handleKeyDown}
       />
-      <IoSend size="40" onClick={sendMessage} className='iosend' />
+      <IoSend size="20" onClick={sendMessage} className='iosend' />
     </div>
   )
 }
