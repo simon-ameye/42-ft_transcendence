@@ -316,6 +316,9 @@ export class ChatService {
     if (!(await channel).userIds.includes(banedId))
       return ('This user is not on this channel')
 
+    if ((await channel).ownerId == banedId)
+      return ('You can not ban the owner of the channel')
+
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
       data: {
@@ -348,6 +351,9 @@ export class ChatService {
 
     if (!(await channel).userIds.includes(muteId))
       return ('This user is not on this channel')
+
+    if ((await channel).ownerId == muteId)
+      return ('You can not mute the owner of this channel')
 
     var muteRelease = new Date();
     muteRelease.setMinutes(muteRelease.getMinutes() + minutes);
