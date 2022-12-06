@@ -12,7 +12,7 @@ import {
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import axios from 'axios';
-import { AiFillWechat } from 'react-icons/ai';
+import { RiChat3Fill } from 'react-icons/ri';
 
 const Channel = () => {
   const [open, setOpen] = useState(false);
@@ -54,8 +54,8 @@ const Channel = () => {
 
   return (
     <div className='buttonl'>
-      <AiFillWechat size="30" onClick={handleClickOpen} >
-      </AiFillWechat>
+      <RiChat3Fill size="30" onClick={handleClickOpen} >
+      </RiChat3Fill>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle><span style={{ color: 'black' }}>Create Public Channel</span></DialogTitle>
         <DialogContent>
