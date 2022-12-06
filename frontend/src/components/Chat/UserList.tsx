@@ -54,7 +54,8 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
   }
 
   const userList = userInterfaces.map((c, i) => (
-    <ListItem key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
+    <ListItem key={i} onClick={event => handleClickOpen(c.id)}>
+      <div className='list'>{c.name}</div>
     </ListItem>
   ))
 
@@ -73,7 +74,7 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
         <div className='title'>All users</div>
         <TbRefresh className='refreshButton' onClick={getUserTable}>refresh users</TbRefresh>
       </div>
-      <div className='list'>{userList}</div>
+      {userList}
       <h2>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>

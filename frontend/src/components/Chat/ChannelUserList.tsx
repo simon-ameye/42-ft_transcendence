@@ -66,7 +66,8 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
   }
 
   const userList = actualChannelInterface?.users.map((c, i) => (
-    <ListItem key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
+    <ListItem key={i} onClick={event => handleClickOpen(c.id)}>
+      <div className='list'>{c.name}</div>
     </ListItem>
   ))
 
@@ -76,7 +77,7 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
       <div className='header'>
         <div className='title'>Channel users</div>
       </div>
-      <div className='list'>{userList}</div>
+      {userList}
       <h2>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>

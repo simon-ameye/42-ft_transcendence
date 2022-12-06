@@ -29,7 +29,8 @@ const Chatbox = () => {
   }
 
   const channelList = channelInterfaces.map((c, i) => (
-    <ListItem key={i} onClick={event => handleSelectChannel(c.id)} > {c.name}
+    <ListItem key={i} onClick={event => handleSelectChannel(c.id)} >
+      <div className='list'>{c.name}</div>
     </ListItem>
   ))
 
@@ -86,7 +87,7 @@ const Chatbox = () => {
                   <div className='title'>Your channels</div>
                   <TbRefresh className='refreshButton' onClick={refreshAllChannelInterfaces}></TbRefresh>
                 </div>
-                <div className='list'>{channelList}</div>
+                {channelList}
               </div>
               <Sidebar actualChannelInterface={actualChannelInterface} />
             </div>

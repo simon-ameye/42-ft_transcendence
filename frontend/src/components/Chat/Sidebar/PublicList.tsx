@@ -57,7 +57,8 @@ export default function PublicList() {
   }
 
   const channelList = channelsInterfaces.map((c, i) => (
-    <ListItem key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <TbKey /> : <TbKeyOff />} {c.name}
+    <ListItem key={i} onClick={event => handleClickOpen(c.id)} >{c.isProtected ? <TbKey /> : <TbKeyOff />}
+      <div className='list'>{c.name}</div>
     </ListItem>
   ))
 
@@ -67,7 +68,7 @@ export default function PublicList() {
         <div className='title'>Public channels</div>
         <TbRefresh className='refreshButton' onClick={getPublicChannelTable}></TbRefresh>
       </div>
-      <div className='list'> {channelList} </div>
+      {channelList}
       <h2>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle><span style={{ color: 'black' }}>Join Channel</span></DialogTitle>

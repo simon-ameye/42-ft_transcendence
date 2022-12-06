@@ -1,9 +1,9 @@
 :root {
   --borderColor: #a8a8a8;
   --delimiterColor: #cfa530;
-  --channelHeaderColor: #c7c7c7;
-  --titleBackgroundColor: #3d4947;
-  --white: #ffffff;
+  --channelHeaderColor: #ee9393;
+  --titleBackgroundColor: #60797c;
+  --listColor: #68aca0;
 }
 
 .chatbox {
@@ -71,7 +71,7 @@
         }
 
         .list {
-          color: #d40000;
+          color: var(--listColor);
         }
       }
 
