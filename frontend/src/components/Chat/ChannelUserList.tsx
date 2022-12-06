@@ -76,7 +76,9 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
       <div>
         <br></br>
         Channel User list
+        <br></br>
         {userList}
+        <br></br>
         <h2>
           <Dialog open={open} onClose={handleClose}>
             <DialogTitle><span style={{ color: 'black' }}>Chose action</span></DialogTitle>

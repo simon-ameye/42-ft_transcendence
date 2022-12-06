@@ -42,11 +42,6 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
       }).then(res => alert(res.data)).catch(err => alert(err))
     handleClose();
   }
-
-  const handleRemovePass = () => { 
-    handleClose();
-  }
-
   const handleClose = () => {
     setOpen(false)
   }
@@ -55,7 +50,7 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     if (actualChannelInterface)
     axios.post('http://localhost:3001/chat/setChannelPassword', {
       channelId: actualChannelInterface.id,
-      newPassword: values.newpassword,
+      newPassword: "",
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
 
@@ -72,7 +67,6 @@ return (
     <DialogContent>
         <Button onClick={handleLeaveChannel}>Leave Channel</Button>
         <br></br>
-        <Button onClick={handleRemovePass}>Remove Password</Button>
         <DialogContentText>
           <br></br>
           Change password

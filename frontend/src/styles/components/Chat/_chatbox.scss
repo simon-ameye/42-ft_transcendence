@@ -21,8 +21,8 @@
             border-bottom-right-radius: 0px;
             overflow: auto;
             .button_channel{
-                flex-direction: unset;
-                    text-align: right;
+                display: flex;
+                gap: 1rem;
                 .button_create_channel {
                     background-color: #48b15f;
                     border-radius: 10px;
@@ -30,8 +30,6 @@
                 .button_create_channel_private {
                     background-color: #48b15f;
                     border-radius: 10px;
-                    align-items: right;
-                    text-align: right;
                 }
 
             }

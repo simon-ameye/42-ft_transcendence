@@ -6,11 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  InputAdornment,
-  IconButton
 } from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { RiChatPrivateFill } from "react-icons/ri";
 import axios from 'axios';
 
@@ -21,15 +17,11 @@ const ChannelPrivate = () => {
     password: '',
     showpass: false
   })
+  
   const handleClickOpen = () => {
     setOpen(true);
   }
-  const handleVisibility = () => {
-    setValues({
-      ...values,
-      showpass: !values.showpass,
-    });
-  };
+
   const handleClose = () => {
     setValues({
       name: '',
@@ -43,7 +35,7 @@ const ChannelPrivate = () => {
     axios.post('http://localhost:3001/chat/createChannel', {
       name: values.name,
       mode: 'PRIVATE',
-      password: values.password,
+      password: "",
       otherUserId: '',
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
@@ -60,7 +52,7 @@ const ChannelPrivate = () => {
           <DialogTitle><span style={{ color: 'black' }}>Create Private Channel</span></DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Enter your channel name, and optionally password
+              Enter your channel name
               <br></br>
             </DialogContentText>
             <TextField
@@ -75,29 +67,6 @@ const ChannelPrivate = () => {
               inputProps={{ maxLength: 20 }}
               onChange={(e: any) => {
                 setValues({ ...values, name: e.target.value })
-              }}
-            />
-            <TextField
-              type={values.showpass ? "text" : "password"}
-              label="Password"
-              placeholder="Password"
-              variant="outlined"
-              style={{
-                padding: 10
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleVisibility}
-                      aria-label="toggle password"
-                      edge="end">
-                      {values.showpass ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-              onChange={(e: any) => {
-                setValues({ ...values, password: e.target.value })
               }}
             />
           </DialogContent>
