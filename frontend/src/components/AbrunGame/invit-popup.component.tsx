@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../styles/invit-popup.style.css';
+import './style.scss';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
 

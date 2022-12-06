@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from './Navbar';
-import { socket } from '../App';
+import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar';
+import './style.scss'
 
 const User = () => {
 	const navigate = useNavigate();
@@ -10,7 +11,9 @@ const User = () => {
 	const [userPass, setUserPass] = useState('');
 	const [userDisplayName, setUserDisplayName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
-
+	
+	const [userToken, setUserToken] = useState('');
+	
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -58,6 +61,7 @@ const User = () => {
 						<label>Email</label>
 						<input 
 							type="email"
+							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
 							placeholder='ex: "test@test.fr"'
 							required
 							value={userMail}
@@ -91,7 +95,7 @@ const User = () => {
 					</form>
 				</div>
 				<div className="or">OR</div>
-				<button onClick={handleLogin} className='login-btn'>
+				<button className='login-btn'>
 					<p>Login with</p>
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>

@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from './components/Home';
 import User from './components/User';
-import NotFound from './pages/notFound';
-import Home from './pages/home';
-import Game from './pages/Game';
+import NotFound from './components/NotFound';
+import GameTest from './components/AbrunGame/Game';
 import LiveGame from './components/AbrunGame/live-game.component';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
+import Game from './components/GameSetup';
 import ChatBox from './components/Chat/ChatBox'
 
 axios.defaults.withCredentials = true;
@@ -38,11 +39,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/user" element={<User />} />
-        <Route path="/game" element={<Game />} />
-			<Route path="/game/live" element={<LiveGame />} />
+        <Route path="/gameTest" element={<GameTest />} />
+				<Route path="/game/live" element={<LiveGame />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
         <Route path="*" element={<NotFound />} />
+				<Route path="/game" element={<Game />} />
       </Routes>
     </BrowserRouter>
   );

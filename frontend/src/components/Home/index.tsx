@@ -1,13 +1,13 @@
-import Navbar from '../components/Navbar';
 import { useCookies } from 'react-cookie';
+import Default from '../../layouts/Default';
+import './style.scss'
 
 const Home = () => {
 
 	const [cookie] = useCookies(['displayName']);
 
 	return (
-		<>
-			<Navbar />
+		<Default>
 			<div className='homeContent'>
 				<h3>Pong Game - ft_transcendence</h3>
 				<p className='pongHistory'>
@@ -17,7 +17,7 @@ const Home = () => {
 			<div>
 				<h1> Hello {cookie.displayName}!</h1>
 			</div>
-		</>
+		</Default>
 	);
 };
 
