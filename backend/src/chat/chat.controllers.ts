@@ -31,6 +31,13 @@ export class ChatController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Post('addUserToChannel')
+  addUserToChannel(@Body() body: { channelId: number, otherUserId: number },
+    @GetUser() user: UserDto) {
+    return (this.chatService.addUserToChannel(user.id, Number(body.channelId), Number(body.otherUserId)));
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Post('joinChannel')
   joinChannel(@Body() body: { channelId: number, password: string },
     @GetUser() user: UserDto) {

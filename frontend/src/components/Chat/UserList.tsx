@@ -8,7 +8,7 @@ import { TbKey, TbKeyOff } from 'react-icons/tb';
 import ChannelInterface from './Interface/ChannelInterface';
 import UserInterface from './Interface/UserInterface';
 
-export default function UserList() {
+export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
   const [userInterfaces, setuserInterfaces] = useState<UserInterface[]>([])
 
   const [open, setOpen] = useState(false);
@@ -42,31 +42,17 @@ export default function UserList() {
       otherUserId: values.userId,
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
-  const blockUser = () => {
-    axios.post('http://localhost:3001/chat/blockUser', {
-      blockedUserId: values.userId,
+  const addUserToChannel = () => {
+    if (!actualChannelInterface || !values)
+    {
+      alert('Options not completed')
+      return;
+    }
+    axios.post('http://localhost:3001/chat/addUserToChannel', {
+      channelId: actualChannelInterface?.id,
+      otherUserId: values.userId,
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
-  const makeUserAdmin = () => {
-    axios.post('http://localhost:3001/chat/makeUserAdmin', {
-      //channelId: actualChannelInterface?.id,
-      //newAdminId: values.userId,
-    }).then(res => alert(res.data)).catch(err => alert(err))
-  }
-  const muteUser = () => {
-    axios.post('http://localhost:3001/chat/muteUser', {
-      //channelId: actualChannelInterface?.id,
-      //muteId: values.userId,
-      //minutes: values.minutes,
-    }).then(res => alert(res.data)).catch(err => alert(err))
-  }
-  const inviteToGame = () => {
-    alert('not done yet')
-  }
-  const accessUserProfile = () => {
-    alert('not done yet')
-  }
-
 
   const userList = userInterfaces.map((c, i) => (
     <ListItem button key={i} onClick={event => handleClickOpen(c.id)} > {c.name}
@@ -97,7 +83,7 @@ export default function UserList() {
               <button onClick={startDirectConv}>start DIRECT conv</button>
             </DialogActions>
             <DialogActions>
-              <button onClick={blockUser}>addToPrivateChannel</button>
+              <button onClick={addUserToChannel}>addUserToChannel</button>
             </DialogActions>
             <DialogActions>
               <button onClick={handleClose}>Cancel</button>

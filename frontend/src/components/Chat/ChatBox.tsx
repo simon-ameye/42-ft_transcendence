@@ -77,7 +77,6 @@ const Chatbox = () => {
         {/* Left Side */}
         <div className='Left-side-chat'>
           <div className='chatbox-container'>
-            <>username</>
             <div className='button_channel'>
             <Channel />
             <ChannelPrivate/>

@@ -399,4 +399,36 @@ export class ChatService {
     }
     return { usersInterfaces };
   }
+
+  async addUserToChannel(userId: number, channelId: number, otherUserId: number) {
+
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel)
+      return ('Channel not found');
+
+    var otherUser = this.prisma.user.findUnique({ where: { id: otherUserId } });
+    if (!await otherUser)
+      return ('Other user not found');
+
+    if (!(await channel).adminIds.includes(userId))
+      return ('You are not admin of this channel')
+
+    if ((await channel).userIds.includes(otherUserId))
+      return ('This user is already registered to this channel');
+
+    if ((await channel).banedUserIds.includes(otherUserId))
+      return ('This user is baned from this channel');
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: { userIds: { push: otherUserId, }, },
+    })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('User added to channel');
+  }
 }

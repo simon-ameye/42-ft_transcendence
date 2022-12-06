@@ -9,7 +9,7 @@ const Sidebar = ({ actualChannelInterface }: { actualChannelInterface: ChannelIn
     <div>
       <PublicList />
       <ChannelUserList actualChannelInterface={actualChannelInterface} />
-      <UserList />
+      <UserList actualChannelInterface={actualChannelInterface} />
     </div>
   )
 }
