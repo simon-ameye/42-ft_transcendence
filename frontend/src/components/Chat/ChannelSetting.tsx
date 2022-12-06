@@ -36,6 +36,11 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     });
   };
   const handleLeaveChannel= async () => {
+    if (actualChannelInterface === undefined)
+    {
+      alert('Incomplete demand');
+      return;
+    }
     if (actualChannelInterface?.id)
       axios.post('http://localhost:3001/chat/leaveChannel', {
         channelId: actualChannelInterface.id,
@@ -47,6 +52,10 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
   }
 
   const handleNewpass = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     if (actualChannelInterface)
     axios.post('http://localhost:3001/chat/setChannelPassword', {
       channelId: actualChannelInterface.id,
@@ -54,6 +63,10 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const handleRemovepass = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     if (actualChannelInterface)
       axios.post('http://localhost:3001/chat/setChannelPassword', {
         channelId: actualChannelInterface.id,

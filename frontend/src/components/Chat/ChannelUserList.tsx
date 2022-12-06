@@ -35,6 +35,10 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
   }
 
   const banUser = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     axios.post('http://localhost:3001/chat/banUser', {
       channelId: actualChannelInterface?.id,
       banedId: values.userId,
@@ -46,12 +50,20 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const makeUserAdmin = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     axios.post('http://localhost:3001/chat/makeUserAdmin', {
       channelId: actualChannelInterface?.id,
       newAdminId: values.userId,
     }).then(res => alert(res.data)).catch(err => alert(err))
   }
   const muteUser = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     axios.post('http://localhost:3001/chat/muteUser', {
       channelId: actualChannelInterface?.id,
       muteId: values.userId,

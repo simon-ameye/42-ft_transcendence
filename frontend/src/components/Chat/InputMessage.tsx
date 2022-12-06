@@ -7,9 +7,10 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
   const [value, setValue] = useState<string>("");
   const sendMessage = async () => {
     if (value === "") return false;
-    console.log('debug')
-    console.log(actualChannelInterface)
-    console.log('/debug')
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     if (actualChannelInterface) {
       axios.post('http://localhost:3001/chat/sendMessage', {
         channelId: actualChannelInterface.id,
