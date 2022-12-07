@@ -1,16 +1,17 @@
-import { Controller,
-  MaxFileSizeValidator, 
-  Post, 
-  Get, 
+import {
+  Controller,
+  MaxFileSizeValidator,
+  Post,
+  Get,
   Put,
   UploadedFile,
   Body,
-  ParseFilePipe, 
-  FileTypeValidator, 
+  ParseFilePipe,
+  FileTypeValidator,
   UseInterceptors,
   UseGuards,
-	Query,
-	Req
+  Query,
+  Req
 } from '@nestjs/common';
 
 import { Express, Request } from 'express';
@@ -25,8 +26,8 @@ import { GetUser } from 'src/auth/decorators';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
-  
+  constructor(private userService: UserService) { }
+
   @UseGuards(AuthGuard('jwt'))
   @Get()
   getUser(@GetUser() user: UserDto) {
@@ -41,8 +42,14 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('users')
-  getUsers() {
-    return this.userService.getUsers();
+  getUsers(@GetUser() user: UserDto) {
+    return this.userService.getUsers(user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('addFriend')
+  addFriend(@GetUser() user: UserDto, userid: number) {
+    return this.userService.addFriend(user, userid);
   }
 
   // DisplayName
@@ -62,15 +69,15 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Put('modifyName')
   modifyName(@GetUser() user: UserDto,
-		@Body() body: {displayName: string}) {
+    @Body() body: { displayName: string }) {
     return this.userService.modifyName(user, body.displayName);
   }
 
-	@UseGuards(AuthGuard('jwt'))
-	@Put('modifySocketId')
-	modifySocketId(@Body() body: {socketId: string}, @GetUser() user: UserDto) {
-		return this.userService.modifySocketId(user, body.socketId);
-	}
+  @UseGuards(AuthGuard('jwt'))
+  @Put('modifySocketId')
+  modifySocketId(@Body() body: { socketId: string }, @GetUser() user: UserDto) {
+    return this.userService.modifySocketId(user, body.socketId);
+  }
 
   //// IMAGE UPLOAD
   @UseGuards(AuthGuard('jwt'))
@@ -79,7 +86,7 @@ export class UserController {
     FileInterceptor('image', {
       dest: './uploads',
     }
-  ))
+    ))
   async uploadSingle(
     @UploadedFile(
       new ParseFilePipe({

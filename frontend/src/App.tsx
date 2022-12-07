@@ -10,7 +10,8 @@ import LiveGame from './components/AbrunGame/live-game.component';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
-import Profile from './components/Profile';
+import Profile from './components/Profile/Profile';
+import Friends from './components/Friends';
 
 axios.defaults.withCredentials = true;
 
@@ -34,20 +35,20 @@ function App() {
 			.catch(err => console.log(err));
 	}
 
-  return (
-   <BrowserRouter>
-		<Routes>
-			<Route path="/" element={<Home />} />
-			<Route path="/user" element={<User />} />
-			<Route path="/game" element={<Game />} />
-			<Route path="/game/live" element={<LiveGame />} />
-			<Route path="/auth" element={<Auth />} />
-			<Route path="/notifications" element={<Notifications />} />
-			<Route path="/profile" element={<Profile />} />
-			<Route path="*" element={<NotFound />} />
-		</Routes>
-	</BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/user" element={<User />} />
+				<Route path="/game" element={<Game />} />
+				<Route path="/game/live" element={<LiveGame />} />
+				<Route path="/auth" element={<Auth />} />
+				<Route path="/profile" element={<Profile />} />
+				<Route path="/friends" element={<Friends />} />
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</BrowserRouter>
+	);
 }
 
 export default App;

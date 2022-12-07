@@ -8,10 +8,11 @@ import { FriendService } from "./friend.service";
 import { Logger } from '@nestjs/common';
 import { Socket } from "socket.io";
 import { AuthGuard } from "@nestjs/passport";
+import { send } from "process";
 
 @WebSocketGateway({ cors: true }) // only for notifications and status or modification of the database in it ?
 export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatewayConnection {
-  constructor( private friendService: FriendService ) {}
+  constructor(private friendService: FriendService) { }
 
   // friend service
   @WebSocketServer()
@@ -31,20 +32,12 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
   }
 
   @SubscribeMessage('sendFriendRequest')
-  handleFriendRequest( client: Socket, message: string, jwtToken: string) {
-    // we need the socket id to send the friendrequest
-    this.logger.log('Client message', message);
-    // create a service to update database
-    this.server.emit("receiveFriendRequest", message); //emit the friend request to the good id
+  handleFriendRequest(client: Socket, receiverId: number, receiverSocketId: string) {
+    this.friendService.sendFriendRequest(receiverId, client.id);
+    this.server.emit("receiveFriendRequest", receiverSocketId);
   }
 
-  @SubscribeMessage('acceptRequest')
-  handleAcceptRequest( client: Socket, receiverId: string ) {
-    this.logger.log(`accepted request`);
-    // have to create this service this.friendService.acceptRequset();
-    //this.server.emit.toString()
-  }
-  async handleDisconnect(client : Socket) {
+  async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 }

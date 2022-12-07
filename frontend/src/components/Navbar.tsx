@@ -21,15 +21,15 @@ const Navbar = () => {
 					<i className="fa-solid fa-user"></i>
 					<span>User</span>
 				</NavLink>
-				<NavLink to="/notifications">
-					<i className="fa-solid fa-user"></i>
-					<span>notifications</span>
-					{ /* do a button instead of a navlink*/ }
-				</NavLink>
 				<NavLink to="/profile">
 					<i className="fa-solid fa-user"></i>
 					<span>Profile</span>
-					{ /* do a button instead of a navlink*/ }
+					{ /* do a button instead of a navlink*/}
+				</NavLink>
+				<NavLink to="/friends">
+					<i className="fa-solid fa-user"></i>
+					<span>Friends</span>
+					{ /* do a button instead of a navlink*/}
 				</NavLink>
 			</nav>
 		</header>

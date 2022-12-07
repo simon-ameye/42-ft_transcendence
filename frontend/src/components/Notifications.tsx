@@ -43,7 +43,7 @@ const Notifications = () => {
       />
       <button onClick={sendFriendRequest}>Send Friendrequest</button>
       <h1>Received Requests</h1>
-      {receivedRequest}      
+      {receivedRequest}
       {/*<h1>Sent Requests</h1> */}
       {/* {sentRequest} */}
       { /*<button onClick={showFriendRequest}>Show Friendrequest</button> */}
