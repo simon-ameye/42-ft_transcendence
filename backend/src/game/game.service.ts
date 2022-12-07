@@ -63,7 +63,7 @@ export class GameService {
 		});
 		const deleteUsers = await this.prismaService.matching.deleteMany({
 			where: {
-				OR: [{ user: players[0] }, { user: players[1] }],
+				OR: [{ userId: players[0].id }, { userId: players[1].id }],
 			},
 		});
 		const game = await this.prismaService.game.create({

@@ -6,6 +6,8 @@ import PlayerInterface from '../../interfaces/player.interface';
 import InvitPopup from './invit-popup.component';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import Navbar from '../Navbar';
+import { ListItem } from '@mui/material';
 
 export default function GameHome() {
 
@@ -106,36 +108,49 @@ export default function GameHome() {
  	 return <h1>MISSED!</h1>;
 	}
 
+	const MatchingQueue = matchingQueue.map((matchingQueue, index) => (
+		<ListItem button key={index}>{matchingQueue}
+			{cookie.displayName && matchingQueue !== cookie.displayName && <button onClick={() => sendInvit(matchingQueue)}><span style={{ color: 'black' }}>Invit</span></button>}
+		</ListItem>
+	))
+
+	const GameInProgress = gameList.map((gameList, index) => (
+		<ListItem button onClick={() => watchMatch(gameList)} key={index}>{gameList} </ListItem>
+	))
+	
+
 		// RETURN \\
 
 	return (
-		<>
-			{cookie.displayName &&
-				<div>
-					<button onClick={() => addToQueue()}>Join game</button>
+		<div>
+			<Navbar/>
+				<div className='Join_game'>
+					{/* Left Side*/}
+					<div className='leftside_game'>
+						<div className='game-container'>
+							<br></br>
+								{cookie.displayName}
+							<br></br>
+								<div className='Join_game_button'>
+									<br></br>
+									{cookie.displayName &&
+									<div>
+										<button  onClick={() => addToQueue()}><span style={{color: 'black'}}>Join game</span></button>
+									</div>}
+								</div>
+								<div className='Matching_queue'>
+									<br></br>Matching Queue
+									{MatchingQueue }
+								</div>
+							<div>
+								<br></br>
+								<h5>Watch game in progress</h5>
+										{GameInProgress}
+							</div>
+						</div>
+					</div>
 				</div>
-			}
-			<div>
-				<h5>Matching Queue</h5>
-				<ul>
-					{matchingQueue.map((matchingQueue, index) => (
-						<li key={index}>{matchingQueue}    {cookie.displayName && matchingQueue !== cookie.displayName && <button 
-								onClick={() => sendInvit(matchingQueue)}>Invit</button>}
-						</li>
-					))}
-				</ul>
-			</div>
-			<div>
-				<h5>Game in progress</h5>
-				<ul>
-					{gameList.map((gameList, index) => (
-						<li key={index}>{gameList}      <button 
-								onClick={() => watchMatch(gameList)}>Watch</button>
-						</li>
-					))}
-				</ul>
-			</div>
 			<InvitPopup />
-		</>
+		</div>
 	)
 }
