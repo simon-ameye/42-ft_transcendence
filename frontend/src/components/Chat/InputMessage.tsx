@@ -33,6 +33,7 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
         value={value}
         rows={3}
         onKeyDown={handleKeyDown}
+        maxLength={200}
       />
       <IoSend size="20" onClick={sendMessage} className='iosend' />
     </div>

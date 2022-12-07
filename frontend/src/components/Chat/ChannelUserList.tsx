@@ -112,6 +112,11 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
               padding: 5
             }}
             onChange={(e: any) => {
+              if (e.target.value  >= 1000)
+              {
+                alert("max value is 1000");
+                e.target.value = 1000;
+              }
               setValues({ ...values, minutes: e.target.value })
             }}
           />

@@ -33,7 +33,7 @@ export class ChannelService {
     channelInterface.isProtected = (await channel).password != '';
     if ((await channel).mode == ChannelMode.DIRECT) {
       try{
-        channelInterface.name = "# " +
+        channelInterface.name =
           (await this.prisma.user.findUnique({ where: { id: (await channel).userIds[0] } })).displayName
           + " & " +
           (await this.prisma.user.findUnique({ where: { id: (await channel).userIds[1] } })).displayName;
@@ -41,7 +41,6 @@ export class ChannelService {
       catch{
         channelInterface.name = "error while generating name";
       }
-
     }
     else
       channelInterface.name = (await channel).name;
