@@ -113,4 +113,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			client.join(gameRoom);
 			this.server.to(client.id).emit('game started', players);
 		}
+	
+	@SubscribeMessage('arrow up')
+		async ArrowUp(client, oppenentName: string): Promise<void> {
+			const	oppenentSId = await this.userService.getSIdByName(oppenentName);
+			this.server.to(oppenentSId).emit('arrow up');
+		}
+	
+	@SubscribeMessage('arrow down')
+		async ArrowDown(client, oppenentName: string): Promise<void> {
+			const	oppenentSId = await this.userService.getSIdByName(oppenentName);
+			this.server.to(oppenentSId).emit('arrow down');
+		}
 }

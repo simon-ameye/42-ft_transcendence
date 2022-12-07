@@ -32,7 +32,7 @@ export default function GameHome() {
 	const watchMatch = (strGame: string) => {
 		const playerIds = strGame.split(" ");
 		playerIds.splice(1, 1);
-		navigate('/game/live');
+		navigate('/game/live2');
 		socket.emit("watch game", playerIds);
 	}
 	

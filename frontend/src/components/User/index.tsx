@@ -36,6 +36,7 @@ const User = () => {
 	}
 
 	const handleLogin = () => {
+		console.log('handle login');
 		window.location.href = 'http://localhost:3001/auth/42api/login';
 	}
 
@@ -95,7 +96,7 @@ const User = () => {
 					</form>
 				</div>
 				<div className="or">OR</div>
-				<button className='login-btn'>
+				<button onClick={handleLogin} className='login-btn'>
 					<p>Login with</p>
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>

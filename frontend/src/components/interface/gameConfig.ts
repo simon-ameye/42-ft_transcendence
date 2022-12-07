@@ -1,4 +1,5 @@
 import { ObjectSize } from './position';
+import PlayerInterface from '../../interfaces/player.interface';
 
 
 export interface GameConfig {
@@ -13,4 +14,5 @@ export interface GameConfig {
 	bgColor: string,
 	fgColor: string,
 	players: number,
+	players2: PlayerInterface[]
 };

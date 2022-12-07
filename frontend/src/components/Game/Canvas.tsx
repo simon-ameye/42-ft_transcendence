@@ -10,8 +10,6 @@ const Canvas: React.FC<props> = ({width, height}) => {
 	const [paddlePosY, setPaddlePosY] = useState(0);
 	const leftPaddle = {posX: 10, posY: (height / 2) - 50, elemHeight: 100, elemWidth: 10};
 	const rightPaddle = {posX: width - 20, posY: (height / 2) - 50, elemHeight: 100, elemWidth: 10};
-
-
 	
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	let context:CanvasRenderingContext2D | null;
@@ -26,6 +24,7 @@ const Canvas: React.FC<props> = ({width, height}) => {
 		draw(context);
 		
 	}, []);
+
 	const handleKeyPress = (event:React.KeyboardEvent<HTMLElement>) => {
 		if (event.key == "ArrowUp")
 		{

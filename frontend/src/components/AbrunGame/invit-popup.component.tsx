@@ -21,7 +21,7 @@ export default function	InvitPopup() {
 		const invitTextArray = invitText.split(" ");
 		const	senderDName = invitTextArray[invitTextArray.length - 1];
 		socket.emit("invitation accepted", senderDName);
-		navigate('/game/live');
+		navigate('/game/live2');
 		setInvit(false);
 	}
 
@@ -52,7 +52,7 @@ export default function	InvitPopup() {
 
 	const	invitAcceptedSenderListener = (gameRoom: string) => {
 		socket.emit("invitation accepted sender", gameRoom);
-		navigate('/game/live');
+		navigate('/game/live2');
 	}
 
 	// RETURN \\

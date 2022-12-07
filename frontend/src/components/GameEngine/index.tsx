@@ -3,8 +3,14 @@ import { useEffect, useState } from "react"
 import GameDisplay from "../GameDisplay"
 import { useKeyDown } from "../hooks/useKeyDown"
 import { GameConfig } from "../interface/gameConfig"
+import PlayerInterface from '../../interfaces/player.interface'
+import { socket } from '../../App'
 
 const GameEngine = (props: { config: GameConfig }) => {
+
+	const playerRight: PlayerInterface = props.config.players2[0];
+	const playerLeft: PlayerInterface = props.config.players2[1];
+	
 	const ballInitialX = props.config.canvasSize.x / 2 - props.config.ballSize.x
 	const ballInitialY = props.config.canvasSize.y / 2 - props.config.ballSize.y
 
@@ -89,22 +95,39 @@ const GameEngine = (props: { config: GameConfig }) => {
 	// ARROW UP
 	useKeyDown(() => {
 		handleKeyUp();
+		socket.emit('arrow up', playerLeft.displayName);
 	}, ['ArrowUp'])
 
 	// ARROW DOWN
 	useKeyDown(() => {
 		handleKeyDown();
+		socket.emit('arrow down', playerLeft.displayName);
 	}, ['ArrowDown'])
 
 	// PLAYER 2 UP
-	useKeyDown(() => {
-		handleKeyUpP2();
-	}, ['w'])
+	useEffect(() => {
+		socket.on('arrow up', handleKeyUpP2);
+		return () => {
+			socket.off('arrow up', handleKeyUpP2);
+		}
+	});
 
 	// PLAYER 2 DOWN
-	useKeyDown(() => {
-		handleKeyDownP2();
-	}, ['s'])
+	useEffect(() => {
+		socket.on('arrow down', handleKeyDownP2);
+		return () => {
+			socket.off('arrow down', handleKeyDownP2);
+		}
+	});
+
+//	useKeyDown(() => {
+//		handleKeyUpP2();
+//	}, ['w'])
+//
+//	// PLAYER 2 DOWN
+//	useKeyDown(() => {
+//		handleKeyDownP2();
+//	}, ['s'])
 
 	return <GameDisplay
 		ball={ball}

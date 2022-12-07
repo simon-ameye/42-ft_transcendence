@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { socket } from '../../App';
 import PlayerInterface from '../../interfaces/player.interface';
+import { useCookies } from 'react-cookie';
 
 export default function	LiveGame() {
 
 	// VARIABLES \\
 	
+	const	[cookie] = useCookies(['displayName']);
 	const [rerender, setRerender] = useState<boolean>(false);
 	const [playerRight, setPlayerRight] =
 			useState<PlayerInterface>({userId: 0, displayName: "right", score: 0});
@@ -49,12 +51,18 @@ export default function	LiveGame() {
 	// LISTENER \\
 
 	const gameStartedListener = (players: PlayerInterface[]) => {
-		playerRight.displayName = players[0].displayName;
-		playerLeft.displayName = players[1].displayName;
-		playerRight.userId = players[0].userId;
-		playerLeft.userId = players[1].userId;
-		playerRight.score = players[0].score;
-		playerLeft.score = players[1].score;
+		var	r = 1;
+		var	l = 0;
+		if (cookie.displayName == players[0].displayName) {
+			r = 0;
+			l = 1;
+		}
+		playerRight.displayName = players[r].displayName;
+		playerLeft.displayName = players[l].displayName;
+		playerRight.userId = players[r].userId;
+		playerLeft.userId = players[l].userId;
+		playerRight.score = players[r].score;
+		playerLeft.score = players[l].score;
 		setPlayerRight(playerRight);
 		setPlayerLeft(playerLeft);
 	//	if (socket.id !== playerRight.socketId && socket.id !== playerLeft.socketId)
