@@ -1,3 +1,4 @@
+@import '../../styles/settings';
 .Join_game {
 	display: flex;
 	align-items: center;
@@ -23,11 +24,11 @@
 			border-top-right-radius: 10px;
 			border-bottom-right-radius: 10px;
 			overflow: auto;
-
 			.Join_game_button {
 				border-top: 1px solid white;
-				align-items: center;
-				text-align: center;
+				.submit-btn{
+					@include btn-anim;
+				}
 			}
 
 			.Matching_queue {
@@ -42,21 +43,32 @@
 	position: fixed;
 	display: inline-block;
 	background-color: white;
-	width: 180px;
-	height: 150px;
+	width: 200px;
+	height: 200px;
 	border-radius: 10px;
 	padding: 10px 0;
 	bottom: 125%;
 	left: 50%;
-	margin-left: -80px;
+	margin-left: -100px;
 	top: 400px;
 
 	.Title_popup {
 		text-align: center;
 		padding: 10px 0;
-		.close-btn {
+		.btn {
 				align-items: center;
-				padding: 40px 0;
+				padding: 30px 0;
+				justify-content: space-between;
+				.btn_accept{
+					@include btn-anim;
+					padding: 10px 10px 10px 10px;
+					text-align: center;
+				}
+				.btn_close{
+					@include btn-anim;
+					padding: 10px 10px 10px 10px;
+				}
+
 			}
 		
 	}

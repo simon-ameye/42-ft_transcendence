@@ -68,9 +68,9 @@ export default function InvitPopup() {
 		<div className="invitPopup">
 			<div className='Title_popup'><span style={{ color: 'black' }}>{invitText}</span>
 				<br></br>
-				<div className="close-btn" >
-				<button onClick={() => acceptInvit()}><span style={{ color: 'black' }} >Accept</span></button>
-				<button onClick={() => removeInvitPopup()}><span style={{ color: 'black' }}>Close</span></button>
+				<div className="btn" >
+				<button className="btn_accept" onClick={() => acceptInvit()}>Accept</button>
+				<button className="btn_close" onClick={() => removeInvitPopup()}>Close</button>
 				</div>
 		</div>
 	</div>

@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Navbar from '../Navbar';
 import { ListItem } from '@mui/material';
-import { GiTabletopPlayers } from 'react-icons/gi';
 
 
 export default function GameHome() {
@@ -136,7 +135,7 @@ export default function GameHome() {
 							<br></br>
 							{cookie.displayName &&
 								<div>
-									<button onClick={() => addToQueue()}><span style={{ color: 'black' }}>Join Room</span></button>
+									<button className='submit-btn' onClick={() => addToQueue()}>Join Room</button>
 								</div>}
 						</div>
 						<div className='Matching_queue'>

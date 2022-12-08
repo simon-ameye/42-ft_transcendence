@@ -9,13 +9,34 @@ header {
 	background-color: $nav_color;
 	color: $nav_text;
 	margin-bottom: 2rem;
+	overflow: hidden;
 }
 
 h3 i {
 	font-size: 25px;
 	padding-right: 1rem;
 }
-
+nav ul{
+	text-align: right;
+	position: absolute;
+	display: block;
+	//top: 100%;
+	right: 110px;
+	width: 150px;
+	top: 50px;
+	background-color: black;
+	border: 1px solid white;
+}
+nav ul li {
+	display: flex;
+	list-style: none;
+	margin: 10px 20px;
+	color: #fff;
+	padding: 10px;
+	margin: 10px 0;
+	align-items: center;
+	
+}
 nav span {
 	margin: 0 2rem 0 0.5rem;
 	color: $nav_text;

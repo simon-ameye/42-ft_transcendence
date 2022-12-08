@@ -10,9 +10,7 @@ import { useState } from 'react';
 
 const Navbar = () => {
 	const [cookie] = useCookies(['displayName'])
-
 	const [open, setOpen] = useState(false)
-
 	const handleOpen = () => {
 		setOpen(!open)
 	}
@@ -41,11 +39,11 @@ const Navbar = () => {
 					<i className=""></i>
 					<span>GameTest</span>
 				</NavLink>
-			{cookie.displayName} <span></span>
+				{cookie.displayName}
 				<Button onClick={handleOpen}><HiBars4 size={20}></HiBars4></Button>
 			{open ? (<ul className="DropDown">
 				<div className='DropDown_content'>
-					<li ><NavLink to="/UserProfile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
+					<li><NavLink to="/UserProfile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
 					<li ><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
 					<li ><Button><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></Button></li></div></ul>) : null}
 			</nav>

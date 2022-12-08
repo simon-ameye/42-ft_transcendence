@@ -11,8 +11,6 @@ const Canvas: React.FC<props> = ({width, height}) => {
 	const leftPaddle = {posX: 10, posY: (height / 2) - 50, elemHeight: 100, elemWidth: 10};
 	const rightPaddle = {posX: width - 20, posY: (height / 2) - 50, elemHeight: 100, elemWidth: 10};
 
-
-	
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	let context:CanvasRenderingContext2D | null;
 	
