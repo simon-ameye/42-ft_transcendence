@@ -171,21 +171,37 @@ export class GameService {
 			}
 		});
 		for (let i = 0; i < 2; ++i) {
-			if (players[i].score > 6)
+			console.log(players[i]);
+			if (players[i].score > 6) {
+				await this.addVictory(players[i].userId);
 				return ({gameId: gameId, winnerId: players[i].userId});
+			}
 		}
 		return ({gameId: 0, winnerId: 0});
 	}
 
 	async	deleteGameAndPlayers(gameId: number): Promise<void> {
-		const deleteGame = this.prismaService.game.deleteMany({
+		const deletePlayers = await this.prismaService.player.deleteMany({
+			where: {
+				gameId
+			}
+		});
+		const deleteGame = await this.prismaService.game.deleteMany({
 			where: {
 				id: gameId
 			}
 		});
-		const deletePlayers = this.prismaService.player.deleteMany({
+	}
+
+	async	addVictory(id: number): Promise<void> {
+		const updatedUser = this.prismaService.user.update({
 			where: {
-				gameId
+				id
+			},
+			data: {
+				victories: {
+					increment: 1
+				}
 			}
 		});
 	}

@@ -6,10 +6,12 @@ import { GameConfig } from "../interface/gameConfig"
 import PlayerInterface from '../../interfaces/player.interface'
 import { socket } from '../../App'
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const GameEngine = (props: { config: GameConfig }) => {
 
 	const [cookie] = useCookies(['displayName']);
+	const navigate = useNavigate();
 
 	const playerRight: PlayerInterface = props.config.players2[0];
 	const playerLeft: PlayerInterface = props.config.players2[1];
@@ -37,13 +39,18 @@ const GameEngine = (props: { config: GameConfig }) => {
 		// Add points to player
 		if (player === "P1") {
 			props.config.scoreP1++;
-			socket.emit('add point', playerRight);
+			if (playerRight.displayName == cookie.displayName)
+				socket.emit('add point', playerRight);
 		}
-		else
+		else {
 			props.config.scoreP2++;
+			if (playerLeft.displayName == cookie.displayName)
+				socket.emit('add point', playerLeft);
+		}
 		//Reset ball position to center
 //		setBall({ x: ball.x = ballInitialX, y: ball.y = Math.floor(Math.random() * (props.config.canvasSize.y - props.config.ballSize.x + ballDirection.x)) + 1 })
 		setBall({ x: ball.x = ballInitialX, y: ball.y = ballInitialY });
+		setBallDirection({ x: 0, y: 0});
 	}
 
 	const isRightPaddle = () => {
@@ -80,12 +87,20 @@ const GameEngine = (props: { config: GameConfig }) => {
 	});
 
 	const handleKeyUp = () => {
-		if (props.config.p1PosY > 0)
-			props.config.p1PosY -= 20;
+		if (cookie.displayName == playerRight.displayName) {
+			if (props.config.p1PosY > 0)
+				props.config.p1PosY -= 20;
+		}
+		else
+			handleKeyUpP2();
 	}
 	const handleKeyDown = () => {
-		if (props.config.p1PosY < props.config.canvasSize.y - props.config.paddleSize.y)
-			props.config.p1PosY += 20;
+		if (cookie.displayName == playerRight.displayName) {
+			if (props.config.p1PosY < props.config.canvasSize.y - props.config.paddleSize.y)
+				props.config.p1PosY += 20;
+		}
+		else
+			handleKeyDownP2();
 	}
 
 	const handleKeyUpP2 = () => {
@@ -113,6 +128,13 @@ const GameEngine = (props: { config: GameConfig }) => {
 		}
 	});
 
+	useEffect(() => {
+		socket.on('game finished', gameFinishedListener);
+		return () => {
+			socket.off('game finished', gameFinishedListener);
+		}
+	});
+
 	// ARROW UP
 	useKeyDown(() => {
 		handleKeyUp();
@@ -133,17 +155,17 @@ const GameEngine = (props: { config: GameConfig }) => {
 
 	// PLAYER 2 UP
 	useEffect(() => {
-		socket.on('arrow up', handleKeyUpP2);
+		socket.on('arrow up', handleKeyUp);
 		return () => {
-			socket.off('arrow up', handleKeyUpP2);
+			socket.off('arrow up', handleKeyUp);
 		}
 	});
 
 	// PLAYER 2 DOWN
 	useEffect(() => {
-		socket.on('arrow down', handleKeyDownP2);
+		socket.on('arrow down', handleKeyDown);
 		return () => {
-			socket.off('arrow down', handleKeyDownP2);
+			socket.off('arrow down', handleKeyDown);
 		}
 	});
 
@@ -155,6 +177,10 @@ const GameEngine = (props: { config: GameConfig }) => {
 
 	const	joinRoomListener = (gameRoom: string) => {
 		socket.emit('join room', gameRoom);
+	}
+
+	const gameFinishedListener = () => {
+		navigate('/game');
 	}
 
 	return <GameDisplay

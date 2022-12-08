@@ -92,6 +92,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			this.server.to(gameRoom).emit('update score', player);
 			const data: CheckWinnerInterface = await this.gameService.isWinner(gameRoom);
 			if (data.gameId) {
+				console.log("WINNER");
 				this.gameService.deleteGameAndPlayers(data.gameId);
 				this.server.to(gameRoom).emit('game finished', data.winnerId);
 			}
@@ -156,7 +157,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	}
 	
 	async kickoff(gameRoom: string) {
-	  await this.delay(1000);
+	  await this.delay(500);
 		this.server.to(gameRoom).emit('kick-off');
 	}
 
