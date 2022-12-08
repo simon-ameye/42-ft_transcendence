@@ -14,9 +14,9 @@ const Game = () => {
 	const	[cookie] = useCookies(['displayName']);
 	const [rerender, setRerender] = useState<boolean>(false);
 	const [playerRight, setPlayerRight] =
-			useState<PlayerInterface>({userId: 0, displayName: "right", score: 0});
+			useState<PlayerInterface>({userId: 0, displayName: "right", score: 0, side: 0});
 	const [playerLeft, setPlayerLeft] =
-			useState<PlayerInterface>({userId: 0, displayName: "left", score: 0});
+			useState<PlayerInterface>({userId: 0, displayName: "left", score: 0, side: 0});
 	const [spectator, setSpectator] = useState<boolean>(false);
 	const [playing, setPlaying] = useState<boolean>(false);
 
@@ -41,7 +41,7 @@ const Game = () => {
 	const gameStartedListener = (players: PlayerInterface[]) => {
 		var	r = 1;
 		var	l = 0;
-		if (cookie.displayName == players[0].displayName) {
+		if (players[1].side) {
 			r = 0;
 			l = 1;
 		}

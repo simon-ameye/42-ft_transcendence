@@ -100,7 +100,9 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 			</div>
 			<div className="score" style={{ width: canvasSize.x }}>
 				<h1 className="score-1">{props.config.scoreP1}</h1>
+				<h5 className="score-1">{props.config.players2[0].displayName}</h5>
 				<h1 className="score-p2">{props.config.scoreP2}</h1>
+				<h5 className="score-2">{props.config.players2[1].displayName}</h5>
 			</div>
 			<canvas width={canvasSize.x} height={canvasSize.y} ref={canvas} />
 			<div className="color" style={{ width: canvasSize.x }}>

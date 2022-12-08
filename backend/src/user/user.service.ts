@@ -69,9 +69,21 @@ export class UserService {
 	}
 
 	async	getSIdByName(displayName: string): Promise<string> {
-		const user = await this.prisma.user.findFirst({
+		const user = await this.prisma.user.findUnique({
 			where: {
 				displayName
+			},
+			select: {
+				socketId: true,
+			}
+		});
+		return (user.socketId);
+	}
+
+	async getSIdById(id: number): Promise<string> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id
 			},
 			select: {
 				socketId: true,

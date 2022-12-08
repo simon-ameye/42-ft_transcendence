@@ -64,21 +64,28 @@ export default function GameHome() {
 		return () => {
 			socket.off("join matching queue", joinMatchingQueueListener);
 		}
-	})
+	});
 
 	useEffect(() => {
 		socket.on("deleteOppenents", deleteOppenentsListener);
 		return () => {
 			socket.off("deleteOppenents", deleteOppenentsListener);
 		}
-	})
+	});
 
 	useEffect(() => {
 		socket.on("update game list", updateGameListListener);
 		return () => {
 			socket.off("update game list", updateGameListListener);
 		}
-	})
+	});
+
+	useEffect(() => {
+		socket.on("game started auto", gameAutoListener);
+		return () => {
+			socket.off("game started auto", gameAutoListener);
+		}
+	});
 
 		// LISTENER \\
 	
@@ -100,6 +107,10 @@ export default function GameHome() {
 		let strGame = players[0].displayName.concat(" vs ");
 		strGame = strGame.concat(players[1].displayName);
 		setGameList([...gameList, strGame]);
+	}
+
+	const gameAutoListener = () => {
+		navigate('/game/live2');
 	}
 
 	function MissedGoal() {

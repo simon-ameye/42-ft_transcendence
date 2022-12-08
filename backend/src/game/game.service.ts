@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
-import { OppenentsInterface, PlayerInterface } from './interfaces';
+import { OppenentsInterface, PlayerInterface, CheckWinnerInterface } from './interfaces';
 
 @Injectable()
 export class GameService {
@@ -34,7 +34,7 @@ export class GameService {
 		return (versus);
 	}
 
-	async addClientToMatchingQueue(socketId: string): Promise<void> {
+	async addClientToMatchingQueue(socketId: string): Promise<number> {
 		const matchingUser = await this.prismaService.user.update({
 			where: {
 				socketId,
@@ -45,6 +45,11 @@ export class GameService {
 				}
 			}
 		});
+		const queue = await this.prismaService.matching.findMany();
+		if (queue.length > 1) {
+			return (queue[0].userId);
+		}
+		return (0);
 	}
 
 	async startGame(oppenents: OppenentsInterface): Promise<string> {
@@ -70,8 +75,8 @@ export class GameService {
 			data: {
 				players: {
 					create: [
-						{ userId: players[0].id, displayName: players[0].displayName },
-						{ userId: players[1].id, displayName: players[1].displayName }
+						{ userId: players[0].id, displayName: players[0].displayName, side: 0 },
+						{ userId: players[1].id, displayName: players[1].displayName, side: 1 }
 					]
 				}
 			}
@@ -156,5 +161,32 @@ export class GameService {
 			}
 		});
 		return (game.players);
+	}
+
+	async	isWinner(gameRoom: string): Promise<CheckWinnerInterface> {
+		const gameId: number = Number(gameRoom[4]);
+		const players = await this.prismaService.player.findMany({
+			where: {
+				gameId
+			}
+		});
+		for (let i = 0; i < 2; ++i) {
+			if (players[i].score > 6)
+				return ({gameId: gameId, winnerId: players[i].userId});
+		}
+		return ({gameId: 0, winnerId: 0});
+	}
+
+	async	deleteGameAndPlayers(gameId: number): Promise<void> {
+		const deleteGame = this.prismaService.game.deleteMany({
+			where: {
+				id: gameId
+			}
+		});
+		const deletePlayers = this.prismaService.player.deleteMany({
+			where: {
+				gameId
+			}
+		});
 	}
 }

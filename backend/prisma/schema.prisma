@@ -72,6 +72,7 @@ model	Player {
 	score	Int @default(0)
 	game	Game? @relation("players", fields: [gameId], references: [id])
 	gameId Int?
+	side	Int
 }
 
 model	Game {

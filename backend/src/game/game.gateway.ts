@@ -3,7 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GameService } from './game.service';
-import { MatchingQueueInterface, PlayerInterface } from './interfaces';
+import { MatchingQueueInterface, PlayerInterface, CheckWinnerInterface } from './interfaces';
 import { UserService } from '../user/user.service';
 
 @WebSocketGateway(4343, {
@@ -49,7 +49,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		async addToQueue(client): Promise<void> {
 			const displayName = await this.userService.getNameBySId(client.id);
 			this.server.emit('join matching queue', displayName);
-			this.gameService.addClientToMatchingQueue(client.id);
+			const userId = await this.gameService.addClientToMatchingQueue(client.id);
+			if (userId) {
+				const oppenentSId = await this.userService.getSIdById(userId);
+				this.startGameAuto({SIdOne: client.id, SIdTwo: oppenentSId});
+			}
 		}
 
 	@SubscribeMessage('invitation')
@@ -61,25 +65,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	
 	@SubscribeMessage('invitation accepted')
 		async acceptInvit(client, senderDName: string): Promise<void> {
-
 			const senderSId = await this.userService.getSIdByName(senderDName);
-
 			const gameRoom = await this.gameService.startGame(
 					{"one": client.id, "two": senderSId});
-
 			client.join(gameRoom);
 			this.server.to(senderSId).emit('invitation accepted sender',
-					{"gameRoom": gameRoom, "oppenentId": client.id});
-
+					{"gameRoom": gameRoom, "oppenentSId": client.id});
 			const clientDName = await this.userService.getNameBySId(client.id);
 			this.server.emit('deleteOppenents',
 					{"one": clientDName, "two": senderDName});
 		}
 	
 	@SubscribeMessage('invitation accepted sender')
-		async acceptInvitSender(client, data: {gameRoom: string, oppenentId: string}): Promise<void> {
+		async acceptInvitSender(client, data: {gameRoom: string, oppenentSId: string}): Promise<void> {
 			client.join(data.gameRoom);
-			const playerIds = [client.id, data.oppenentId];
+			const playerIds = [client.id, data.oppenentSId];
 			const players = await this.gameService.getPlayersBySIds(playerIds);
 			this.server.to(data.gameRoom).emit('game started', players);
 			this.server.emit('update game list', players);
@@ -90,6 +90,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			const gameRoom = await this.gameService.updateScore(player.userId, +1);
 			player.score += 1;
 			this.server.to(gameRoom).emit('update score', player);
+			const data: CheckWinnerInterface = await this.gameService.isWinner(gameRoom);
+			if (data.gameId) {
+				this.gameService.deleteGameAndPlayers(data.gameId);
+				this.server.to(gameRoom).emit('game finished', data.winnerId);
+			}
+			else
+				this.kickoff(gameRoom);
 		}
 
 	@SubscribeMessage('watch game')
@@ -124,5 +131,37 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		async ArrowDown(client, oppenentName: string): Promise<void> {
 			const	oppenentSId = await this.userService.getSIdByName(oppenentName);
 			this.server.to(oppenentSId).emit('arrow down');
+		}
+	
+	async startGameAuto(data: {SIdOne: string, SIdTwo: string}): Promise<void> {
+		this.server.to(data.SIdOne).emit('game started auto');
+		this.server.to(data.SIdTwo).emit('game started auto');
+		const pOneDName = await this.userService.getNameBySId(data.SIdOne);
+		const pTwoDName = await this.userService.getNameBySId(data.SIdTwo);
+		const gameRoom = await this.gameService.startGame(
+				{ "one": data.SIdOne, "two": data.SIdTwo });
+		this.server.emit('deleteOppenents',
+				{ "one": pOneDName, "two": pTwoDName });
+		const players = await this.gameService.getPlayerByOneSId(data.SIdOne);
+		this.server.emit('update game list', players);
+		this.server.to(data.SIdOne).emit('game started', players);
+		this.server.to(data.SIdTwo).emit('game started', players);
+		this.server.to(data.SIdOne).emit('join room', gameRoom);
+		this.server.to(data.SIdTwo).emit('join room', gameRoom);
+		this.kickoff(gameRoom);
+	}
+
+	delay(time) {
+	  return new Promise(resolve => setTimeout(resolve, time));
+	}
+	
+	async kickoff(gameRoom: string) {
+	  await this.delay(1000);
+		this.server.to(gameRoom).emit('kick-off');
+	}
+
+	@SubscribeMessage('join room')
+		joinRoom(client, room: string): void {
+			client.join(room);
 		}
 }

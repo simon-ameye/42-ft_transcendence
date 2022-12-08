@@ -5,8 +5,11 @@ import { useKeyDown } from "../hooks/useKeyDown"
 import { GameConfig } from "../interface/gameConfig"
 import PlayerInterface from '../../interfaces/player.interface'
 import { socket } from '../../App'
+import { useCookies } from 'react-cookie';
 
 const GameEngine = (props: { config: GameConfig }) => {
+
+	const [cookie] = useCookies(['displayName']);
 
 	const playerRight: PlayerInterface = props.config.players2[0];
 	const playerLeft: PlayerInterface = props.config.players2[1];
@@ -15,7 +18,7 @@ const GameEngine = (props: { config: GameConfig }) => {
 	const ballInitialY = props.config.canvasSize.y / 2 - props.config.ballSize.y
 
 	const [ball, setBall] = useState({ x: ballInitialX, y: ballInitialY })
-	const [ballDirection, setBallDirection] = useState({ x: 5, y: 5 })
+	const [ballDirection, setBallDirection] = useState({ x: 0, y: 0 })
 
 	const isGoalP1: boolean = ball.x + props.config.ballSize.x + ballDirection.x > props.config.canvasSize.x
 	const isGoalP2: boolean = ball.x + ballDirection.x < 0
@@ -32,13 +35,15 @@ const GameEngine = (props: { config: GameConfig }) => {
 
 	const scored = (player: string) => {
 		// Add points to player
-		if (player === "P1")
-		props.config.scoreP1++
+		if (player === "P1") {
+			props.config.scoreP1++;
+			socket.emit('add point', playerRight);
+		}
 		else
-		props.config.scoreP2++
+			props.config.scoreP2++;
 		//Reset ball position to center
-		setBall({ x: ball.x = ballInitialX, y: ball.y = Math.floor(Math.random() * (props.config.canvasSize.y - props.config.ballSize.x + ballDirection.x)) + 1 })
-		setBallDirection({ x: ballDirection.x, y: ballDirection.y * -1 })
+//		setBall({ x: ball.x = ballInitialX, y: ball.y = Math.floor(Math.random() * (props.config.canvasSize.y - props.config.ballSize.x + ballDirection.x)) + 1 })
+		setBall({ x: ball.x = ballInitialX, y: ball.y = ballInitialY });
 	}
 
 	const isRightPaddle = () => {
@@ -92,16 +97,38 @@ const GameEngine = (props: { config: GameConfig }) => {
 			props.config.p2PosY += 20;
 	}
 
+	// USE_EFFECT
+
+	useEffect(() => {
+		socket.on('kick-off', kickoffListener);
+		return () => {
+			socket.off('kick-off', kickoffListener);
+		}
+	});
+
+	useEffect(() => {
+		socket.on('join room', joinRoomListener);
+		return () => {
+			socket.off('join room', joinRoomListener);
+		}
+	});
+
 	// ARROW UP
 	useKeyDown(() => {
 		handleKeyUp();
-		socket.emit('arrow up', playerLeft.displayName);
+		if (playerLeft.displayName == cookie.displayName)
+			socket.emit('arrow up', playerRight.displayName);
+		else
+			socket.emit('arrow up', playerLeft.displayName);
 	}, ['ArrowUp'])
 
 	// ARROW DOWN
 	useKeyDown(() => {
 		handleKeyDown();
-		socket.emit('arrow down', playerLeft.displayName);
+		if (playerLeft.displayName == cookie.displayName)
+			socket.emit('arrow down', playerRight.displayName);
+		else
+			socket.emit('arrow down', playerLeft.displayName);
 	}, ['ArrowDown'])
 
 	// PLAYER 2 UP
@@ -120,14 +147,15 @@ const GameEngine = (props: { config: GameConfig }) => {
 		}
 	});
 
-//	useKeyDown(() => {
-//		handleKeyUpP2();
-//	}, ['w'])
-//
-//	// PLAYER 2 DOWN
-//	useKeyDown(() => {
-//		handleKeyDownP2();
-//	}, ['s'])
+	// LISTENER
+
+	const kickoffListener = () => {
+		setBallDirection({ x: 3, y: 3 })
+	}
+
+	const	joinRoomListener = (gameRoom: string) => {
+		socket.emit('join room', gameRoom);
+	}
 
 	return <GameDisplay
 		ball={ball}
