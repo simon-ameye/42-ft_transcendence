@@ -40,7 +40,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/user" element={<User />} />
         <Route path="/gameTest" element={<GameTest />} />
-				<Route path="/game/live" element={<LiveGame />} />
+		<Route path="/game/live" element={<LiveGame />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
         <Route path="*" element={<NotFound />} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { socket } from '../../App';
 import axios from 'axios';
 import OppenentsInterface from '../../interfaces/oppenents.interface';
@@ -8,19 +8,21 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Navbar from '../Navbar';
 import { ListItem } from '@mui/material';
+import { GiTabletopPlayers } from 'react-icons/gi';
+
 
 export default function GameHome() {
 
-		// VARIABLES \\
-	
+	// VARIABLES \\
+
 	const [cookie] = useCookies(['displayName']);
 	const navigate = useNavigate();
-	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
+	const [matchingQueue, setMatchingQueue] = useState<string[]>([]);
 	const [gameList, setGameList] = useState<string[]>([]);
-	
-		// FUNCTIONS \\
-	
-	const	addToQueue = () => {
+
+	// FUNCTIONS \\
+
+	const addToQueue = () => {
 		if (!matchingQueue.includes(cookie.displayName)) {
 			socket.emit("join matching queue");
 		}
@@ -37,29 +39,39 @@ export default function GameHome() {
 		navigate('/game/live');
 		socket.emit("watch game", playerIds);
 	}
-	
-		// USE_EFFECT \\
-	
-	 useEffect (() => {
-	 axios.get('http://localhost:3001/game/queue')
-	 	.then(res => {
-			setMatchingQueue(res.data);
-	 	})
-	 	.catch(err => {
-	 		console.log(err);
-	 	})
+
+	const MatchingQueue = matchingQueue.map((matchingQueue, index) => {
+		if (cookie.displayName && matchingQueue !== cookie.displayName) {
+			return <ListItem button onClick={() => sendInvit(matchingQueue)} key={index}>{matchingQueue} </ListItem>
+		}
+	})
+
+	const GameInProgress = gameList.map((gameList, index) => (
+		<ListItem button onClick={() => watchMatch(gameList)} key={index}>{gameList} </ListItem>
+	))
+
+	// USE_EFFECT \\
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/game/queue')
+			.then(res => {
+				setMatchingQueue(res.data);
+			})
+			.catch(err => {
+				console.log(err);
+			})
 	}, []);
-	
-	 useEffect (() => {
-	 axios.get('http://localhost:3001/game/list')
-	 	.then(res => {
-			setGameList(res.data);
-	 	})
-	 	.catch(err => {
-	 		console.log(err);
-	 	})
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/game/list')
+			.then(res => {
+				setGameList(res.data);
+			})
+			.catch(err => {
+				console.log(err);
+			})
 	}, []);
-	
+
 
 	useEffect(() => {
 		socket.on("join matching queue", joinMatchingQueueListener);
@@ -82,10 +94,10 @@ export default function GameHome() {
 		}
 	})
 
-		// LISTENER \\
-	
-	const	joinMatchingQueueListener = (displayName: string) => {
-			setMatchingQueue([...matchingQueue, displayName]);
+	// LISTENER \\
+
+	const joinMatchingQueueListener = (displayName: string) => {
+		setMatchingQueue([...matchingQueue, displayName]);
 	}
 
 	const deleteOppenentsListener = (oppenents: OppenentsInterface) => {
@@ -105,51 +117,41 @@ export default function GameHome() {
 	}
 
 	function MissedGoal() {
- 	 return <h1>MISSED!</h1>;
+		return <h1>MISSED!</h1>;
 	}
 
-	const MatchingQueue = matchingQueue.map((matchingQueue, index) => (
-		<ListItem button key={index}>{matchingQueue}
-			{cookie.displayName && matchingQueue !== cookie.displayName && <button onClick={() => sendInvit(matchingQueue)}><span style={{ color: 'black' }}>Invit</span></button>}
-		</ListItem>
-	))
-
-	const GameInProgress = gameList.map((gameList, index) => (
-		<ListItem button onClick={() => watchMatch(gameList)} key={index}>{gameList} </ListItem>
-	))
-	
-
-		// RETURN \\
+	// RETURN \\
 
 	return (
 		<div>
-			<Navbar/>
-				<div className='Join_game'>
-					{/* Left Side*/}
-					<div className='leftside_game'>
-						<div className='game-container'>
+			<Navbar />
+			<div className='Join_game'>
+				{/* Left Side*/}
+				<div className='leftside_game'>
+					<div className='game-container'>
+						<br></br>
+						{cookie.displayName}
+						<br></br>
+						<div className='Join_game_button'>
 							<br></br>
-								{cookie.displayName}
+							{cookie.displayName &&
+								<div>
+									<button onClick={() => addToQueue()}><span style={{ color: 'black' }}>Join Room</span></button>
+								</div>}
+						</div>
+						<div className='Matching_queue'>
 							<br></br>
-								<div className='Join_game_button'>
-									<br></br>
-									{cookie.displayName &&
-									<div>
-										<button  onClick={() => addToQueue()}><span style={{color: 'black'}}>Join game</span></button>
-									</div>}
-								</div>
-								<div className='Matching_queue'>
-									<br></br>Matching Queue
-									{MatchingQueue }
-								</div>
-							<div>
-								<br></br>
-								<h5>Watch game in progress</h5>
-										{GameInProgress}
-							</div>
+							Matching Queue
+							{MatchingQueue}
+						</div>
+						<div>
+							<br></br>
+							<h5>Watch game in progress</h5>
+							{GameInProgress}
 						</div>
 					</div>
 				</div>
+			</div>
 			<InvitPopup />
 		</div>
 	)

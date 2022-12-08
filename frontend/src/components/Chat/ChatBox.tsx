@@ -7,6 +7,7 @@ import { ListItem } from '@mui/material'
 import axios from 'axios';
 import Channel from './Sidebar/Channel';
 import Sidebar from './Sidebar';
+import './style.scss'
 
 const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
