@@ -20,6 +20,8 @@ export class UserService {
   async addFriend(dto: UserDto, receiverId: number) {
     console.log("receiverId :", receiverId);
     console.log("creatorId :", dto.id);
+    // create it if doesnt exist
+    // else fstatus = accepted
     const relationShip = await this.prisma.friendRequest.create({
       data: {
         receiverId: receiverId,
