@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom'
 import { AiFillSetting } from 'react-icons/ai';
@@ -7,6 +6,7 @@ import { CgProfile } from 'react-icons/cg';
 import { HiBars4 } from "react-icons/hi2";
 import './style.scss'
 import { useState } from 'react';
+import { Button } from '@mui/material';
 
 const Navbar = () => {
 	const [cookie] = useCookies(['displayName'])
@@ -40,12 +40,12 @@ const Navbar = () => {
 					<span>GameTest</span>
 				</NavLink>
 				{cookie.displayName}
-				<Button onClick={handleOpen}><HiBars4 size={20}></HiBars4></Button>
-			{open ? (<ul className="DropDown">
+				<Button  onClick={handleOpen}><HiBars4 size={20}></HiBars4></Button>
+				{open ? (<ul className="DropDown">
 				<div className='DropDown_content'>
 					<li><NavLink to="/UserProfile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
-					<li ><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
-					<li ><Button><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></Button></li></div></ul>) : null}
+					<li><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
+						<li ><button><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></button></li></div></ul>) : null}
 			</nav>
 		</header>
 	);

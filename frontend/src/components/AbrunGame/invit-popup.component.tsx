@@ -66,7 +66,7 @@ export default function InvitPopup() {
 
 	return (invit) ? (
 		<div className="invitPopup">
-			<div className='Title_popup'><span style={{ color: 'black' }}>{invitText}</span>
+			<div className='Title_popup'><span style={{ color: 'White' }}>{invitText}</span>
 				<br></br>
 				<div className="btn" >
 				<button className="btn_accept" onClick={() => acceptInvit()}>Accept</button>

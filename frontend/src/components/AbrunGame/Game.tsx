@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Navbar from '../Navbar';
 import { ListItem } from '@mui/material';
+import { RiPingPongFill } from 'react-icons/ri';
 
 
 export default function GameHome() {
@@ -132,10 +133,9 @@ export default function GameHome() {
 						{cookie.displayName}
 						<br></br>
 						<div className='Join_game_button'>
-							<br></br>
 							{cookie.displayName &&
-								<div>
-									<button className='submit-btn' onClick={() => addToQueue()}>Join Room</button>
+								<div className='pong_join_game'>
+									<button className='pong_button' onClick={() => addToQueue()}><i className="fa-solid fa-table-tennis-paddle-ball"></i></button>
 								</div>}
 						</div>
 						<div className='Matching_queue'>
