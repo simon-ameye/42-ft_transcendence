@@ -9,7 +9,6 @@ import Auth from './components/Auth';
 import axios from 'axios';
 import GameLive from './components/GameSetup';
 import ChatBox from './components/Chat/ChatBox'
-import QRCode from './components/QRCode';
 
 axios.defaults.withCredentials = true;
 
@@ -43,7 +42,6 @@ function App() {
         <Route path="/ChatBox" element={<ChatBox />} />
 				<Route path="/game" element={<Game />} />
 				<Route path="/game/live" element={<GameLive />} />
-				<Route path="/qrcode" element={<QRCode />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
