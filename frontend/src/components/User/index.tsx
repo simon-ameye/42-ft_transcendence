@@ -62,7 +62,7 @@ const User = () => {
 						<label>Email</label>
 						<input 
 							type="email"
-							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+							pattern="[\w]{1,}[\w.+-]{0,}@[\w-]{2,}([.][a-zA-Z]{2,}|[.][\w-]{2,}[.][a-zA-Z]{2,})$"
 							placeholder='ex: "test@test.fr"'
 							required
 							value={userMail}

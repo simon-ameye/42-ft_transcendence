@@ -40,8 +40,8 @@ function App() {
         <Route path="/user" element={<User />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
-	<Route path="/game" element={<Game />} />
-	<Route path="/game/live" element={<GameLive />} />
+				<Route path="/game" element={<Game />} />
+				<Route path="/game/live" element={<GameLive />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

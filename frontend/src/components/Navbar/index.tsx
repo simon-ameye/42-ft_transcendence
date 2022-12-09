@@ -1,12 +1,10 @@
 import { useCookies } from 'react-cookie';
 import { NavLink } from 'react-router-dom'
-import { AiFillSetting } from 'react-icons/ai';
+import { AiFillCaretDown, AiFillSetting } from 'react-icons/ai';
 import { RiLogoutCircleRLine } from 'react-icons/ri';
 import { CgProfile } from 'react-icons/cg';
-import { HiBars4 } from "react-icons/hi2";
 import './style.scss'
 import { useState } from 'react';
-import { Button } from '@mui/material';
 
 const Navbar = () => {
 	const [cookie] = useCookies(['displayName'])
@@ -35,12 +33,8 @@ const Navbar = () => {
 					<i className="fa-solid fa-user"></i>
 					<span>User</span>
 				</NavLink>
-				<NavLink to="/gameTest">
-					<i className=""></i>
-					<span>GameTest</span>
-				</NavLink>
 				{cookie.displayName}
-				<Button  onClick={handleOpen}><HiBars4 size={20}></HiBars4></Button>
+				<a ><button onClick={handleOpen}><AiFillCaretDown size={10}></AiFillCaretDown></button></a>
 				{open ? (<ul className="DropDown">
 				<div className='DropDown_content'>
 					<li><NavLink to="/UserProfile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>

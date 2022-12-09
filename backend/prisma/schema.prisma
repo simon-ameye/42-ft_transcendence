@@ -20,17 +20,13 @@ model User {
   imageUrl String?
   googleSecret String?
   // add path of the image
-
   socketId        String? @unique
   blockedUserIds  Int[]
   friends         Int[]
   matching Matching?
-
   inGame Boolean @default(false)
   victories Int @default(0)
-
 	log	Boolean @default(true)
-
   @@map("users")
 }
 
