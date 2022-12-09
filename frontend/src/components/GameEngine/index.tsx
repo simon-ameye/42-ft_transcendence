@@ -15,7 +15,7 @@ const GameEngine = (props: { config: GameConfig }) => {
 
 	const playerRight: PlayerInterface = props.config.players2[0];
 	const playerLeft: PlayerInterface = props.config.players2[1];
-	
+
 	const ballInitialX = props.config.canvasSize.x / 2 - props.config.ballSize.x
 	const ballInitialY = props.config.canvasSize.y / 2 - props.config.ballSize.y
 

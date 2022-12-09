@@ -3,25 +3,32 @@ import './style.scss';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
 
-export default function	InvitPopup() {
+export default function InvitPopup() {
 
 	// VARIABLES \\
 
 	const navigate = useNavigate();
 	const [invit, setInvit] = useState<boolean>(false);
 	const [invitText, setInvitText] = useState<string>("");
+	const [open, setOpen] = useState(false);
+
+
+	const handleClose = () => {
+		setOpen(false)
+	}
+
 
 	// FUNCTIONS \\
-	
+
 	const removeInvitPopup = () => {
 		setInvit(false);
 	}
 
 	const acceptInvit = () => {
 		const invitTextArray = invitText.split(" ");
-		const	senderDName = invitTextArray[invitTextArray.length - 1];
+		const senderDName = invitTextArray[invitTextArray.length - 1];
 		socket.emit("invitation accepted", senderDName);
-		navigate('/game/live2');
+		navigate('/game/live');
 		setInvit(false);
 	}
 
@@ -36,10 +43,10 @@ export default function	InvitPopup() {
 
 	useEffect(() => {
 		socket.on("invitation accepted sender",
-				invitAcceptedSenderListener);
+			invitAcceptedSenderListener);
 		return () => {
 			socket.off("invitation accepted sender",
-					invitAcceptedSenderListener);
+				invitAcceptedSenderListener);
 		}
 	});
 
@@ -50,7 +57,7 @@ export default function	InvitPopup() {
 		setInvit(true);
 	}
 
-	const	invitAcceptedSenderListener = (gameRoom: string) => {
+	const invitAcceptedSenderListener = (gameRoom: string) => {
 		socket.emit("invitation accepted sender", gameRoom);
 		navigate('/game/live2');
 	}
@@ -59,11 +66,13 @@ export default function	InvitPopup() {
 
 	return (invit) ? (
 		<div className="invitPopup">
-			<h3>{invitText}</h3>
-			<div className="invitPopup-inner">
-				<button className="close-btn" onClick={() => removeInvitPopup()}>close</button>
-			</div>
-			<button onClick={() => acceptInvit()}>accept</button>
+			<div className='Title_popup'><span style={{ color: 'White' }}>{invitText}</span>
+				<br></br>
+				<div className="btn" >
+				<button className="btn_accept" onClick={() => acceptInvit()}>Accept</button>
+				<button className="btn_close" onClick={() => removeInvitPopup()}>Close</button>
+				</div>
 		</div>
-	)	: <></>;
+	</div>
+	) : <></>;
 }

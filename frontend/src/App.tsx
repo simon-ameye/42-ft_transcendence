@@ -4,11 +4,10 @@ import Home from './components/Home';
 import User from './components/User';
 import NotFound from './components/NotFound';
 import Game from './components/AbrunGame/Game';
-import LiveGame from './components/AbrunGame/live-game.component';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
-import GameLive2 from './components/GameSetup';
+import GameLive from './components/GameSetup';
 import ChatBox from './components/Chat/ChatBox'
 
 axios.defaults.withCredentials = true;
@@ -39,12 +38,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/user" element={<User />} />
-        <Route path="/game" element={<Game />} />
-				<Route path="/game/live" element={<LiveGame />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
+	<Route path="/game" element={<Game />} />
+	<Route path="/game/live" element={<GameLive />} />
         <Route path="*" element={<NotFound />} />
-				<Route path="/game/live2" element={<GameLive2 />} />
       </Routes>
     </BrowserRouter>
   );

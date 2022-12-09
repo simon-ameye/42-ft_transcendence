@@ -79,8 +79,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	@SubscribeMessage('invitation accepted sender')
 		async acceptInvitSender(client, data: {gameRoom: string, oppenentSId: string}): Promise<void> {
 			client.join(data.gameRoom);
-			const playerIds = [client.id, data.oppenentSId];
-			const players = await this.gameService.getPlayersBySIds(playerIds);
+			const playerSIds = [client.id, data.oppenentSId];
+			const players = await this.gameService.getPlayersBySIds(playerSIds);
 			this.server.to(data.gameRoom).emit('game started', players);
 			this.server.emit('update game list', players);
 		}
