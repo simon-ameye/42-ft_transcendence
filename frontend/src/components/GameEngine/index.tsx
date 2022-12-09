@@ -91,24 +91,34 @@ const GameEngine = (props: { config: GameConfig }) => {
 			if (props.config.p1PosY > 0)
 				props.config.p1PosY -= 20;
 		}
-		else
-			handleKeyUpP2();
+		else if (props.config.p2PosY > 0 && props.config.players == 2)
+			props.config.p2PosY -= 20;
 	}
+
 	const handleKeyDown = () => {
 		if (cookie.displayName == playerRight.displayName) {
 			if (props.config.p1PosY < props.config.canvasSize.y - props.config.paddleSize.y)
 				props.config.p1PosY += 20;
 		}
-		else
-			handleKeyDownP2();
+		else if (props.config.p2PosY < props.config.canvasSize.y - props.config.paddleSize.y && props.config.players == 2)
+			props.config.p2PosY += 20;
 	}
 
 	const handleKeyUpP2 = () => {
-		if (props.config.p2PosY > 0 && props.config.players == 2)
+		if (cookie.displayName != playerRight.displayName) {
+			if (props.config.p1PosY > 0)
+				props.config.p1PosY -= 20;
+		}
+		else if (props.config.p2PosY > 0 && props.config.players == 2)
 			props.config.p2PosY -= 20;
 	}
+
 	const handleKeyDownP2 = () => {
-		if (props.config.p2PosY < props.config.canvasSize.y - props.config.paddleSize.y && props.config.players == 2)
+		if (cookie.displayName != playerRight.displayName) {
+			if (props.config.p1PosY < props.config.canvasSize.y - props.config.paddleSize.y)
+				props.config.p1PosY += 20;
+		}
+		else if (props.config.p2PosY < props.config.canvasSize.y - props.config.paddleSize.y && props.config.players == 2)
 			props.config.p2PosY += 20;
 	}
 
@@ -155,17 +165,17 @@ const GameEngine = (props: { config: GameConfig }) => {
 
 	// PLAYER 2 UP
 	useEffect(() => {
-		socket.on('arrow up', handleKeyUp);
+		socket.on('arrow up', handleKeyUpP2);
 		return () => {
-			socket.off('arrow up', handleKeyUp);
+			socket.off('arrow up', handleKeyUpP2);
 		}
 	});
 
 	// PLAYER 2 DOWN
 	useEffect(() => {
-		socket.on('arrow down', handleKeyDown);
+		socket.on('arrow down', handleKeyDownP2);
 		return () => {
-			socket.off('arrow down', handleKeyDown);
+			socket.off('arrow down', handleKeyDownP2);
 		}
 	});
 

@@ -92,8 +92,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			this.server.to(gameRoom).emit('update score', player);
 			const data: CheckWinnerInterface = await this.gameService.isWinner(gameRoom);
 			if (data.gameId) {
-				console.log("WINNER");
 				this.gameService.deleteGameAndPlayers(data.gameId);
+				this.gameService.addVictory(data.winnerId);
 				this.server.to(gameRoom).emit('game finished', data.winnerId);
 			}
 			else
