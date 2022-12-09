@@ -8,27 +8,24 @@ export class UserService {
   constructor(private prisma: PrismaService) { }
 
   async getUsers(dto: UserDto) {
-    // exclude the current user
     const users = await this.prisma.user.findMany({
     });
     for (let user of users) {
       delete user['hash']
     }
+    users.forEach((user, index) => {
+      if (user.id == dto.id) users.splice(index, 1)
+    })
     return users;
   }
 
-  async addFriend(dto: UserDto, receiverId: number) {
-    console.log("receiverId :", receiverId);
-    console.log("creatorId :", dto.id);
-    // create it if doesnt exist
-    // else fstatus = accepted
-    const relationShip = await this.prisma.friendRequest.create({
-      data: {
-        receiverId: receiverId,
-        creatorId: dto.id,
-        fstatus: "pending",
+  async getUserBySid(socketId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        socketId: socketId
       }
     })
+    return user
   }
 
   async modifyName(dto: UserDto, modif: string) {

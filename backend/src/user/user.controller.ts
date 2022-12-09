@@ -46,12 +46,6 @@ export class UserController {
     return this.userService.getUsers(user);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Post('addFriend')
-  addFriend(@GetUser() user: UserDto, userid: number) {
-    return this.userService.addFriend(user, userid);
-  }
-
   // DisplayName
   @UseGuards(AuthGuard('jwt'))
   @Get('getName')

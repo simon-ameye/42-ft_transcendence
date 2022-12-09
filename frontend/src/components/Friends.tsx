@@ -4,6 +4,8 @@ import Auth from './Auth';
 import Navbar from './Navbar';
 import { ListItem } from '@mui/material'
 import io, { Socket } from 'socket.io-client';
+import { useCookies } from 'react-cookie';
+import { socket } from '../App';
 
 type User = {
   email: string;
@@ -15,47 +17,80 @@ type User = {
 
 type FriendRequest = {
   creator: number;
-  receiver: number;
-  // and a state ?
+  status: string;
 }
-
-const socket = io("http://localhost:3001");
 
 const Friends = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [friendRequest, setFriendRequest] = useState<FriendRequest>();
+  const [cookie] = useCookies(['displayName']);
+  const [receivedFriendRequest, setReceivedFriendRequest] = useState<FriendRequest[]>([]);
 
-  const getUsers = () => {
-    axios.get('http://localhost:3001/user/users',
-      {
-      }).then(
-        function (response) {
-          console.log('refresh')
-          setUsers(response.data)
-        }
-      )
-  }
-
-  const sendFriendRequest = (userId: number) => {
-    axios.post('http://localhost:3001/user/addFriend/', {
-      userid: userId
-    })
+  const sendFriendRequest = (receiverId: number, socketId: string) => {
+    socket.emit("add friend", receiverId, socketId);
   }
 
   const userList = users.map((c, i) => (
     <ListItem key={i}> {
-      <button onClick={event => sendFriendRequest(c.id)}> send </button>
+      <button onClick={event => sendFriendRequest(c.id, c.socketId)}> send </button>
     }
       {c.displayName}
     </ListItem >
   ))
 
+  const receivedList = receivedFriendRequest.map((c, i) => (
+    <ListItem key={i}> {
+      <div className='accept | deny'>
+        <button> accept </button>
+        <button> deny  </button>
+      </div>
+    }
+      {c.creator}
+    </ListItem >
+  ))
+
+  // use effects
+  useEffect(() => {
+    axios.get('http://localhost:3001/user/users')
+      .then(res => {
+        setUsers(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }, []);
+
+  /*useEffect(() => {
+    axios.get('http://localhost:3001/user/receivedfriendRequest')
+      .then(res => {
+        setUsers(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }, []);*/
+
+  useEffect(() => {
+    socket.on("receive invitation", receiveFriendRequest);
+    return () => {
+      socket.off("receive invitation", receiveFriendRequest);
+    }
+  });
+
+  // listeners
+
+  const receiveFriendRequest = (request: FriendRequest) => {
+    setReceivedFriendRequest([...receivedFriendRequest, request])
+  }
+
   return (
     <div>
       <Navbar></Navbar>
-      <button onClick={getUsers}></button>
+      <h1>Users</h1>
       {userList}
-      { /* {friendList} */}
+      <div>
+        <h1>friend requests</h1>
+        {receivedList}
+      </div>
     </div>
   )
 }
