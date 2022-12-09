@@ -34,9 +34,13 @@ export class AuthController {
 		return (this.authService.getIntraUser(query.token, response));
 	}
 
-	@Get('google2FA/signup')
-	async signup2FA(@Body() body: {email: string, displayName: string}) {
-		return (this.authService.signup2FA(body));
+	@Post('google2FA/signup')
+	async signup2FA(
+			@Body() body: {email: string, displayName: string},
+			@Res({ passthrough: true} ) response: Response
+		): Promise<string> {
+		console.log("GOOGLE AUTH");
+		return (this.authService.signup2FA(body, response));
 	}
 
 	@Post('google2FA/login')

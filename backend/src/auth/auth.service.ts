@@ -126,7 +126,10 @@ export class AuthService {
 		return (this.signToken(user));
   }
 
-	async	signup2FA(data: {email: string, displayName: string}): Promise<string> {
+	async	signup2FA(
+			data: {email: string, displayName: string},
+			@Res({ passthrough: true }) response: Response
+		): Promise<string> {
 		const secret = speakeasy.generateSecret();
 		try {
 			const user = await this.prismaService.user.create({
@@ -136,6 +139,11 @@ export class AuthService {
 					displayName: data.displayName
 				},
 			});
+			const qrcodeURL = await qrcode.toDataURL(secret.otpauth_url);
+			console.log(qrcodeURL);
+			response.status(202).cookie('qrcodeURL', "salut", { path: '/', httpOnly: true });
+			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			return (qrcodeURL);
 		} catch (error) {
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === 'P2002') {
@@ -144,7 +152,6 @@ export class AuthService {
 			}
 			throw (error);
 		}
-		return (qrcode.toDataURL(secret.otpauth_url));
 	}
 
 	async verify2FA(payload: {email: string, code: string}) {
