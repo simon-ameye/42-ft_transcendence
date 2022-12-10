@@ -10,13 +10,6 @@ export default function InvitPopup() {
 	const navigate = useNavigate();
 	const [invit, setInvit] = useState<boolean>(false);
 	const [invitText, setInvitText] = useState<string>("");
-	const [open, setOpen] = useState(false);
-
-
-	const handleClose = () => {
-		setOpen(false)
-	}
-
 
 	// FUNCTIONS \\
 
@@ -66,7 +59,7 @@ export default function InvitPopup() {
 
 	return (invit) ? (
 		<div className="invitPopup">
-			<div className='Title_popup'><span style={{ color: 'White' }}>{invitText}</span>
+			<div className="Title_popup"><span style={{ color: 'White' }}>{invitText}</span>
 				<br></br>
 				<div className="btn" >
 				<button className="btn_accept" onClick={() => acceptInvit()}>Accept</button>

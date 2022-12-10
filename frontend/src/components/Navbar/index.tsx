@@ -1,5 +1,5 @@
 import { useCookies } from 'react-cookie';
-import { NavLink } from 'react-router-dom'
+import { NavLink} from 'react-router-dom'
 import { AiFillCaretDown, AiFillSetting } from 'react-icons/ai';
 import { RiLogoutCircleRLine } from 'react-icons/ri';
 import { CgProfile } from 'react-icons/cg';
@@ -9,6 +9,7 @@ import { useState } from 'react';
 const Navbar = () => {
 	const [cookie] = useCookies(['displayName'])
 	const [open, setOpen] = useState(false)
+
 	const handleOpen = () => {
 		setOpen(!open)
 	}
@@ -34,12 +35,12 @@ const Navbar = () => {
 					<span>User</span>
 				</NavLink>
 				{cookie.displayName}
-				<a ><button onClick={handleOpen}><AiFillCaretDown size={10}></AiFillCaretDown></button></a>
+				<a><button onClick={handleOpen}><AiFillCaretDown size={10}></AiFillCaretDown></button></a>
 				{open ? (<ul className="DropDown">
 				<div className='DropDown_content'>
 					<li><NavLink to="/UserProfile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
 					<li><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
-						<li ><button><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></button></li></div></ul>) : null}
+					<li ><button><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></button></li></div></ul>) : null}
 			</nav>
 		</header>
 	);
