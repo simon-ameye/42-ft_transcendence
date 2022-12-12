@@ -20,13 +20,17 @@ export class UserService {
   }
 
   async getUserBySid(socketId: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
         socketId: socketId
       }
     })
     return user
   }
+
+  /*async getReceivedFriendRequests(dto: UserDto) {
+
+  }*/
 
   async modifyName(dto: UserDto, modif: string) {
     if (!dto) {

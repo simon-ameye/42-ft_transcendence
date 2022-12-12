@@ -11,7 +11,7 @@ import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
 import Profile from './components/Profile/Profile';
-import Friends from './components/Friends';
+import Friends from './components/friends/Friends';
 
 axios.defaults.withCredentials = true;
 

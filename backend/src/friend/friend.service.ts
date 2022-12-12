@@ -1,28 +1,64 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from 'src/auth/dto';
+import { User } from '@prisma/client';
 
-interface User {
-  email: string
+type UserUncheckedUpdateManyInput = {
+  id?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  email?: string
+  hash?: string | null
+  displayName?: string
+  imageUrl?: string | null
+  googleSecret?: | string | null
+  status?: string | null
+  socketId?: string | null
+  inGame?: boolean
+  victories?: number
+  log?: boolean
 }
 
 @Injectable()
 export class FriendService {
   constructor(private prisma: PrismaService) { }
 
-  async sendFriendRequest(sender: User, receiverId: number) {
-    console.log("printing socket id", sender)
-    // if relation is already pending do nothing
-    // to code
-    // if relation dosent exist create it and pending it
-    const relationShip = await this.prisma.friendRequest.create({
+  async addFriend(senderId: number, receiverId: number) {
+    // maybe needs modif
+    const user = await this.prisma.user.update({
+      where: {
+        id: senderId,
+      },
       data: {
-        creator: undefined,
-        receiver: undefined,
-        fstatus: "pending",
-      }
-    })
-    return relationShip;
+        friends: {
+          connect: {
+            id: receiverId,
+          },
+        },
+      },
+      include: {
+        friends: true,
+      },
+    });
+    await this.prisma.user.update({
+      where: {
+        id: receiverId,
+      },
+      data: {
+        friends: {
+          connect: {
+            id: senderId,
+          },
+        },
+      },
+      include: {
+        friends: false,
+        _count: false,
+        friendsAddedMe: false,
+      },
+    });
+
+    return user;
   }
 
   /// accept friend -> if relation pending then accept

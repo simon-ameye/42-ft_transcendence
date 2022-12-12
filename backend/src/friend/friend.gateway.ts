@@ -39,11 +39,10 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
 
   @SubscribeMessage('add friend')
   async handleFriendRequest(client: Socket, receiverId: number, receiverSocketId: string) {
-    // service to find the user
-    console.log("add friend", client.id)
     const sender = await this.userService.getUserBySid(client.id);
-    let request = this.friendService.sendFriendRequest(sender, receiverId);
-    this.server.to(receiverSocketId).emit("receiveFriendRequest", request);
+    const receiver = await this.userService.getUserBySid(receiverSocketId); // find it by id not by socketID is safer
+    let user = this.friendService.addFriend(sender.id, receiver.id);
+    this.server.to(receiverSocketId).emit("receiveFriendRequest", user);
   }
 
   async handleDisconnect(client: Socket) {

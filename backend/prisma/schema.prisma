@@ -11,38 +11,27 @@ datasource db {
 }
 
 model User {
-  // probably a command with all
-  //sentFriendRequests     friendRequest[] @relation("creator")
-  receivedFriendRequests friendRequest[] @relation("receiver")
-  id                     Int             @id @default(autoincrement())
-  createdAt              DateTime        @default(now())
-  updatedAt              DateTime        @updatedAt
-  email                  String          @unique
-  hash                   String?
-  displayName            String          @unique
-  imageUrl               String?
-  googleSecret           String?
-  status                 String?
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  email        String    @unique
+  hash         String?
+  displayName  String    @unique
+  imageUrl     String?
+  googleSecret String?
+  status       String?
   // add path of the image
-  socketId               String?         @unique
-  matching               Matching?
+  socketId     String?   @unique
+  matching     Matching?
 
   inGame    Boolean @default(false)
   victories Int     @default(0)
 
-  log           Boolean         @default(true)
-  friendRequest friendRequest[]
+  log            Boolean @default(true)
+  friends        User[]  @relation("friends")
+  friendsAddedMe User[]  @relation("friends")
 
   @@map("users")
-}
-
-model friendRequest {
-  id         Int    @id @default(autoincrement())
-  creator    User?  @relation("creator", fields: [creatorId], references: [id])
-  creatorId  Int?
-  receiver   User?  @relation("receiver", fields: [receiverId], references: [id])
-  receiverId Int?
-  fstatus    String
 }
 
 enum fstatus {
@@ -51,8 +40,6 @@ enum fstatus {
   declined
   blocked
 }
-
-// mode Channels ( many to many relations with Users )
 
 model Matching {
   user   User @relation(fields: [userId], references: [id])

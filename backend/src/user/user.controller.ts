@@ -21,7 +21,7 @@ import { Res } from '@nestjs/common';
 import { UserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators';
-
+import { User } from '@prisma/client';
 // clean dependencies + unused dtos
 
 @Controller('user')
@@ -44,6 +44,12 @@ export class UserController {
   @Get('users')
   getUsers(@GetUser() user: UserDto) {
     return this.userService.getUsers(user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('receivedfriendRequest')
+  getReceivedfriendRequest(@GetUser() user: User) {
+    //return user.friendRequest
   }
 
   // DisplayName
