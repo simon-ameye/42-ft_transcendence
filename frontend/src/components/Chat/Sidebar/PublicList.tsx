@@ -1,11 +1,11 @@
 import { ListItem } from '@mui/material'
 import ChannelsInterface from '../Interface/ChannelsInterface';
 import axios from 'axios';
-import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
+import { useEffect, useState } from "react";
 
 export default function PublicList() {
 
@@ -61,6 +61,10 @@ export default function PublicList() {
       <div className='list'>{c.name}</div>
     </ListItem>
   ))
+
+  useEffect(() => {
+    getPublicChannelTable()
+  }, [])
 
   return (
     <div className='ChannelList'>

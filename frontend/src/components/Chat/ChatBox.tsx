@@ -82,7 +82,6 @@ const Chatbox = () => {
     refreshAllChannelInterfaces()
   }, [])
 
-
   return (
     <div>
       <Navbar />

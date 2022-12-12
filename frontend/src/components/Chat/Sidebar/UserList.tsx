@@ -1,12 +1,12 @@
 import { ListItem } from '@mui/material'
 import axios from 'axios';
-import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import ChannelInterface from './Interface/ChannelInterface';
-import UserInterface from './Interface/UserInterface';
+import ChannelInterface from '../Interface/ChannelInterface';
+import UserInterface from '../Interface/UserInterface';
 import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
+import { useEffect, useState } from "react";
 
 export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
   const [userInterfaces, setuserInterfaces] = useState<UserInterface[]>([])
@@ -67,6 +67,11 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
       }
     )
   }
+
+  useEffect(() => {
+    getUserTable()
+  }, [])
+
 
   return (
     <div className='ChannelList'>

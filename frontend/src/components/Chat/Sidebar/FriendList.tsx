@@ -1,11 +1,11 @@
 import { ListItem } from '@mui/material'
 import FriendsInterface from '../Interface/FriendsInterface';
 import axios from 'axios';
-import { useState } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { TbKey, TbKeyOff } from 'react-icons/tb';
+import { useEffect, useState } from "react";
 
 export default function FriendList() {
 
@@ -34,6 +34,10 @@ export default function FriendList() {
     <ListItem key={i} onClick={event => handleStartConversation(c.id)} > {c.name}
     </ListItem>
   ))
+
+  useEffect(() => {
+    getUserFriendTable()
+  }, [])
 
   return (
     <div className='PublicList'>
