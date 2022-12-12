@@ -28,21 +28,21 @@ const Profile = () => {
   return (
     <div>
       <Navbar />
-      id: {profileInterface?.id}
-      createdAt: {profileInterface?.createdAt}
-      updatedAt: {profileInterface?.updatedAt}
-      email: {profileInterface?.email}
-      hash: {profileInterface?.hash}
-      displayName: {profileInterface?.displayName}
-      imageUrl: {profileInterface?.imageUrl}
-      googleSecret: {profileInterface?.googleSecret}
-      socketId: {profileInterface?.socketId}
-      blockedUserIds: {profileInterface?.blockedUserIds}
-      friends: {profileInterface?.friends}
-      matching: {profileInterface?.matching}
-      inGame: {profileInterface?.inGame}
-      victories: {profileInterface?.victories}
-      log: {profileInterface?.log}
+      <div>id: {profileInterface?.id}</div>
+      <div>createdAt: {profileInterface?.createdAt}</div>
+      <div>updatedAt: {profileInterface?.updatedAt}</div>
+      <div>email: {profileInterface?.email}</div>
+      <div>hash: {profileInterface?.hash}</div>
+      <div>displayName: {profileInterface?.displayName}</div>
+      <div>imageUrl: {profileInterface?.imageUrl}</div>
+      <div>googleSecret: {profileInterface?.googleSecret}</div>
+      <div>socketId: {profileInterface?.socketId}</div>
+      <div>blockedUserIds: {profileInterface?.blockedUserIds}</div>
+      <div>friends: {profileInterface?.friends}</div>
+      <div>matching: {profileInterface?.matching}</div>
+      <div>inGame: {profileInterface?.inGame}</div>
+      <div>victories: {profileInterface?.victories}</div>
+      <div>log: {profileInterface?.log}</div>
     </div>
   )
 }
