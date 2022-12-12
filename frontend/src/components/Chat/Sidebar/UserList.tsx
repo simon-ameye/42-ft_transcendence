@@ -7,6 +7,7 @@ import ChannelInterface from '../Interface/ChannelInterface';
 import UserInterface from '../Interface/UserInterface';
 import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
 import { useEffect, useState } from "react";
+import { CompressOutlined } from '@mui/icons-material';
 
 export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
   const [userInterfaces, setuserInterfaces] = useState<UserInterface[]>([])
@@ -65,7 +66,7 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
       function (response) {
         setuserInterfaces(response.data.usersInterfaces);
       }
-    )
+    ).catch(err => console.log(err));
   }
 
   useEffect(() => {

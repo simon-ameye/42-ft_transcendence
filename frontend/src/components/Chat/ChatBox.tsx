@@ -24,7 +24,7 @@ const Chatbox = () => {
     setchannelInterfaces([]);
     setactualChannelInterface(undefined);
     axios.get('http://localhost:3001/chat/sendAllChannelInterfaces', {
-    }).then(res => console.log(res)).catch(err => console.log(err))
+    }).then(res => console.log('OK')).catch(err => console.log(err));
   }
 
   function handleSelectChannel(channelId: number) {
@@ -57,16 +57,13 @@ const Chatbox = () => {
       if (tmpChannelInterfaces[i].id == channelInterface.id) {
         tmpChannelInterfaces[i] = channelInterface
         alreadyKnownChannel = 1
-        console.log("Known channel, replace it")
         break
       }
     }
     if (alreadyKnownChannel == 0) {
-      console.log("Unknown channel, push it")
       tmpChannelInterfaces.push(channelInterface)
     }
     setchannelInterfaces([...tmpChannelInterfaces])
-    console.log(channelInterfaces)
     refreshActualChannelInterface()
   }
 

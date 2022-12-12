@@ -13,9 +13,9 @@ const DirectMessage = ({ actualChannelInterface }: { actualChannelInterface: Cha
   const messageList =
     actualChannelInterface ? actualChannelInterface.messages.map((d, i) =>
       <li key={i} >
-          <div className="directmessageauthor">{d.author}</div>
-          <div className="directmessagedate">{d.date}</div>
-          <div className="directmessagemessage">{d.message}</div>
+        <div className="directmessageauthor">{d.author}</div>
+        <div className="directmessagedate">{d.date}</div>
+        <div className="directmessagemessage">{d.message}</div>
       </li>)
       : <li> Please select a channel </li>;
 

@@ -9,16 +9,16 @@ import { useEffect, useState } from "react";
 
 export default function FriendList() {
 
-  const [ friendsInterfaces, setfriendsInterfaces] = useState<FriendsInterface[]>([])
+  const [friendsInterfaces, setfriendsInterfaces] = useState<FriendsInterface[]>([])
   const [open, setOpen] = useState(false);
 
-  const handleStartConversation = (friendId : number) => {
+  const handleStartConversation = (friendId: number) => {
     axios.post('http://localhost:3001/chat/createChannel', {
       name: "",
       mode: "DIRECT",
       password: "",
       otherUserId: friendId,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
 
   function getUserFriendTable() {
@@ -26,8 +26,7 @@ export default function FriendList() {
     }).then(
       function (response) {
         setfriendsInterfaces(response.data.friendsInterfaces);
-      }
-    )
+      }).catch(err => console.log(err));
   }
 
   const friendList = friendsInterfaces.map((c, i) => (

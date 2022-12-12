@@ -44,7 +44,7 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     if (actualChannelInterface?.id)
       axios.post('http://localhost:3001/chat/leaveChannel', {
         channelId: actualChannelInterface.id,
-      }).then(res => alert(res.data)).catch(err => alert(err))
+      }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
     handleClose();
   }
   const handleClose = () => {
@@ -60,7 +60,7 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     axios.post('http://localhost:3001/chat/setChannelPassword', {
       channelId: actualChannelInterface.id,
       newPassword: values.newpassword,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
   const handleRemovepass = () => {
     if (actualChannelInterface === undefined) {
@@ -71,7 +71,7 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
       axios.post('http://localhost:3001/chat/setChannelPassword', {
         channelId: actualChannelInterface.id,
         newPassword: "",
-      }).then(res => alert(res.data)).catch(err => alert(err))
+      }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
 
   const handleSubmit = () => {

@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import axios from 'axios';
 import ChannelInterface from './Interface/ChannelInterface';
+import { convertToObject } from 'typescript';
 
 const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
   const [value, setValue] = useState<string>("");
+
   const sendMessage = async () => {
     if (value === "") return false;
     if (actualChannelInterface === undefined) {
@@ -15,7 +17,7 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
       axios.post('http://localhost:3001/chat/sendMessage', {
         channelId: actualChannelInterface.id,
         text: value,
-      }).then(res => res.data != '' ? alert(res.data) : console.log('message sent')).catch(err => alert(err))
+      }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
       setValue("");
     }
   }

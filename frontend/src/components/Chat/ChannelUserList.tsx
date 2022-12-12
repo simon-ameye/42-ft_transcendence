@@ -42,12 +42,12 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
     axios.post('http://localhost:3001/chat/banUser', {
       channelId: actualChannelInterface?.id,
       banedId: values.userId,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
   const blockUser = () => {
     axios.post('http://localhost:3001/chat/blockUser', {
       blockedUserId: values.userId,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
   const makeUserAdmin = () => {
     if (actualChannelInterface === undefined) {
@@ -57,7 +57,7 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
     axios.post('http://localhost:3001/chat/makeUserAdmin', {
       channelId: actualChannelInterface?.id,
       newAdminId: values.userId,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
   const muteUser = () => {
     if (actualChannelInterface === undefined) {
@@ -68,7 +68,7 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
       channelId: actualChannelInterface?.id,
       muteId: values.userId,
       minutes: values.minutes,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
   const inviteToGame = () => {
     alert('not done yet')

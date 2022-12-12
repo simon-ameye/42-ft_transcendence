@@ -53,7 +53,7 @@ export default function PublicList() {
       function (response) {
         setchannelsInterfaces(response.data.channelsInterfaces);
       }
-    )
+    ).catch(err => console.log(err));
   }
 
   const channelList = channelsInterfaces.map((c, i) => (
