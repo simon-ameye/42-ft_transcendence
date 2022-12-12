@@ -21,6 +21,10 @@ const Navbar = () => {
           <i className="fa-solid fa-user"></i>
           <span>User</span>
         </NavLink>
+        <NavLink to="/Profile">
+          <i className="fa-solid fa-address-card"></i>
+          <span>Profile</span>
+        </NavLink>
       </nav>
     </header>
   );
