@@ -18,6 +18,8 @@ const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])
   const [actualChannelInterface, setactualChannelInterface] = useState<ChannelInterface | undefined>()
 
+
+
   function refreshAllChannelInterfaces() {
     setchannelInterfaces([]);
     setactualChannelInterface(undefined);
@@ -75,6 +77,11 @@ const Chatbox = () => {
       socket.off('channelInterface', concatChannelInterfaces)
     }
   })
+
+  useEffect(() => {
+    refreshAllChannelInterfaces()
+  }, [])
+
 
   return (
     <div>
