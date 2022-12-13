@@ -16,7 +16,9 @@ type User = {
 }
 
 type FriendRequest = {
-  creator: number;
+  id: number;
+  user_id: number;
+  friend_id: number;
   status: string;
 }
 
@@ -31,6 +33,14 @@ const Friends = () => {
     socket.emit("add friend", receiverId, socketId);
   }
 
+  const acceptFriendRequest = (requestId: number) => {
+    socket.emit("accept friend", requestId);
+  }
+
+  const denyFriendRequest = (requestId: number) => {
+    socket.emit("deny friend", requestId);
+  }
+
   const userList = users.map((c, i) => (
     <ListItem key={i}> {
       <button onClick={event => sendFriendRequest(c.id, c.socketId)}> send </button>
@@ -42,11 +52,11 @@ const Friends = () => {
   const receivedList = receivedFriendRequest.map((c, i) => (
     <ListItem key={i}> {
       <div className='accept | deny'>
-        <button> accept </button>
-        <button> deny  </button>
+        <button onClick={event => acceptFriendRequest(c.id)}> accept </button>
+        <button onClick={event => denyFriendRequest(c.id)}> deny  </button>
       </div>
     }
-      {c.creator}
+      {c.user_id}
     </ListItem >
   ))
 
@@ -62,15 +72,15 @@ const Friends = () => {
       })
   }, []);
 
-  /*useEffect(() => {
+  useEffect(() => {
     axios.get('http://localhost:3001/user/receivedfriendRequest')
       .then(res => {
-        setUsers(res.data);
+        setReceivedFriendRequest(res.data);
       })
       .catch(err => {
         console.log(err);
       })
-  }, []);*/
+  }, []);
 
   useEffect(() => {
     socket.on("receive invitation", receiveFriendRequest);
@@ -82,6 +92,8 @@ const Friends = () => {
   // listeners
 
   const receiveFriendRequest = (request: FriendRequest) => {
+    if (request == null)
+      console.log("nulll");
     setReceivedFriendRequest([...receivedFriendRequest, request])
   }
 

@@ -25,8 +25,54 @@ export class FriendService {
 
   async addFriend(senderId: number, receiverId: number) {
     // maybe needs modif
+    const exist = await this.prisma.friends.findFirst({
+      where: {
+        status: "pending",
+        user_id: senderId,
+        friend_id: receiverId
+      }
+    });
+    if (exist != null) {
+      return null
+    }
+
+    const friend = await this.prisma.friends.create({
+      data: {
+        status: "pending",
+        user_id: senderId,
+        friend_id: receiverId,
+      }
+    });
+
+    return friend;
   }
 
+  async acceptFriendRequest(senderId: number, receiverId: number) {
+    const exist = await this.prisma.friends.findFirst({
+      where: {
+        status: "pending",
+        user_id: senderId,
+        friend_id: receiverId
+      }
+    });
+    if (exist != null) {
+      console.log("alreadt exists");
+      return null
+    }
+    const friend = await this.prisma.friends.create({
+      data: {
+        status: "pending",
+        user_id: senderId,
+        friend_id: receiverId,
+      }
+    });
+
+    return friend;
+  }
+
+  async denyFriendRequest(senderId: number, receiverId: number) {
+
+  }
   /// accept friend -> if relation pending then accept
   /// deny friend -> if relation pending then deny
 }

@@ -28,9 +28,15 @@ export class UserService {
     return user
   }
 
-  /*async getReceivedFriendRequests(dto: UserDto) {
-
-  }*/
+  async pendingFriend(dto: UserDto) {
+    const friends = await this.prisma.friends.findMany({
+      where: {
+        status: "pending",
+        friend_id: dto.id,
+      }
+    })
+    return friends
+  }
 
   async modifyName(dto: UserDto, modif: string) {
     if (!dto) {

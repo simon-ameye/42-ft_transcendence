@@ -46,12 +46,6 @@ export class UserController {
     return this.userService.getUsers(user);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Get('receivedfriendRequest')
-  getReceivedfriendRequest(@GetUser() user: User) {
-    //return user.friendRequest
-  }
-
   // DisplayName
   @UseGuards(AuthGuard('jwt'))
   @Get('getName')
@@ -60,6 +54,12 @@ export class UserController {
   }
 
   // DisplaySocketId
+  @UseGuards(AuthGuard('jwt'))
+  @Get('receivedfriendRequest')
+  getreceivedfriendRequest(@GetUser() user: UserDto) {
+    return this.userService.pendingFriend(user);
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('socketId')
   getSocketId(@GetUser() user: UserDto) {
