@@ -27,11 +27,24 @@ model User {
   inGame    Boolean @default(false)
   victories Int     @default(0)
 
-  log            Boolean @default(true)
-  friends        User[]  @relation("friends")
-  friendsAddedMe User[]  @relation("friends")
+  log               Boolean   @default(true)
+  userFriends       Friends[] @relation(name: "users")
+  friendUserFriends Friends[] @relation(name: "friend_users")
 
   @@map("users")
+}
+
+model Friends {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  friend_id Int
+  user      User     @relation(name: "users", fields: [user_id], references: [id])
+  friend    User     @relation(name: "friend_users", fields: [friend_id], references: [id])
+  status    fstatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([user_id, friend_id])
 }
 
 enum fstatus {

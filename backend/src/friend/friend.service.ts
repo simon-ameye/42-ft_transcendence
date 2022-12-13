@@ -25,40 +25,6 @@ export class FriendService {
 
   async addFriend(senderId: number, receiverId: number) {
     // maybe needs modif
-    const user = await this.prisma.user.update({
-      where: {
-        id: senderId,
-      },
-      data: {
-        friends: {
-          connect: {
-            id: receiverId,
-          },
-        },
-      },
-      include: {
-        friends: true,
-      },
-    });
-    await this.prisma.user.update({
-      where: {
-        id: receiverId,
-      },
-      data: {
-        friends: {
-          connect: {
-            id: senderId,
-          },
-        },
-      },
-      include: {
-        friends: false,
-        _count: false,
-        friendsAddedMe: false,
-      },
-    });
-
-    return user;
   }
 
   /// accept friend -> if relation pending then accept
