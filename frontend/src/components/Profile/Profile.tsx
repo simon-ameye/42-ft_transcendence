@@ -17,7 +17,7 @@ const Profile = () => {
     axios.get('http://localhost:3001/profile/getProfile', {
     }).then(
       function (response) {
-        setprofileInterface(response.data.friendsInterfaces);
+        setprofileInterface(response.data);
       }).catch(err => console.log(err));
   }
 
