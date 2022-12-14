@@ -12,7 +12,7 @@ import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
 import { RiChat3Fill } from 'react-icons/ri';
 import { RiChatPrivateFill } from 'react-icons/ri';
 import { BsFillPeopleFill } from 'react-icons/bs';
-
+import './chatbox.scss'
 
 const Chatbox = () => {
   const [channelInterfaces, setchannelInterfaces] = useState<ChannelInterface[]>([])

@@ -13,6 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import axios from 'axios';
 import { RiChat3Fill } from 'react-icons/ri';
+import './channel.scss'
 
 const Channel = () => {
   const [open, setOpen] = useState(false);

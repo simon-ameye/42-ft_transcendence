@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from './components/Home';
 import User from './components/User';
-import NotFound from './pages/notFound';
-import Home from './pages/home';
-import Game from './pages/Game';
 import LiveGame from './components/AbrunGame/live-game.component';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
 import ChatBox from './components/Chat/ChatBox'
 import Profile from './components/Profile/Profile'
+import NotFound from './components/NotFound';
+import Game from './components/GameSetup';
 
 axios.defaults.withCredentials = true;
 

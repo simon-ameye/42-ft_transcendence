@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from './Navbar';
-import { socket } from '../App';
+import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import Default from '../../layouts/Default';
+import './style.scss'
 
 const User = () => {
   const navigate = useNavigate();
@@ -48,8 +49,7 @@ const User = () => {
   }
 
   return (
-    <>
-      <Navbar />
+    <Default>
       <div className="createUser">
         <div className="createUserContent">
           <form onSubmit={handleSubmit}>
@@ -101,7 +101,7 @@ const User = () => {
       <div>
         <button onClick={logOut}>LOGOUT</button>
       </div>
-    </>
+		</Default>
   );
 };
 

@@ -1,5 +1,6 @@
 import ChannelInterface from './Interface/ChannelInterface';
 import React, { useEffect } from 'react'
+import './directmessage.scss'
 
 const DirectMessage = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
 

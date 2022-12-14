@@ -1,3 +1,5 @@
+@import '../../styles/settings';
+
 .createUser {
 	margin-top: 50px;
 	display: flex;
@@ -52,15 +54,15 @@
 	}
 }
 
-button {
+.submit-btn, .login-btn {
 	@include btn-anim;
 }
 
-button:hover {
+.submit-btn:hover, .login-btn:hover {
 	@include btn-anim-hover
 }
 
-button:active {
+.submit-btn:active, .login-btn:active {
 	@include btn-anim-active
 }
 
