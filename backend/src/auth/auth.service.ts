@@ -131,17 +131,19 @@ export class AuthService {
 			@Res({ passthrough: true }) response: Response
 		): Promise<string> {
 		const secret = speakeasy.generateSecret();
+		const qrcodeURL = await qrcode.toDataURL(secret.otpauth_url);
 		try {
-			const user = await this.prismaService.user.create({
+			var user = await this.prismaService.user.create({
 				data: {
 					email: data.email,
 					googleSecret: String(secret.base32),
-					displayName: data.displayName
+					displayName: data.displayName,
+					qrcode: qrcodeURL
 				},
 			});
-			const qrcodeURL = await qrcode.toDataURL(secret.otpauth_url);
-			console.log(qrcodeURL);
-			response.status(202).cookie('qrcodeURL', "salut", { path: '/', httpOnly: true });
+			const jwtToken = await this.signJwtToken(user);
+			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			response.status(202).cookie('qrcode', "yes", { path: '/' });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
 			return (qrcodeURL);
 		} catch (error) {

@@ -19,6 +19,7 @@ model User {
   displayName String @unique
   imageUrl String?
   googleSecret String?
+  qrcode String?
   // add path of the image
 
   socketId        String? @unique

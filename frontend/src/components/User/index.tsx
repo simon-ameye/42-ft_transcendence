@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { useCookies } from 'react-cookie';
 
 const User = () => {
 	const navigate = useNavigate();
-	const [cookie] = useCookies(['displayName', 'qrcodeURL']);
+	const [cookie] = useCookies(['displayName', 'qrcode']);
 	const [userMail, setUserMail] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [userDisplayName, setUserDisplayName] = useState('');
@@ -19,6 +19,16 @@ const User = () => {
 	const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
 	
 	const [userToken, setUserToken] = useState('');
+
+	useEffect(() => {
+		console.log({qrcode: cookie.qrcode});
+		console.log({displayname: cookie.displayName});
+		if (cookie.qrcode !== undefined && cookie.qrcode === 'yes') {
+			axios.get('http://localhost:3001/user/qrcode')
+				.then(res => setQrcode(res.data))
+				.catch(err => console.log(err))
+		}
+	}, []);
 	
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
