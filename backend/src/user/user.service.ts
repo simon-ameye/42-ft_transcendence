@@ -93,7 +93,6 @@ export class UserService {
 	}
 
 	async getQrcode(dto: UserDto): Promise<string> {
-		console.log("GETTING QRCODE");
 		const user = await this.prisma.user.findUnique({
 			where: {
 				email: dto.email

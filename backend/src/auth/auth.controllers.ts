@@ -39,7 +39,6 @@ export class AuthController {
 			@Body() body: {email: string, displayName: string},
 			@Res({ passthrough: true} ) response: Response
 		): Promise<string> {
-		console.log("GOOGLE AUTH");
 		return (this.authService.signup2FA(body, response));
 	}
 
