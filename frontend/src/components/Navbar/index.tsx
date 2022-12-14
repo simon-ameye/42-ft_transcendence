@@ -42,9 +42,9 @@ const Navbar = () => {
           <div className='navList'>
             <div onClick={handleOpen}><i className="fa-solid fa-user"></i>{cookie.displayName}<AiFillCaretDown size={10}></AiFillCaretDown></div>
             {open ? (<ul>
-              <li><NavLink to="/Profile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
-              <li><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
-              <li ><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></li></ul>) : null}
+              <li className='navListItem'><NavLink to="/Profile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
+              <li className='navListItem'><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
+              <li className='navListItem'><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></li></ul>) : null}
           </div>
         </div>
       </div>

@@ -22,19 +22,23 @@ header {
     justify-content: space-between;
     //align-self: auto;
     flex-grow: 1;
-    margin: 1em;
 
     .navItem {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       flex-wrap: wrap;
+      margin: 1em;
 
       .navList {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         flex-wrap: wrap;
+
+        .navListItem {
+          margin-top: 1em;
+        }
       }
     }
   }
