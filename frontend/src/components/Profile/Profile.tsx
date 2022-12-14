@@ -12,6 +12,19 @@ import ProfileInterface from './Interface/ProfileInterface';
 
 const Profile = () => {
   const [profileInterface, setprofileInterface] = useState<ProfileInterface | undefined>()
+  const [userProfilePicture, setUserProfilePicture] = useState('');
+
+
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    axios.post('http://localhost:3001/auth/uploadPicture', {
+      imageUrl: userProfilePicture
+    })
+      .then()
+      .catch(err => console.log(err))
+  }
 
   function getProfileInterface() {
     axios.get('http://localhost:3001/profile/getProfile', {
@@ -43,6 +56,19 @@ const Profile = () => {
       <div>inGame: {profileInterface?.inGame}</div>
       <div>victories: {profileInterface?.victories}</div>
       <div>log: {profileInterface?.log}</div>
+
+      <form onSubmit={handleSubmit}>
+      <input
+        id="file"
+        type="file"
+        value={userProfilePicture}
+        onChange={(e) => setUserProfilePicture(e.target.value)}
+      />
+      <div className="submit-upload">
+        <label className="upload" htmlFor="file">Upload profile picture</label>
+        <button type="submit" className='submit-btn'>submit</button>
+      </div>
+      </form>
     </div>
   )
 }
