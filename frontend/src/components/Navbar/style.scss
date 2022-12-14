@@ -20,6 +20,7 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-self: flex-start;
     //align-self: auto;
     flex-grow: 1;
 
@@ -28,23 +29,23 @@ header {
       flex-direction: row;
       justify-content: space-between;
       flex-wrap: wrap;
+      align-self: flex-start;
       margin: 1em;
 
       .navList {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
         flex-wrap: wrap;
 
         .navListItem {
           margin-top: 1em;
+          justify-content: flex-start;
         }
       }
     }
   }
 }
-
-
 
 nav span {
   margin: 0 2rem 0 0.5rem;

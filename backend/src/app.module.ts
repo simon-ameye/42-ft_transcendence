@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
 import { ProfileModule } from './profile/profile.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProfileModule } from './profile/profile.module';
     }),
     PrismaModule,
     GameModule,
+    LeaderboardModule,
   ],
 })
 

@@ -26,10 +26,10 @@ export class ProfileController {
   //  return (this.profileService.uploadPicture(user.id, ));
   //}
 
-  @UseGuards(AuthGuard('jwt'))
-  @Post('uploadPicture')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-  }
+  //@UseGuards(AuthGuard('jwt'))
+  //@Post('uploadPicture')
+  //@UseInterceptors(FileInterceptor('file'))
+  //uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //  console.log(file);
+  //}
 }

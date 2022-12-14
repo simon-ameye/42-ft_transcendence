@@ -40,7 +40,7 @@ const Navbar = () => {
         </NavLink>
         <div className='navItem'>
           <div className='navList'>
-            <div onClick={handleOpen}><i className="fa-solid fa-user"></i>{cookie.displayName}<AiFillCaretDown size={10}></AiFillCaretDown></div>
+            <div onClick={handleOpen}><i className="fa-solid fa-user" />{cookie.displayName}<AiFillCaretDown size={10}/></div>
             {open ? (<ul>
               <li className='navListItem'><NavLink to="/Profile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
               <li className='navListItem'><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
