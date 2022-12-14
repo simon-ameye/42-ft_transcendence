@@ -11,9 +11,9 @@ const Navbar = () => {
 	const [open, setOpen] = useState(false)
 
 	const handleOpen = () => {
+		if (cookie.displayName !== undefined)
 		setOpen(!open)
 	}
-
 	return (
 		<header>
 			<h3><i className="fa-solid fa-table-tennis-paddle-ball"></i>Pong Game</h3>

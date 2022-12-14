@@ -1,4 +1,8 @@
-FROM node:16-alpine
+FROM node:19-alpine
+
+RUN apk update
+#RUN apk add libressl-dev
+RUN apk add libssl1.1
 
 RUN apk add --no-cache curl zsh git emacs vim;
 
@@ -11,11 +15,11 @@ USER root
 # zsh only for dev
 ARG OH_MY_ZSH_THEME=cloud
 RUN set -eux; \
-		sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
-		sed -i "s/\(^ZSH_THEME=\).*/\1$OH_MY_ZSH_THEME/" ~/.zshrc; \
-		npm install -g \
-			@nestjs/cli
-
+	sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
+	sed -i "s/\(^ZSH_THEME=\).*/\1$OH_MY_ZSH_THEME/" ~/.zshrc; \
+	npm install -g \
+	@nestjs/cli \
+	sh -c "export LD_LIBRARY_PATH=/usr/local/lib"
 WORKDIR /app
 
 CMD [ "zsh" ]
