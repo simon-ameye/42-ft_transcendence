@@ -1,48 +1,48 @@
 @import '../../styles/settings';
 
 header {
-	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
-	height: 50px;
-	padding: 0 5rem;
-	background-color: $nav_color;
-	color: $nav_text;
-	margin-bottom: 2rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  //height: 50px;
+  //padding: 0 5rem;
+  background-color: $nav_color;
+  color: $nav_text;
+  margin-bottom: 2rem;
+
+  .title {
+    font-size: 25px;
+    //padding-right: 1rem;
+    flex-grow: 2;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    //align-self: auto;
+    flex-grow: 1;
+    margin: 1em;
+
+    .navItem {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .navList {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+    }
+  }
 }
 
-h3 i {
-	font-size: 25px;
-	padding-right: 1rem;
-}
+
 
 nav span {
-	margin: 0 2rem 0 0.5rem;
-	color: $nav_text;
-}
-
-@media only screen and (max-width: 800px) {
-	nav span {
-		display: none;
-	}
-	nav i {
-		padding-right: 2.5rem;
-		font-size: 30px;
-	}
-	h3 {
-		display: none;
-	}
-}
-
-@media only screen and (max-width: 600px) {
-	nav span {
-		display: none;
-	}
-	nav i {
-		padding-right: 2.5rem;
-		font-size: 20px;
-	}
-	h3 {
-		display: none;
-	}
+  margin: 0 2rem 0 0.5rem;
+  color: $nav_text;
 }

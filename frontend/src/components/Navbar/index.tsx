@@ -16,39 +16,39 @@ const Navbar = () => {
 
   return (
     <header>
-      <h3><i className="fa-solid fa-table-tennis-paddle-ball"></i>Pong Game</h3>
-      <nav>
-        <NavLink to="/">
+      <div className='title'>
+        <div className="fa-solid fa-table-tennis-paddle-ball">
+          Pong Game
+        </div>
+      </div>
+      <div className='nav'>
+        <NavLink to="/" className='navItem'>
           <i className="fas fa-home"></i>
           <span>Home</span>
         </NavLink>
-        <NavLink to="/game">
+        <NavLink to="/game" className='navItem' >
           <i className="fa-solid fa-table-tennis-paddle-ball"></i>
           <span>Game</span>
         </NavLink>
-        <NavLink to="/ChatBox">
+        <NavLink to="/ChatBox" className='navItem' >
           <i className="fa-solid fa-comment"></i>
           <span>Chat</span>
         </NavLink>
-        <NavLink to="/user">
+        <NavLink to="/user" className='navItem' >
           <i className="fa-solid fa-user"></i>
           <span>User</span>
         </NavLink>
-        <NavLink to="/Profile">
-          <i className="fa-solid fa-address-card"></i>
-          <span>Profile</span>
-        </NavLink>
-
-        {cookie.displayName}
-        <a><button onClick={handleOpen}><AiFillCaretDown size={10}></AiFillCaretDown></button></a>
-        {open ? (<ul className="DropDown">
-          <div className='DropDown_content'>
-            <li><NavLink to="/UserProfile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
-            <li><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
-            <li ><button><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></button></li></div></ul>) : null}
-
-      </nav>
-    </header>
+        <div className='navItem'>
+          <div className='navList'>
+            <div onClick={handleOpen}><i className="fa-solid fa-user"></i>{cookie.displayName}<AiFillCaretDown size={10}></AiFillCaretDown></div>
+            {open ? (<ul>
+              <li><NavLink to="/Profile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
+              <li><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
+              <li ><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></li></ul>) : null}
+          </div>
+        </div>
+      </div>
+    </header >
   );
 };
 
