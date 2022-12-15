@@ -28,6 +28,15 @@ export class UserService {
     return user
   }
 
+  async getUserById(id: number) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id
+      }
+    })
+    return user
+  }
+
   async pendingFriend(dto: UserDto) {
     const friends = await this.prisma.friends.findMany({
       where: {
@@ -35,6 +44,18 @@ export class UserService {
         friend_id: dto.id,
       }
     })
+    return friends
+  }
+
+  async friendsList(dto: UserDto) {
+    const friends = await this.prisma.friends.findMany({
+      where: {
+        status: "accepted",
+        friend_id: dto.id,
+        user_id: dto.id
+      }
+    })
+
     return friends
   }
 

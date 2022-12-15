@@ -61,6 +61,12 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Get('friendsList')
+  friendsList(@GetUser() user: UserDto) {
+    return this.userService.friendsList(user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get('socketId')
   getSocketId(@GetUser() user: UserDto) {
     return user.socketId;

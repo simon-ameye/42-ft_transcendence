@@ -28,17 +28,18 @@ const Friends = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [cookie] = useCookies(['displayName']);
   const [receivedFriendRequest, setReceivedFriendRequest] = useState<FriendRequest[]>([]);
+  const [friends, setFriends] = useState<User[]>([])
 
   const sendFriendRequest = (receiverId: number, socketId: string) => {
     socket.emit("add friend", receiverId, socketId);
   }
 
-  const acceptFriendRequest = (requestId: number) => {
-    socket.emit("accept friend", requestId);
+  const acceptFriendRequest = (relation: FriendRequest) => {
+    socket.emit("accept friend", relation);
   }
 
-  const denyFriendRequest = (requestId: number) => {
-    socket.emit("deny friend", requestId);
+  const denyFriendRequest = (relation: FriendRequest) => {
+    socket.emit("deny friend", relation);
   }
 
   const userList = users.map((c, i) => (
@@ -52,20 +53,34 @@ const Friends = () => {
   const receivedList = receivedFriendRequest.map((c, i) => (
     <ListItem key={i}> {
       <div className='accept | deny'>
-        <button onClick={event => acceptFriendRequest(c.id)}> accept </button>
-        <button onClick={event => denyFriendRequest(c.id)}> deny  </button>
+        <button onClick={event => acceptFriendRequest(c)}> accept </button>
+        <button onClick={event => denyFriendRequest(c)}> deny  </button>
       </div>
     }
       {c.user_id}
     </ListItem >
   ))
 
-  // use effects
+  const friendList = friends.map((c, i) => (
+    <ListItem key={i}>
+      {c.displayName}
+    </ListItem >
+  ))
 
   useEffect(() => {
     axios.get('http://localhost:3001/user/users')
       .then(res => {
         setUsers(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }, []);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/user/friendsList')
+      .then(res => {
+        setFriends(res.data);
       })
       .catch(err => {
         console.log(err);
@@ -87,14 +102,21 @@ const Friends = () => {
     return () => {
       socket.off("receive invitation", receiveFriendRequest);
     }
-  });
+  }, []);
 
-  // listeners
+  useEffect(() => {
+    socket.on("accept friend", acceptedFriendRequest);
+    return () => {
+      socket.off("accept friend", receiveFriendRequest);
+    }
+  }, []);
 
+  const acceptedFriendRequest = (request: User) => {
+    setFriends(friends.concat(request))
+  }
   const receiveFriendRequest = (request: FriendRequest) => {
-    if (request == null)
-      console.log("nulll");
-    setReceivedFriendRequest([...receivedFriendRequest, request])
+    console.log("received request")
+    setReceivedFriendRequest(receivedFriendRequest.concat(request))
   }
 
   return (
@@ -105,6 +127,10 @@ const Friends = () => {
       <div>
         <h1>friend requests</h1>
         {receivedList}
+      </div>
+      <div>
+        <h1>friends</h1>
+        {friendList}
       </div>
     </div>
   )

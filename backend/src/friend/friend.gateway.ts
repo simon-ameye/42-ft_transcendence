@@ -2,7 +2,7 @@ import { OnModuleInit, Session, UseGuards } from "@nestjs/common";
 import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from 'socket.io';
 import { UserDto } from "src/user/dto";
-import { User } from "@prisma/client";
+import { Friends, User } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { FriendService } from "./friend.service";
 import { Logger } from '@nestjs/common';
@@ -38,12 +38,22 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
   }
 
   @SubscribeMessage('add friend')
-  async handleFriendRequest(client: Socket, receiverId: number, receiverSocketId: string) {
-    console.log("friend request");
+  async handleFriendRequest(client: Socket, receiverId: number) {
+    console.log(receiverId[1])
     const sender = await this.userService.getUserBySid(client.id);
-    const receiver = await this.userService.getUserBySid(receiverSocketId); // find it by id not by socketID is safer
-    let friendShip = this.friendService.addFriend(sender.id, receiver.id);
-    this.server.to(receiverSocketId).emit("receiveFriendRequest", friendShip);
+    let friendShip = this.friendService.addFriend(sender.id, receiverId[0]);
+    if (friendShip != null)
+      this.server.to(receiverId[1]).emit("receive invitation", friendShip);
+  }
+
+  @SubscribeMessage('accept friend')
+  async handleAccept(client: Socket, relation: Friends) {
+    console.log("accept friend");
+    let friendShip = this.friendService.acceptFriendRequest(relation.id);
+    let friendUser = await this.userService.getUserById(relation.user_id);
+    let user = await this.userService.getUserById(relation.friend_id);
+    this.server.to([friendUser.socketId]).emit("accept friend", user);
+    this.server.to([user.socketId]).emit("accept friend", friendUser);
   }
 
   async handleDisconnect(client: Socket) {
