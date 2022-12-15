@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { GameConfig } from "../interface/gameConfig";
-import { ObjectSize, Position } from "../interface/position";
+import { GameConfig } from "../../interfaces/gameConfig";
+import { ObjectSize, Position } from "../../interfaces/position";
 import "./style.scss"
 
 const LINE_WIDTH = 1;
@@ -12,8 +12,7 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 	const [mode, setMode] = useState("Player vs Player")
 
 	const canvas = useRef<HTMLCanvasElement>(null);
-
-	const { canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize, p2PosY, p1PosY } = props.config;
+	const { ballSize, bgColor, fgColor, paddleOffset, paddleSize, p2PosY, p1PosY } = props.config;
 
 	const drawRect = (context: CanvasRenderingContext2D, pos: Position, size: ObjectSize, color: string) => {
 		context.fillStyle = color;
@@ -22,18 +21,18 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 
 	const drawAll = useCallback((context: CanvasRenderingContext2D) => {
 		// Background
-		drawRect(context, { x: 0, y: 0 }, { x: canvasSize.x, y: canvasSize.y }, bgColor);
+		drawRect(context, { x: 0, y: 0 }, { x: props.config.canvasSize.x, y: props.config.canvasSize.y }, bgColor);
 
 		// Line
 		drawRect(
 			context,
 			{
-				x: canvasSize.x / 2 + LINE_WIDTH / 2,
+				x: props.config.canvasSize.x / 2 + LINE_WIDTH / 2,
 				y: LINE_OFFSET
 			},
 			{
 				x: LINE_WIDTH,
-				y: canvasSize.y - LINE_OFFSET * 2
+				y: props.config.canvasSize.y - LINE_OFFSET * 2
 			},
 			fgColor
 		);
@@ -42,20 +41,21 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 		drawRect(context, { x: paddleOffset, y: props.config.p1PosY }, paddleSize, fgColor);
 
 		// P2
-		drawRect(context, { x: canvasSize.x - paddleOffset * 2, y: props.config.p2PosY }, paddleSize, fgColor);
+		drawRect(context, { x: props.config.canvasSize.x - paddleOffset * 2, y: props.config.p2PosY }, paddleSize, fgColor);
 
 		// Ball
 		drawRect(context, props.ball, ballSize, fgColor);
 
-	}, [props.ball, p1PosY, p2PosY, canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize])
+	}, [props.ball, p1PosY, p2PosY, props.config.canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize])
 
 	useEffect(() => {
 		const canvasCurrentRef = canvas.current
-		if (!canvasCurrentRef) return;
+		if (!canvasCurrentRef)
+			return;
 
 		const context = canvasCurrentRef.getContext('2d');
-		if (!context) return;
-
+		if (!context)
+			return;
 		drawAll(context);
 
 	}, [canvas, drawAll])
@@ -68,7 +68,7 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 			props.config.p2PosY = props.config.canvasSize.y
 		}
 	}
-	if (props.config.players == 1)
+	if (props.config.players === 1)
 		botMovements()
 
 	const resetGame = () => {
@@ -94,16 +94,16 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
 	props.config.fgColor = compColor;
 	return (
 		<>
-			<div className='gameMode' style={{ width: window.innerWidth / 2 }}>
+			<div className='gameMode' style={{ width: props.config.canvasSize.x }}>
 				<label>Change mode :</label>
 				<button onClick={changeMode}>{mode}</button>
 			</div>
-			<div className="score" style={{ width: canvasSize.x }}>
+			<div className="score" style={{ width: props.config.canvasSize.x }}>
 				<h1 className="score-1">{props.config.scoreP1}</h1>
 				<h1 className="score-p2">{props.config.scoreP2}</h1>
 			</div>
-			<canvas width={canvasSize.x} height={canvasSize.y} ref={canvas} />
-			<div className="color" style={{ width: canvasSize.x }}>
+			<canvas width={props.config.canvasSize.x} height={props.config.canvasSize.y} ref={canvas} />
+			<div className="color" style={{ width: props.config.canvasSize.x }}>
 				<div className="background-color">
 					<label>background color :</label>
 					<input type="color" value={backColor} onChange={e => setBackColor(e.target.value)} />

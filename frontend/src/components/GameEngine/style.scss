@@ -1,0 +1,20 @@
+@import '../../styles/settings';
+
+.winner-page {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.reset-btn {
+	@include btn-anim
+}
+
+.reset-btn:hover {
+	@include btn-anim-hover
+}
+
+.reset-btn:active {
+	@include btn-anim-active
+}

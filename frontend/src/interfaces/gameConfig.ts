@@ -4,8 +4,8 @@ import { ObjectSize } from './position';
 export interface GameConfig {
 	paddleSize: ObjectSize,
 	paddleOffset: number,
-	canvasSize: ObjectSize,
 	ballSize: ObjectSize,
+	canvasSize:ObjectSize,
 	scoreP1: number,
 	scoreP2: number,
 	p1PosY: number,
