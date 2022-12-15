@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { table } from 'console';
 import { userInfo } from 'os';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
@@ -42,21 +44,23 @@ export class UserService {
       where: {
         status: "pending",
         friend_id: dto.id,
+      },
+      include: {
+        user: true,
       }
     })
     return friends
   }
 
   async friendsList(dto: UserDto) {
-    const friends = await this.prisma.friends.findMany({
+    // unique friend is private_google for tests
+    const users = await this.prisma.friends.findMany({
       where: {
-        status: "accepted",
-        friend_id: dto.id,
-        user_id: dto.id
+
       }
     })
 
-    return friends
+    return users
   }
 
   async modifyName(dto: UserDto, modif: string) {

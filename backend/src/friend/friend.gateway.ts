@@ -21,13 +21,11 @@ import { UserService } from "src/user/user.service";
 export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatewayConnection {
   constructor(private friendService: FriendService, private userService: UserService) { }
 
-  // friend service
   @WebSocketServer()
   server: Server;
   private logger: Logger = new Logger('FriendGateway');
 
   handleConnection(client: Socket, ...args: any[]) {
-    /// put boolean on online
     this.logger.log(`Client connected: ${client.id}`);
   }
 
@@ -39,9 +37,8 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
 
   @SubscribeMessage('add friend')
   async handleFriendRequest(client: Socket, receiverId: number) {
-    console.log(receiverId[1])
     const sender = await this.userService.getUserBySid(client.id);
-    let friendShip = this.friendService.addFriend(sender.id, receiverId[0]);
+    let friendShip = await this.friendService.addFriend(sender.id, receiverId[0]);
     if (friendShip != null)
       this.server.to(receiverId[1]).emit("receive invitation", friendShip);
   }
@@ -56,8 +53,15 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
     this.server.to([user.socketId]).emit("accept friend", friendUser);
   }
 
+  /// needs modif to be good with sockets
+  @SubscribeMessage('deny friend')
+  async handleDeny(client: Socket, relation: Friends) {
+    let friendShip = this.friendService.denyFriendRequest(relation.id);
+    let friendUser = await this.userService.getUserById(relation.user_id);
+    this.server.to([friendUser.socketId]).emit("deny friend");
+  }
+
   async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
-    /// put boolean on offline
   }
 }

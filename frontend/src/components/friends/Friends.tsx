@@ -6,6 +6,8 @@ import { ListItem } from '@mui/material'
 import io, { Socket } from 'socket.io-client';
 import { useCookies } from 'react-cookie';
 import { socket } from '../../App';
+import { request } from 'http';
+import User from '../User';
 
 type User = {
   email: string;
@@ -20,6 +22,8 @@ type FriendRequest = {
   user_id: number;
   friend_id: number;
   status: string;
+  user: User;
+  friend: User;
 }
 
 /// needs another component to listen on invit in all app
@@ -57,11 +61,12 @@ const Friends = () => {
         <button onClick={event => denyFriendRequest(c)}> deny  </button>
       </div>
     }
-      {c.user_id}
+      {c.user.displayName}
     </ListItem >
   ))
 
   const friendList = friends.map((c, i) => (
+    // friend component
     <ListItem key={i}>
       {c.displayName}
     </ListItem >
@@ -107,16 +112,28 @@ const Friends = () => {
   useEffect(() => {
     socket.on("accept friend", acceptedFriendRequest);
     return () => {
-      socket.off("accept friend", receiveFriendRequest);
+      socket.off("accept friend", acceptedFriendRequest);
     }
   }, []);
 
-  const acceptedFriendRequest = (request: User) => {
-    setFriends(friends.concat(request))
+  useEffect(() => {
+    socket.on("deny friend", deniedFriendRequest);
+    return () => {
+      socket.off("deny friend", deniedFriendRequest);
+    }
+  }, []);
+
+  const deniedFriendRequest = (request: User) => {
+    //setReceivedFriendRequest(receivedFriendRequest.concat())
   }
+
+  const acceptedFriendRequest = (request: User) => {
+    setFriends(friends => [...friends, request])
+  }
+
   const receiveFriendRequest = (request: FriendRequest) => {
-    console.log("received request")
-    setReceivedFriendRequest(receivedFriendRequest.concat(request))
+    console.log("received")
+    setReceivedFriendRequest(receivedFriendRequest => [...receivedFriendRequest, request])
   }
 
   return (
