@@ -1,3 +1,8 @@
+import { Typography, Box } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Default from '../../layouts/Default';
 import './style.scss'
@@ -5,6 +10,35 @@ import './style.scss'
 const Home = () => {
 
 	const [cookie] = useCookies(['displayName']);
+	const [RowData, setRowData] = useState([]);
+
+	
+
+	const columns: GridColDef[] = [{
+		field: "id",
+		headerName: "ID",
+		width: 170
+	},
+	{
+		field: "name",
+		headerName: "name",
+		width: 170
+	},
+	{
+		field: "victories",
+		headerName: "victories",
+		width: 170
+	}]
+
+	useEffect(() => {
+		axios.get("http://localhost:3001/leaderboard/getLeaderBoard").then((res) => {
+			console.log(res);
+			setRowData(res.data)
+			console.log(RowData)
+		}).catch((error) => {
+			console.log(error);
+		})
+	}, [])
 
 	return (
 		<Default>
@@ -15,7 +49,30 @@ const Home = () => {
 				</p>
 			</div>
 			<div>
+				<br></br>
 				<h1> Hello {cookie.displayName}!</h1>
+				<div className='test'>
+					<Box
+						sx={{
+							height:200,
+							width:550,
+						}}
+						>
+						<Typography
+						variant='h5'
+						component='h5'
+						sx={{
+							textAlign:'center', 
+							mt:2, 
+							mb:2,
+							overflow: 'none'
+						}}
+					>
+						Leaderboard
+						</Typography>
+					<DataGrid rows={RowData} columns={columns}/>
+				</Box>
+				</div>
 			</div>
 		</Default>
 	);

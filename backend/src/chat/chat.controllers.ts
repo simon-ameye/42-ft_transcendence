@@ -128,13 +128,13 @@ export class ChatController {
     return { channelsInterfaces: channelsInterfaces };
   }
 
-//  @UseGuards(AuthGuard('jwt'))
-//  @Get('getUserChannelTable')
-//  async getUserChannelTable(@GetUser() user: UserDto) {
-//    let { ids, names, isPrivates } = await this.chatService.getUserChannelTable(user.id);
-//    console.log(ids, names, isPrivates);
-//    return { ids: ids, names: names, isPrivates: isPrivates };
-//  }
+  //  @UseGuards(AuthGuard('jwt'))
+  //  @Get('getUserChannelTable')
+  //  async getUserChannelTable(@GetUser() user: UserDto) {
+  //    let { ids, names, isPrivates } = await this.chatService.getUserChannelTable(user.id);
+  //    console.log(ids, names, isPrivates);
+  //    return { ids: ids, names: names, isPrivates: isPrivates };
+  //  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('getUserFriendTable')
