@@ -11,10 +11,14 @@ CREATE TABLE "users" (
     "displayName" TEXT NOT NULL,
     "imageUrl" TEXT,
     "googleSecret" TEXT,
+    "qrcode" TEXT,
     "socketId" TEXT,
     "blockedUserIds" INTEGER[],
     "friends" INTEGER[],
     "inGame" BOOLEAN NOT NULL DEFAULT false,
+    "score" INTEGER NOT NULL DEFAULT 0,
+    "gameId" INTEGER,
+    "side" INTEGER NOT NULL,
     "victories" INTEGER NOT NULL DEFAULT 0,
     "log" BOOLEAN NOT NULL DEFAULT true,
 
@@ -54,16 +58,9 @@ CREATE TABLE "Matching" (
 );
 
 -- CreateTable
-CREATE TABLE "Player" (
-    "userId" INTEGER NOT NULL,
-    "displayName" TEXT NOT NULL,
-    "score" INTEGER NOT NULL DEFAULT 0,
-    "gameId" INTEGER
-);
-
--- CreateTable
 CREATE TABLE "Game" (
     "id" SERIAL NOT NULL,
+    "players" INTEGER[],
 
     CONSTRAINT "Game_pkey" PRIMARY KEY ("id")
 );
@@ -80,11 +77,5 @@ CREATE UNIQUE INDEX "users_socketId_key" ON "users"("socketId");
 -- CreateIndex
 CREATE UNIQUE INDEX "Matching_userId_key" ON "Matching"("userId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Player_userId_key" ON "Player"("userId");
-
 -- AddForeignKey
 ALTER TABLE "Matching" ADD CONSTRAINT "Matching_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Player" ADD CONSTRAINT "Player_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "Game"("id") ON DELETE SET NULL ON UPDATE CASCADE;

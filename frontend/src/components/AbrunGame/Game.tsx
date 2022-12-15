@@ -101,6 +101,13 @@ export default function GameHome() {
 		}
 	});
 
+	useEffect(() => {
+		socket.on("game over", gameOverListener);
+		return () => {
+			socket.off("game over", gameOverListener);
+		}
+	});
+
 	// LISTENER \\
 
 	const joinMatchingQueueListener = (displayName: string) => {
@@ -125,6 +132,15 @@ export default function GameHome() {
 
 	const gameAutoListener = () => {
 		navigate('/game/live');
+	}
+
+	const	gameOverListener = (versus: string) => {
+		let index = gameList.indexOf(versus);
+		if (index >= 0)
+			gameList.splice(index, 1);
+		else
+			console.log(versus);
+		setGameList([...gameList]);
 	}
 
 	function MissedGoal() {

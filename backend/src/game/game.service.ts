@@ -24,12 +24,23 @@ export class GameService {
 		const len = games.length;
 		let versus: string[] = new Array(len);
 		for (let i = 0; i < len; ++i) {
-			let players = await this.prismaService.player.findMany({
+			let users = await this.prismaService.user.findMany({
 				where: {
-					gameId: games[i].id
+					gameId: games[i].id,
+				},
+				select: {
+					displayName: true,
+					side: true
 				}
 			});
-			versus[i] = this.getStrGame(players);
+			var names: string[];
+			if (users[0].side == 0) {
+				names = [users[0].displayName, users[1].displayName];
+			}
+			else {
+				names = [users[1].displayName, users[0].displayName];
+			}
+			versus[i] = this.getStrGame(names);
 		}
 		return (versus);
 	}
@@ -53,42 +64,61 @@ export class GameService {
 	}
 
 	async startGame(oppenents: OppenentsInterface): Promise<string> {
-		const	updated = await this.prismaService.user.updateMany({
+		const playerOne = await this.prismaService.user.update({
 			where: {
-				OR: [{ socketId: oppenents.one }, { socketId: oppenents.two }],
+				socketId: oppenents.one
 			},
 			data: {
-				inGame: true
+				inGame: true,
+				side: 0,
+				score: 0
 			}
 		});
-		const	players = await this.prismaService.user.findMany({
+		const playerTwo = await this.prismaService.user.update({
 			where: {
-				OR: [{ socketId: oppenents.one }, { socketId: oppenents.two }],
+				socketId: oppenents.two
 			},
+			data: {
+				inGame: true,
+				side: 1,
+				score: 0,
+			}
 		});
 		const deleteUsers = await this.prismaService.matching.deleteMany({
 			where: {
-				OR: [{ userId: players[0].id }, { userId: players[1].id }],
+				OR: [{ userId: playerOne.id }, { userId: playerTwo.id }],
 			},
 		});
-		const game = await this.prismaService.game.create({
+		var game = await this.prismaService.game.create({data: {}});
+		game = await this.prismaService.game.update({
+			where: {
+				id: game.id
+			},
 			data: {
 				players: {
-					create: [
-						{ userId: players[0].id, displayName: players[0].displayName, side: 0 },
-						{ userId: players[1].id, displayName: players[1].displayName, side: 1 }
+					push: [
+						playerOne.id,
+						playerTwo.id
 					]
 				}
+			}
+		});
+		const updatedUsers = await this.prismaService.user.updateMany({
+			where: {
+				OR: [{ id: playerOne.id }, { id: playerTwo.id}]
+			},
+			data: {
+				gameId: game.id
 			}
 		});
 		const gameRoom = "game".concat(String(game.id));
 		return (gameRoom);
 	}
 
-	async	updateScore(userId: number, n: number): Promise<string> {
-		const	player = await this.prismaService.player.update({
+	async	updateScoreBySId(SId: string, n: number): Promise<string> {
+		const	player = await this.prismaService.user.update({
 			where: {
-				userId,
+				socketId: SId,
 			},
 			data: {
 				score: {
@@ -109,9 +139,31 @@ export class GameService {
 		return ({game});
 	}
 
-	getStrGame(players: PlayerInterface[]): string {
-		let strGame = players[0].displayName.concat(" vs ");
-		strGame = strGame.concat(players[1].displayName);
+	getStrGame(usernames: string[]): string {
+		let strGame = usernames[0].concat(" vs ");
+		strGame = strGame.concat(usernames[1]);
+		return (strGame);
+	}
+
+	async	getStrGameByGameId(gameId: number): Promise<string> {
+		const	users = await this.prismaService.user.findMany({
+			where: {
+				gameId
+			},
+			select: {
+				displayName: true,
+				side: true
+			}
+		});
+		var	strGame;
+		if (users[0].side == 0) {
+			strGame = users[0].displayName.concat(" vs ");
+			strGame = strGame.concat(users[1].displayName);
+		}
+		else {
+			strGame = users[1].displayName.concat(" vs ");
+			strGame = strGame.concat(users[0].displayName);
+		}
 		return (strGame);
 	}
 
@@ -119,14 +171,15 @@ export class GameService {
 		const users = await this.prismaService.user.findMany({
 			where: {
 				OR: [{ socketId: socketIds[0] }, { socketId: socketIds[1] }],
+			},
+			select: {
+				id: true,
+				displayName: true,
+				score: true,
+				gameId: true
 			}
 		});
-		const	players = await this.prismaService.player.findMany({
-			where: {
-				OR: [{ userId: users[0].id }, { userId: users[1].id }]
-			}
-		});
-		return (players);
+		return (users);
 	}
 
 	async isPlayingBySId(SId: string): Promise<boolean> {
@@ -147,45 +200,52 @@ export class GameService {
 				socketId: SId
 			}
 		});
-		const player = await this.prismaService.player.findUnique({
-			where: {
-				userId: user.id
-			}
-		});
 		const game = await this.prismaService.game.findUnique({
 			where: {
-				id: player.gameId
+				id: user.gameId
 			},
 			select: {
-				players: true
+				id: true
 			}
 		});
-		return (game.players);
+		const	players = await this.prismaService.user.findMany({
+			where: {
+				gameId: game.id
+			},
+			select: {
+				id: true,
+				displayName: true,
+				score: true,
+				gameId: true
+			}
+		});
+		return (players);
 	}
 
 	async	isWinner(gameRoom: string): Promise<CheckWinnerInterface> {
-		const gameId: number = Number(gameRoom[4]);
-		const players = await this.prismaService.player.findMany({
+		const	splitter = gameRoom.split("game");
+		const gameId: number = Number(splitter[1]);
+		const players = await this.prismaService.user.findMany({
 			where: {
 				gameId
+			},
+			select: {
+				id: true,
+				displayName: true,
+				score: true,
+				gameId: true,
 			}
 		});
 		for (let i = 0; i < 2; ++i) {
-			console.log(players[i]);
 			if (players[i].score > 6) {
-				await this.addVictory(players[i].userId);
-				return ({gameId: gameId, winnerId: players[i].userId});
+				await this.addVictory(players[i].id);
+				return ({gameId: gameId, winnerId: players[i].id});
 			}
 		}
 		return ({gameId: 0, winnerId: 0});
 	}
 
-	async	deleteGameAndPlayers(gameId: number): Promise<void> {
-		const deletePlayers = await this.prismaService.player.deleteMany({
-			where: {
-				gameId
-			}
-		});
+	async	deleteGame(gameId: number): Promise<void> {
 		const deleteGame = await this.prismaService.game.deleteMany({
 			where: {
 				id: gameId
@@ -194,13 +254,13 @@ export class GameService {
 	}
 
 	async	addVictory(id: number): Promise<void> {
-		const updatedUser = this.prismaService.user.update({
+		const updatedUser = await this.prismaService.user.update({
 			where: {
 				id
 			},
 			data: {
 				victories: {
-					increment: 1
+					increment: +1
 				}
 			}
 		});

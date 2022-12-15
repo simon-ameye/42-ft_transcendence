@@ -87,14 +87,16 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
 	@SubscribeMessage('add point')
 		async addPoint(client, player: PlayerInterface): Promise<void> {
-			const gameRoom = await this.gameService.updateScore(player.userId, +1);
+			const gameRoom = await this.gameService.updateScoreBySId(client.id, +1);
 			player.score += 1;
 			this.server.to(gameRoom).emit('update score', player);
 			const data: CheckWinnerInterface = await this.gameService.isWinner(gameRoom);
 			if (data.gameId) {
-				this.gameService.deleteGameAndPlayers(data.gameId);
+				const	versus = await this.gameService.getStrGameByGameId(data.gameId);
+				this.gameService.deleteGame(data.gameId);
 				this.gameService.addVictory(data.winnerId);
 				this.server.to(gameRoom).emit('game finished', data.winnerId);
+				this.server.emit('game over', versus);
 			}
 			else
 				this.kickoff(gameRoom);
