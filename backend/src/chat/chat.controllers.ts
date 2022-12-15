@@ -31,6 +31,13 @@ export class ChatController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Post('addUserToChannel')
+  addUserToChannel(@Body() body: { channelId: number, otherUserId: number },
+    @GetUser() user: UserDto) {
+    return (this.chatService.addUserToChannel(user.id, Number(body.channelId), Number(body.otherUserId)));
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Post('joinChannel')
   joinChannel(@Body() body: { channelId: number, password: string },
     @GetUser() user: UserDto) {
@@ -134,6 +141,13 @@ export class ChatController {
   async getUserFriendTable(@GetUser() user: UserDto) {
     let { friendsInterfaces } = await this.chatService.getUserFriendTable(user.id);
     return { friendsInterfaces: friendsInterfaces };
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('getUserTable')
+  async getUserTable(@GetUser() user: UserDto) {
+    let { usersInterfaces } = await this.chatService.getUserTable(user.id);
+    return { usersInterfaces: usersInterfaces };
   }
 
   @UseGuards(AuthGuard('jwt'))

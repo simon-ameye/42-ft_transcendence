@@ -5,10 +5,12 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
 	ChatModule,
+  ProfileModule,
 	AuthModule,
     UserModule,
     ConfigModule.forRoot({

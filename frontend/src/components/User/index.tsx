@@ -43,25 +43,24 @@ const User = () => {
 			.catch(err => console.log(err))
 	}
 
-	const updateUserSocket = () => {
-		axios.put('http://localhost:3001/user/modifySocketId', {
-			socketId: socket.id
-		})
-			.then(res => navigate('/auth'))
-			.catch(err => console.log(err));
-	}
+  const updateUserSocket = () => {
+    axios.put('http://localhost:3001/user/modifySocketId', {
+      socketId: socket.id
+    })
+      .then(res => navigate('/auth'))
+      .catch(err => console.log(err));
+  }
 
-	const handleLogin = () => {
-		console.log('handle login');
-		window.location.href = 'http://localhost:3001/auth/42api/login';
-	}
+  const handleLogin = () => {
+    window.location.href = 'http://localhost:3001/auth/42api/login';
+  }
 
-	const getSocketId = () => {
-		axios.get('http://localhost:3001/user/socketId', {
-		})
-			.then(res => console.log(res))
-			.catch(err => console.log(err));
-	}
+  const getSocketId = () => {
+    axios.get('http://localhost:3001/user/socketId', {
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  }
 
 	const	logOut = () => {
 		axios.delete('http://localhost:3001/auth/logout')

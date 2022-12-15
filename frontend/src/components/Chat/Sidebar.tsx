@@ -1,15 +1,16 @@
 import PublicList from "./Sidebar/PublicList";
 import FriendList from "./Sidebar/FriendList"
 import ChannelInterface from "./Interface/ChannelInterface";
-import UserList from "./UserList";
+import ChannelUserList from "./ChannelUserList";
+import UserList from "./Sidebar/UserList";
 
 const Sidebar = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
   return (
-    <div>
+    <>
+      <ChannelUserList actualChannelInterface={actualChannelInterface} />
       <PublicList />
-      <FriendList />
       <UserList actualChannelInterface={actualChannelInterface} />
-    </div>
+    </>
   )
 }
 export default Sidebar;

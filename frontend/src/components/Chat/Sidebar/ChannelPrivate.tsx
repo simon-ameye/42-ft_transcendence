@@ -6,16 +6,11 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  InputAdornment,
-  IconButton
 } from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { RiChatPrivateFill } from "react-icons/ri";
 import axios from 'axios';
-import { RiChat3Fill } from 'react-icons/ri';
-import './channel.scss'
 
-const Channel = () => {
+const ChannelPrivate = () => {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState({
     name: '',
@@ -25,12 +20,6 @@ const Channel = () => {
   const handleClickOpen = () => {
     setOpen(true);
   }
-  const handleVisibility = () => {
-    setValues({
-      ...values,
-      showpass: !values.showpass,
-    });
-  };
   const handleClose = () => {
     setValues({
       name: '',
@@ -40,28 +29,28 @@ const Channel = () => {
     setOpen(false)
   }
 
-  const handleCreateChannel = () => {
+  const handleCreatePrivateChannel = () => {
     axios.post('http://localhost:3001/chat/createChannel', {
       name: values.name,
-      mode: 'PUBLIC',
-      password: values.password,
+      mode: 'PRIVATE',
+      password: "",
       otherUserId: '',
     }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch(err => console.log(err));
   }
   const handleSubmit = () => {
     handleClose()
-    handleCreateChannel()
+    handleCreatePrivateChannel()
   }
 
   return (
-    <div className='buttonl'>
-      <RiChat3Fill size="30" onClick={handleClickOpen} >
-      </RiChat3Fill>
+    <div className='button'>
+      <RiChatPrivateFill size="30" onClick={handleClickOpen} >
+      </RiChatPrivateFill>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle><span style={{ color: 'black' }}>Create Public Channel</span></DialogTitle>
+        <DialogTitle><span style={{ color: 'black' }}>Create Private Channel</span></DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Enter your channel name, and optionally password
+            Enter your channel name
             <br></br>
           </DialogContentText>
           <TextField
@@ -78,29 +67,6 @@ const Channel = () => {
               setValues({ ...values, name: e.target.value })
             }}
           />
-          <TextField
-            type={values.showpass ? "text" : "password"}
-            label="Password"
-            placeholder="Password"
-            variant="outlined"
-            style={{
-              padding: 10
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleVisibility}
-                    aria-label="toggle password"
-                    edge="end">
-                    {values.showpass ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            onChange={(e: any) => {
-              setValues({ ...values, password: e.target.value })
-            }}
-          />
         </DialogContent>
         <DialogActions>
           <button onClick={handleClose}>Cancel</button>
@@ -110,4 +76,4 @@ const Channel = () => {
     </div>
   )
 }
-export default Channel;
+export default ChannelPrivate;

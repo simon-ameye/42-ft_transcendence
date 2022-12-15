@@ -33,7 +33,7 @@ export class ChannelService {
     channelInterface.isProtected = (await channel).password != '';
     if ((await channel).mode == ChannelMode.DIRECT) {
       try{
-        channelInterface.name = "# " +
+        channelInterface.name =
           (await this.prisma.user.findUnique({ where: { id: (await channel).userIds[0] } })).displayName
           + " & " +
           (await this.prisma.user.findUnique({ where: { id: (await channel).userIds[1] } })).displayName;
@@ -41,7 +41,6 @@ export class ChannelService {
       catch{
         channelInterface.name = "error while generating name";
       }
-
     }
     else
       channelInterface.name = (await channel).name;
@@ -61,7 +60,7 @@ export class ChannelService {
         };
         messageInterface.message = ((await message).text);
         messageInterface.author = ((await author).displayName);
-        messageInterface.date = ((await message).date.toLocaleString());
+        messageInterface.date = ((await message).date.toLocaleString('fr-FH', { timeZone: "CET" }));
         //channelInterface.messages .push((await message) .text);
         //channelInterface.authors  .push((await author)  .displayName);
         //channelInterface.dates    .push((await message) .date.toLocaleString());

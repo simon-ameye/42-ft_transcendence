@@ -4,6 +4,7 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { ChannelMode, User } from ".prisma/client";
 import { ChannelsInterface } from "./interfaces/channels.interface";
 import { FriendsInterface } from "./interfaces/friends.interface";
+import { UserInterface } from "./interfaces/user.interface";
 import * as argon from 'argon2'
 
 @Injectable()
@@ -31,6 +32,9 @@ export class ChatService {
       var otherUser = this.prisma.user.findUnique({ where: { id: otherUserId } });
       if (!await otherUser)
         return ('Mode is DIRECT but otherUser is not found');
+
+      if (!(await newowner).friends.includes(otherUserId))
+        return ('This user is not your friend. Cant create DIRECT channel !');
 
       var directChannelsWithSameUsers = this.prisma.channel.findMany({
         where: {
@@ -96,7 +100,7 @@ export class ChatService {
       password);
 
     if (!pwMatch)
-      return ('Wong password');
+      return ('Wrong password');
 
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
@@ -312,6 +316,9 @@ export class ChatService {
     if (!(await channel).userIds.includes(banedId))
       return ('This user is not on this channel')
 
+    if ((await channel).ownerId == banedId)
+      return ('You can not ban the owner of the channel')
+
     const channelUpdate = await this.prisma.channel.update({
       where: { id: channelId, },
       data: {
@@ -344,6 +351,9 @@ export class ChatService {
 
     if (!(await channel).userIds.includes(muteId))
       return ('This user is not on this channel')
+
+    if ((await channel).ownerId == muteId)
+      return ('You can not mute the owner of this channel')
 
     var muteRelease = new Date();
     muteRelease.setMinutes(muteRelease.getMinutes() + minutes);
@@ -383,5 +393,48 @@ export class ChatService {
       friendsInterfaces.push(friendInterface);
     }
     return { friendsInterfaces };
+  }
+
+  async getUserTable(userId: number) { //MAYBE NEEDS PROTECTION !
+    var usersInterfaces: UserInterface[] = [];
+    //var user: User;
+
+    var users = await this.prisma.user.findMany();
+    for (let user of users) {
+      usersInterfaces.push({ id: user.id, name: user.displayName })
+    }
+    return { usersInterfaces };
+  }
+
+  async addUserToChannel(userId: number, channelId: number, otherUserId: number) {
+
+    var user = this.prisma.user.findUnique({ where: { id: userId } });
+    if (!await user)
+      return ('User not found');
+
+    var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel)
+      return ('Channel not found');
+
+    var otherUser = this.prisma.user.findUnique({ where: { id: otherUserId } });
+    if (!await otherUser)
+      return ('Other user not found');
+
+    if (!(await channel).adminIds.includes(userId))
+      return ('You are not admin of this channel')
+
+    if ((await channel).userIds.includes(otherUserId))
+      return ('This user is already registered to this channel');
+
+    if ((await channel).banedUserIds.includes(otherUserId))
+      return ('This user is baned from this channel');
+
+    const channelUpdate = await this.prisma.channel.update({
+      where: { id: channelId, },
+      data: { userIds: { push: otherUserId, }, },
+    })
+
+    this.eventEmitter.emit('flushAllChannels');
+    return ('User added to channel');
   }
 }

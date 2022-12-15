@@ -36,27 +36,42 @@ const ChannelSetting = ({ actualChannelInterface }: { actualChannelInterface: Ch
     });
   };
   const handleLeaveChannel= async () => {
+    if (actualChannelInterface === undefined)
+    {
+      alert('Incomplete demand');
+      return;
+    }
     if (actualChannelInterface?.id)
       axios.post('http://localhost:3001/chat/leaveChannel', {
         channelId: actualChannelInterface.id,
-      }).then(res => alert(res.data)).catch(err => alert(err))
+      }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
     handleClose();
   }
-
-  const handleRemovePass = () => { 
-    handleClose();
-  }
-
   const handleClose = () => {
     setOpen(false)
   }
 
   const handleNewpass = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
     if (actualChannelInterface)
     axios.post('http://localhost:3001/chat/setChannelPassword', {
       channelId: actualChannelInterface.id,
       newPassword: values.newpassword,
-    }).then(res => alert(res.data)).catch(err => alert(err))
+    }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
+  }
+  const handleRemovepass = () => {
+    if (actualChannelInterface === undefined) {
+      alert('Incomplete demand');
+      return;
+    }
+    if (actualChannelInterface)
+      axios.post('http://localhost:3001/chat/setChannelPassword', {
+        channelId: actualChannelInterface.id,
+        newPassword: "",
+      }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
 
   const handleSubmit = () => {
@@ -71,8 +86,8 @@ return (
       <DialogTitle><span style={{ color: 'black' }}> Channel Setting</span></DialogTitle>
     <DialogContent>
         <Button onClick={handleLeaveChannel}>Leave Channel</Button>
+        <Button onClick={handleRemovepass}>Remove Password</Button>
         <br></br>
-        <Button onClick={handleRemovePass}>Remove Password</Button>
         <DialogContentText>
           <br></br>
           Change password
