@@ -12,4 +12,10 @@ import { UseInterceptors } from "@nestjs/common";
 export class LeaderboardController {
   constructor(private leaderboardService: LeaderboardService) { }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('getLeaderBoard')
+  async getLeaderBoard(@GetUser() user: UserDto) {
+    //let { friendsInterfaces } = await this.leaderboardService.getLeaderBoard(user.id);
+    //return { friendsInterfaces: friendsInterfaces };
+  }
 }
