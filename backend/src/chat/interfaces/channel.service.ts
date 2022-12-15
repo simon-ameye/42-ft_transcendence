@@ -81,7 +81,7 @@ export class ChannelService {
     for (let channel of channels) {
       let userIds = channel.userIds;
       for (let userId of userIds)
-        channelInterfaces.push(await this.getChannelInterface((await channel).id, userId));
+        channelInterfaces.push(await this.getChannelInterface(channel.id, userId));
     }
     return (channelInterfaces);
   }

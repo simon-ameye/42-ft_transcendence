@@ -7,6 +7,7 @@ import { LeaderboardService } from "./leaderboard.service";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UploadedFile } from "@nestjs/common";
 import { UseInterceptors } from "@nestjs/common";
+import { LeaderBoardInterface } from "./interfaces/leaderboard.interface";
 
 @Controller('leaderboard')
 export class LeaderboardController {
@@ -15,7 +16,7 @@ export class LeaderboardController {
   @UseGuards(AuthGuard('jwt'))
   @Get('getLeaderBoard')
   async getLeaderBoard(@GetUser() user: UserDto) {
-    //let { friendsInterfaces } = await this.leaderboardService.getLeaderBoard(user.id);
-    //return { friendsInterfaces: friendsInterfaces };
+    let { leaderboardInterfaces } = await this.leaderboardService.getLeaderBoard(user.id);
+    return { leaderboardInterfaces };
   }
 }
