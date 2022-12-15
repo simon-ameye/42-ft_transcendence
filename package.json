@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@mui/x-data-grid": "^5.17.14",
-    "react-data-grid": "^7.0.0-beta.20"
-  }
-}
