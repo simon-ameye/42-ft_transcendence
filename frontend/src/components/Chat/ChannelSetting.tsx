@@ -85,9 +85,8 @@ return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle><span style={{ color: 'black' }}> Channel Setting</span></DialogTitle>
     <DialogContent>
-        <Button onClick={handleLeaveChannel}>Leave Channel</Button>
-        <Button onClick={handleRemovepass}>Remove Password</Button>
-        <br></br>
+        <button onClick={handleLeaveChannel}>Leave Channel</button>
+        <button onClick={handleRemovepass}>Remove Password</button>
         <DialogContentText>
           <br></br>
           Change password
@@ -118,7 +117,7 @@ return (
       ></TextField>
     </DialogContent>
     <DialogActions>
-        <button onClick={handleSubmit}>New password</button>
+        <button className='Button' onClick={handleSubmit}>New password</button>
         <button onClick={handleClose}>Cancel</button>
     </DialogActions>
   </Dialog>
