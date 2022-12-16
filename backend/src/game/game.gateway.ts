@@ -132,7 +132,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
-    let newpaddleY: number = (await user).paddleY + 0.05;
+    let newpaddleY: number = (await user).paddleY - 0.05;
     if (newpaddleY > 1)
       newpaddleY = 1;
 
@@ -150,7 +150,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
-    let newpaddleY: number = (await user).paddleY - 0.05;
+    let newpaddleY: number = (await user).paddleY + 0.05;
     if (newpaddleY < 0)
       newpaddleY = 0;
 
@@ -209,51 +209,73 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       ballY: 0.5,
       p1Y: (await p1).paddleY,
       p2Y: (await p2).paddleY,
+      paddleHeight: 0.2,
       p1Name: (await p1).displayName,
       p2Name: (await p2).displayName,
       viewerNames: [],
     };
 
-    let ball_dx: number = 0.0001;
-    let ball_dy: number = 0.0001;
+    let ball_dx: number = 0.015;
+    let ball_dy: number = 0.01;
 
-    let paddle_height = 0.2;
+    //let paddle_height = 0.2;
 
 
     while (1) {
-      console.log('my game is starting');
-      p1 = this.prismaService.user.findUnique({ where: { id: p1Id } })
+
+
+      //console.log('gane room : ', gameRoom);
+      p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
       p2 = this.prismaService.user.findUnique({ where: { id: p2Id } });
+
+      //FOR DEV
+      let user1gameId = (await p1).gameId;
+      let user1games = this.prismaService.game.findMany({ where: { id: user1gameId } });
+      if (!(await user1games).length)
+        return;
+      //FOR DEV
+
       gi.p1Y = (await p1).paddleY;
       gi.p2Y = (await p2).paddleY;
 
       gi.ballX += ball_dx;
       gi.ballY += ball_dy;
 
-      if (gi.ballY >= 1 || gi.ballY <= 0)
+      if (gi.ballY >= 1 || gi.ballY <= 0) {
         ball_dy = -ball_dy
-
-      if (gi.ballX <= 0) {
-        //        if (Math.abs(gi.ballY - gi.p1Y) < paddle_height / 2) {
-        ball_dx = - ball_dx;
-        //        }
-        //        else {
-        //          console.log('player2 wins');
-        //          return;
-        //        }
+        ball_dx *= 1.05;
       }
 
-      if (gi.ballX >= 1) {
-        //        if (Math.abs(gi.ballY - gi.p2Y) < paddle_height / 2) {
-        ball_dx = - ball_dx;
-        //        }
-        //        else {
-        //          console.log('player1 wins');
-        //          return;
+      if (gi.ballX <= 0.0) {
+        if (Math.abs(gi.ballY - gi.p1Y) < gi.paddleHeight / 2) {
+          ball_dx = - ball_dx;
+        }
+        else {
+          console.log('player2 wins');
+          gi.ballX = 0.5;
+          gi.ballY = 0.5;
+          ball_dx = 0.015;
+          ball_dy = 0.01;
+          //return;
+        }
       }
-      await this.delay(1000);
+
+      console.log('gi.ballX   ', gi.ballX);
+      if (gi.ballX >= 1.0) {
+        if (Math.abs(gi.ballY - gi.p2Y) < gi.paddleHeight / 2) {
+          ball_dx = - ball_dx;
+        }
+        else {
+          console.log('player1 wins');
+          gi.ballX = 0.5;
+          gi.ballY = 0.5;
+          ball_dx = 0.015;
+          ball_dy = 0.01;
+          //return;
+        }
+      }
+      await this.delay(50); //in ms
       this.server.to(gameRoom).emit('gameInterface', gi);
     }
   }
-  //  }
 }

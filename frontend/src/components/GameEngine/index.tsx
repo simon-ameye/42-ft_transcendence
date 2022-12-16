@@ -201,9 +201,9 @@ const GameEngine = (props: { config: GameConfig }) => {
 
 export default GameEngine
 
-/* 
+/*
 
-TODO: 
+TODO:
 	- fix ball stuck on paddle (=> check all ball area not just corner)
 	- moving paddle with key
 */

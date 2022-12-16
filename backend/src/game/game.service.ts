@@ -237,7 +237,7 @@ export class GameService {
       }
     });
     for (let i = 0; i < 2; ++i) {
-      if (players[i].score > 6) {
+      if (players[i].score > 600) {
         await this.addVictory(players[i].id);
         return ({ gameId: gameId, winnerId: players[i].id });
       }
