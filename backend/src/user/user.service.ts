@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { userInfo } from 'os';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
+import { PlayerInterface } from '../game/interfaces';
 
 @Injectable()
 export class UserService {
@@ -102,5 +103,20 @@ export class UserService {
 			}
 		});
 		return (user.qrcode);
+	}
+
+	async getPlayersByNames(names: string[]): Promise<PlayerInterface[]> {
+		const players = await this.prisma.user.findMany({
+			where: {
+				OR: [ {displayName: names[0] }, { displayName: names[1] }]
+			},
+			select: {
+				id: true,
+				displayName: true,
+				score: true,
+				gameId: true
+			}
+		});
+		return (players);
 	}
 }

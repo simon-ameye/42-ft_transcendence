@@ -53,8 +53,6 @@ const Game = () => {
     playerLeft.score = players[l].score;
     setPlayerRight(playerRight);
     setPlayerLeft(playerLeft);
-    //	if (socket.id !== playerRight.socketId && socket.id !== playerLeft.socketId)
-    //	setSpectator(true);
     setRerender(!rerender);
     setPlaying(true);
   }
@@ -87,7 +85,7 @@ const Game = () => {
     bgColor: "#333",
     fgColor: '#fff',
     players: 2,
-    players2: [playerRight, playerLeft]
+    players2: [playerRight, playerLeft],
   }), [])
 
   return (

@@ -251,6 +251,15 @@ export class GameService {
         id: gameId
       }
     });
+    const updatedPlayers = await this.prismaService.user.updateMany({
+      where: {
+        gameId
+      },
+      data: {
+        inGame: false,
+        score: 0,
+      }
+    });
   }
 
   async addVictory(id: number): Promise<void> {
@@ -264,5 +273,26 @@ export class GameService {
         }
       }
     });
+  }
+
+  async updateWatching(SId: string, gameId: number): Promise<number> {
+    let watcher = await this.prismaService.user.findUnique({
+      where: {
+        socketId: SId,
+      },
+      select: {
+        watching: true,
+      }
+    });
+    const watching = watcher.watching;
+    watcher = await this.prismaService.user.update({
+      where: {
+        socketId: SId
+      },
+      data: {
+        watching: gameId,
+      }
+    });
+    return (watching);
   }
 }

@@ -21,6 +21,7 @@ CREATE TABLE "users" (
     "side" INTEGER,
     "victories" INTEGER NOT NULL DEFAULT 0,
     "paddleY" DOUBLE PRECISION NOT NULL DEFAULT 0.5,
+    "watching" INTEGER NOT NULL DEFAULT -1,
     "log" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")

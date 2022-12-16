@@ -14,5 +14,5 @@ export interface GameConfig {
 	bgColor: string,
 	fgColor: string,
 	players: number,
-	players2: PlayerInterface[]
+	players2: PlayerInterface[],
 };
