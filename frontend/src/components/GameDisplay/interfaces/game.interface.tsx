@@ -7,4 +7,7 @@ export interface GameInterface {
   p1Name: string,
   p2Name: string,
   viewerNames: string[],
+  p1score: number,
+  p2score: number,
+  winner: number,
 }

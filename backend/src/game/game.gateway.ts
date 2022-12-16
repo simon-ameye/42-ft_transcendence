@@ -215,6 +215,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       p1Name: (await p1).displayName,
       p2Name: (await p2).displayName,
       viewerNames: [],
+      p1score: 0,
+      p2score: 0,
+      winner: 0,
     };
 
     let ball_dx: number = 0.015;
@@ -224,7 +227,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
 
     while (1) {
-
 
       //console.log('gane room : ', gameRoom);
       p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
@@ -258,6 +260,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           gi.ballY = 0.5;
           ball_dx = 0.015;
           ball_dy = 0.01;
+          gi.p2score++;
           //return;
         }
       }
@@ -272,9 +275,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           gi.ballY = 0.5;
           ball_dx = 0.015;
           ball_dy = 0.01;
+          gi.p1score++;
           //return;
         }
       }
+
+      if (gi.p1score >= 30) {
+        gi.winner = 1;
+        this.server.to(gameRoom).emit('gameInterface', gi);
+        return;
+      }
+      if (gi.p2score >= 30) {
+        gi.winner = 2;
+        this.server.to(gameRoom).emit('gameInterface', gi);
+        return
+      }
+
       await this.delay(50); //in ms
       this.server.to(gameRoom).emit('gameInterface', gi);
     }
