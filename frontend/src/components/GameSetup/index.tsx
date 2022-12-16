@@ -6,10 +6,12 @@ import { socket } from '../../App';
 import PlayerInterface from '../../interfaces/player.interface';
 import { useCookies } from 'react-cookie';
 import GameDisplay from '../GameDisplay';
+import useWindowSize from 'react-use/lib/useWindowSize'
 
 const Game = () => {
 
   // VARIABLES \\
+  const { width, height } = useWindowSize()
 
   //const [cookie] = useCookies(['displayName']);
   //const [rerender, setRerender] = useState<boolean>(false);
@@ -66,27 +68,22 @@ const Game = () => {
 
   const gameConfig: GameConfig = useMemo(() => ({
     canvasSize: {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 1.6,
+      x: width / 2,
+      y: (width / 2) / 1.6,
     },
-    paddleOffset: 20,
+    paddleOffset: width * (1 / 100),
     paddleSize: {
-      x: 20,
-      y: 150,
+      x: width * (1.2 / 100),
+      y: width * (8 / 100),
     },
     ballSize: {
-      x: 20,
-      y: 20
+      x: width * (1.2 / 100),
+      y: width * (1.2 / 100)
     },
-    scoreP1: 0,
-    scoreP2: 0,
-    p1PosY: (window.innerHeight / 1.6) / 2 - (150 / 2),
-    p2PosY: (window.innerHeight / 1.6) / 2 - (150 / 2),
     bgColor: "#333",
     fgColor: '#fff',
-    players: 2,
     players2: [playerRight, playerLeft],
-  }), [])
+  }), [width, height])
 
   return (
     <Default>
