@@ -8,18 +8,18 @@ import { RiChat3Fill } from 'react-icons/ri';
 import { RiChatPrivateFill } from 'react-icons/ri';
 import { BsFillPeopleFill } from 'react-icons/bs';
 import ProfileInterface from './Interface/ProfileInterface';
+import './style.scss'
 
 
 const Profile = () => {
   const [profileInterface, setprofileInterface] = useState<ProfileInterface | undefined>()
   const [userProfilePicture, setUserProfilePicture] = useState('');
 
-
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    axios.post('http://localhost:3001/auth/uploadPicture', {
+    // downoad image and stock the path to it
+    axios.post('http://localhost:3001/profile/uploadImage', {
       imageUrl: userProfilePicture
     })
       .then()
@@ -27,36 +27,41 @@ const Profile = () => {
   }
 
   function getProfileInterface() {
-    axios.get('http://localhost:3001/profile/getProfile', {
+    axios.get('http://localhost:3001/profile', {
     }).then(
       function (response) {
         setprofileInterface(response.data);
       }).catch(err => console.log(err));
   }
+  
+  /*function getProfileImage() {
+    axios.get('http://localhost:3001/profile/getImage', {
+    }).then(
+      function (response) {
+        setprofileInterface(response.data);
+      }).catch(err => console.log(err));
+  }*/
 
   useEffect(() => {
     getProfileInterface()
   }, [])
 
-  return (
-    <div>
-      <Navbar />
-      <div>id: {profileInterface?.id}</div>
-      <div>createdAt: {profileInterface?.createdAt}</div>
-      <div>updatedAt: {profileInterface?.updatedAt}</div>
-      <div>email: {profileInterface?.email}</div>
-      <div>hash: {profileInterface?.hash}</div>
-      <div>displayName: {profileInterface?.displayName}</div>
-      <div>imageUrl: {profileInterface?.imageUrl}</div>
-      <div>googleSecret: {profileInterface?.googleSecret}</div>
-      <div>socketId: {profileInterface?.socketId}</div>
-      <div>blockedUserIds: {profileInterface?.blockedUserIds}</div>
-      <div>friends: {profileInterface?.friends}</div>
-      <div>matching: {profileInterface?.matching}</div>
-      <div>inGame: {profileInterface?.inGame}</div>
-      <div>victories: {profileInterface?.victories}</div>
-      <div>log: {profileInterface?.log}</div>
+  /*useEffect(() => {
+    getProfileImage()
+  }, [])*/
 
+  return (
+    <div className='profile'>
+      <Navbar />
+      <div className='email'>{profileInterface?.email}</div>
+      <div className='displayName'>{profileInterface?.displayName}</div>
+      <div className='profileImage'> profile image : {userProfilePicture}</div>
+      {/* <div>matching: {profileInterface?.matching}</div> */}
+      {/* <div>inGame: {profileInterface?.inGame}</div> */}
+      {/* <div>victories: {profileInterface?.victories}</div> */}
+      {/* <div>log: {profileInterface?.log}</div> */}
+      {/* <div>friends: {profileInterface?.friends}</div> */}
+      {/* <div>blockedUserIds: {profileInterface?.blockedUserIds}</div> */}
       <form onSubmit={handleSubmit}>
       <input
         id="file"
@@ -64,7 +69,7 @@ const Profile = () => {
         value={userProfilePicture}
         onChange={(e) => setUserProfilePicture(e.target.value)}
       />
-      <div className="submit-upload">
+      <div className="uploadProfileImage">
         <label className="upload" htmlFor="file">Upload profile picture</label>
         <button type="submit" className='submit-btn'>submit</button>
       </div>

@@ -60,33 +60,4 @@ export class UserController {
 		return this.userService.modifySocketId(user, body.socketId);
 	}
 
-  //// IMAGE UPLOAD
-  @UseGuards(AuthGuard('jwt'))
-  @Put('uploadImage')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      dest: './uploads',
-    }
-  ))
-  async uploadSingle(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 100000 }),
-          new FileTypeValidator({ fileType: 'png|jpeg|svg' }),
-        ]
-      })
-    )
-    file: Express.Multer.File,
-    @GetUser() user: UserDto,
-  ) {
-    let response = await this.userService.upload(user, file.path);
-    return response;
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('getImage')
-  displayImage(@GetUser() user: UserDto, @Res() res) {
-    res.sendFile(user.imageUrl, { root: './' })
-  }
 }

@@ -35,21 +35,6 @@ export class UserService {
     })
   }
 
-  // create a function for searching a user by his token
-  async upload(dto: UserDto, path: string) {
-    if (!dto) {
-      console.log("not expected error");
-    }
-    const updateUser = await this.prisma.user.update({
-      where: {
-        id: dto.id,
-      },
-      data: {
-        imageUrl: path,
-      },
-    })
-  }
-
 	async getNameById(id: number): Promise<string> {
 		const	user = await this.prisma.user.findUnique({
 			where: {
