@@ -5,16 +5,20 @@ import "./style.scss"
 import { GameInterface } from "./interfaces/game.interface";
 import { socket } from '../../App';
 import { List } from "@mui/material";
+import { useKeyDown } from "../hooks/useKeyDown";
+import { useNavigate } from "react-router-dom";
 
 const LINE_WIDTH = 1;
 const LINE_OFFSET = 30;
 
-const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
+const GameDisplay = (props: { config: GameConfig }) => {
   const [backColor, setBackColor] = useState("#333333");
   const [compColor, setCompColor] = useState("#ffffff");
   // const [mode, setMode] = useState("Player vs Player")
 
   const [gi, setgi] = useState<GameInterface | undefined>()
+
+  const navigate = useNavigate();
 
   const canvas = useRef<HTMLCanvasElement>(null);
 
@@ -102,6 +106,38 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
     }
   })
 
+  useEffect(() => {
+    socket.on('join room', joinRoomListener);
+    return () => {
+      socket.off('join room', joinRoomListener);
+    }
+  });
+
+  useEffect(() => {
+    socket.on('game finished', gameFinishedListener);
+    return () => {
+      socket.off('game finished', gameFinishedListener);
+    }
+  });
+
+  useKeyDown(() => {
+    socket.emit('arrow up');
+    console.log('presssss')
+  }, ['ArrowUp'])
+
+  useKeyDown(() => {
+    socket.emit('arrow down');
+  }, ['ArrowDown'])
+
+
+  const joinRoomListener = (gameRoom: string) => {
+    socket.emit('join room', gameRoom);
+  }
+
+  const gameFinishedListener = () => {
+    navigate('/game');
+  }
+
   return (
     <>
       {/* <div>
@@ -121,10 +157,10 @@ const GameDisplay = (props: { ball: Position, config: GameConfig }) => {
         <button onClick={changeMode}>{mode}</button>
       </div> */}
       <div className="score" style={{ width: canvasSize.x }}>
-        {/* <h1 className="score-1">{props.config.scoreP1}</h1> */}
-        <h5 className="score-1">{props.config.players2[0].displayName}</h5>
-        {/* <h1 className="score-p2">{props.config.scoreP2}</h1> */}
-        <h5 className="score-2">{props.config.players2[1].displayName}</h5>
+        <h1 className="score-1">{gi?.p1score}</h1>
+        <h5 className="name-1">{gi?.p1Name}</h5>
+        <h1 className="score-2">{gi?.p2score}</h1>
+        <h5 className="name-2">{gi?.p2Name}</h5>
       </div>
       <canvas width={canvasSize.x} height={canvasSize.y} ref={canvas} />
       <div className="color" style={{ width: canvasSize.x }}>

@@ -13,33 +13,14 @@ import { GameInterface } from './interfaces/game.interface';
     credentials: true,
   }
 })
-export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
+export class GameGateway {
   constructor(
     private prismaService: PrismaService,
     private gameService: GameService,
-    private userService: UserService
+    private userService: UserService,
   ) { }
 
   @WebSocketServer() server: Server;
-
-  users: number = 0;
-
-  onModuleInit() {
-    this.server.on('connection', async (socket) => {
-      console.log({ "socket.id": socket.id });
-      console.log('connected');
-    });
-  }
-
-  async handleConnection() {
-    this.users++;
-    this.server.emit('users', this.users);
-  }
-
-  async handleDisconnect() {
-    this.users--;
-    this.server.emit('users', this.users);
-  }
 
   @SubscribeMessage('hello')
   hello(client) {
@@ -86,23 +67,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.server.emit('update game list', players);
   }
 
-  @SubscribeMessage('add point')
-  async addPoint(client, player: PlayerInterface): Promise<void> {
-    const gameRoom = await this.gameService.updateScoreBySId(client.id, +1);
-    player.score += 1;
-    this.server.to(gameRoom).emit('update score', player);
-    const data: CheckWinnerInterface = await this.gameService.isWinner(gameRoom);
-    if (data.gameId) {
-      const versus = await this.gameService.getStrGameByGameId(data.gameId);
-      this.gameService.deleteGame(data.gameId);
-      this.gameService.addVictory(data.winnerId);
-      this.server.to(gameRoom).emit('game finished', data.winnerId);
-      this.server.emit('game over', versus);
-    }
-    else
-      this.kickoff(gameRoom);
-  }
-
   @SubscribeMessage('watch game')
   async watchGame(client, playerNames: string[]): Promise<void> {
     const players = await this.userService.getPlayersByNames(playerNames);
@@ -113,25 +77,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.server.to(client.id).emit('game started', players);
   }
 
-  @SubscribeMessage('is playing')
-  async isPlaying(client): Promise<void> {
-    const playing = await this.gameService.isPlayingBySId(client.id);
-    this.server.to(client.id).emit('is playing', playing);
-  }
-
-  @SubscribeMessage('get players')
-  async GetPlayers(client): Promise<void> {
-    const players = await this.gameService.getPlayerByOneSId(client.id);
-    const gameRoom = "game".concat(String(players[0].gameId));
-    client.join(gameRoom);
-    this.server.to(client.id).emit('game started', players);
-  }
-
   @SubscribeMessage('arrow up')
-  async ArrowUp(client, oppenentName: string): Promise<void> {
-    //const	oppenentSId = await this.userService.getSIdByName(oppenentName);
-    //this.server.to(oppenentSId).emit('arrow up');
-
+  async ArrowUp(client): Promise<void> {
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
     let newpaddleY: number = (await user).paddleY - 0.05;
@@ -142,14 +89,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       where: { socketId: client.id, },
       data: { paddleY: newpaddleY, },
     })
-    console.log((await user).paddleY);
   }
 
   @SubscribeMessage('arrow down')
-  async ArrowDown(client, oppenentName: string): Promise<void> {
-    //const oppenentSId = await this.userService.getSIdByName(oppenentName);
-    //this.server.to(oppenentSId).emit('arrow down');
-
+  async ArrowDown(client): Promise<void> {
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
     let newpaddleY: number = (await user).paddleY + 0.05;
@@ -160,7 +103,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       where: { socketId: client.id, },
       data: { paddleY: newpaddleY, },
     })
-    console.log((await user).paddleY);
   }
 
   async startGameAuto(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
@@ -174,8 +116,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       { "one": pOneDName, "two": pTwoDName });
     const players = await this.gameService.getPlayerByOneSId(data.SIdOne);
     this.server.emit('update game list', players);
-    this.server.to(data.SIdOne).emit('game started', players);
-    this.server.to(data.SIdTwo).emit('game started', players);
+    //this.server.to(data.SIdOne).emit('game started', players);
+    //this.server.to(data.SIdTwo).emit('game started', players);
     this.server.to(data.SIdOne).emit('join room', gameRoom);
     this.server.to(data.SIdTwo).emit('join room', gameRoom);
     this.kickoff(gameRoom);
@@ -200,12 +142,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     client.join(room);
   }
 
-  async gameProcess(gameRoom: string, p1Id: number, p2Id: number) {
-    console.log('my game is starting 0');
-
+  async initGameInterface(p1Id: number, p2Id: number): Promise<GameInterface> {
     let p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
     let p2 = this.prismaService.user.findUnique({ where: { id: p2Id } });
-
     let gi: GameInterface = {
       ballX: 0.5,
       ballY: 0.5,
@@ -219,6 +158,37 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
       p2score: 0,
       winner: 0,
     };
+    return gi;
+  }
+
+  async getPaddlePositions(gi: GameInterface, p1Id: number, p2Id: number): Promise<GameInterface> {
+    let p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
+    let p2 = this.prismaService.user.findUnique({ where: { id: p2Id } });
+    gi.p1Y = (await p1).paddleY;
+    gi.p2Y = (await p2).paddleY;
+    return (gi);
+  }
+
+  async finishGame(gameRoom: string, p1Id: number, p2Id: number, winner: number) {
+    let p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
+    let gameId = (await p1).gameId;
+
+    const versus = await this.gameService.getStrGameByGameId(gameId);
+    this.gameService.deleteGame(gameId);
+
+    let winnerId = 0;
+    if (winner == 1)
+      winnerId = p1Id;
+    if (winner == 2)
+      winnerId = p2Id;
+
+    this.gameService.addVictory(winnerId);
+    this.server.to(gameRoom).emit('game finished', winnerId);
+    this.server.emit('game over', versus);
+  }
+
+  async gameProcess(gameRoom: string, p1Id: number, p2Id: number) {
+    let gi = await this.initGameInterface(p1Id, p2Id);
 
     let ball_dx: number = 0.015;
     let ball_dy: number = 0.01;
@@ -227,20 +197,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
 
     while (1) {
-
-      //console.log('gane room : ', gameRoom);
-      p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
-      p2 = this.prismaService.user.findUnique({ where: { id: p2Id } });
-
-      //FOR DEV
-      let user1gameId = (await p1).gameId;
-      let user1games = this.prismaService.game.findMany({ where: { id: user1gameId } });
-      if (!(await user1games).length)
-        return;
-      //FOR DEV
-
-      gi.p1Y = (await p1).paddleY;
-      gi.p2Y = (await p2).paddleY;
+      gi = await this.getPaddlePositions(gi, p1Id, p2Id);
 
       gi.ballX += ball_dx;
       gi.ballY += ball_dy;
@@ -273,26 +230,26 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           console.log('player1 wins');
           gi.ballX = 0.5;
           gi.ballY = 0.5;
-          ball_dx = 0.015;
+          ball_dx = -0.015;
           ball_dy = 0.01;
           gi.p1score++;
           //return;
         }
       }
 
-      if (gi.p1score >= 30) {
+      if (gi.p1score >= 10)
         gi.winner = 1;
-        this.server.to(gameRoom).emit('gameInterface', gi);
+
+      if (gi.p2score >= 10)
+        gi.winner = 2;
+
+      this.server.to(gameRoom).emit('gameInterface', gi);
+      await this.delay(50); //in ms
+
+      if (gi.winner) {
+        this.finishGame(gameRoom, p1Id, p2Id, gi.winner);
         return;
       }
-      if (gi.p2score >= 30) {
-        gi.winner = 2;
-        this.server.to(gameRoom).emit('gameInterface', gi);
-        return
-      }
-
-      await this.delay(50); //in ms
-      this.server.to(gameRoom).emit('gameInterface', gi);
     }
   }
 }
