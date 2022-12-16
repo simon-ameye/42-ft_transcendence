@@ -34,10 +34,10 @@ export default function GameHome() {
 	}
 
 	const watchMatch = (strGame: string) => {
-		const playerIds = strGame.split(" ");
-		playerIds.splice(1, 1);
-		navigate('/game/live2');
-		socket.emit("watch game", playerIds);
+		const playerNames = strGame.split(" ");
+		playerNames.splice(1, 1);
+		navigate('/game/live');
+		socket.emit("watch game", playerNames);
 	}
 
 	const MatchingQueue = matchingQueue.map((matchingQueue, index) => {

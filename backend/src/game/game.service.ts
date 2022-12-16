@@ -238,7 +238,6 @@ export class GameService {
     });
     for (let i = 0; i < 2; ++i) {
       if (players[i].score > 6) {
-        await this.addVictory(players[i].id);
         return ({ gameId: gameId, winnerId: players[i].id });
       }
     }
@@ -251,6 +250,15 @@ export class GameService {
         id: gameId
       }
     });
+		const updatedPlayers = await this.prismaService.user.updateMany({
+			where: {
+				gameId
+			},
+			data: {
+				inGame: false,
+				score: 0,
+			}
+		});
   }
 
   async addVictory(id: number): Promise<void> {
@@ -265,4 +273,25 @@ export class GameService {
       }
     });
   }
+
+	async updateWatching(SId: string, gameId: number): Promise<number> {
+		let watcher = await this.prismaService.user.findUnique({
+			where: {
+				socketId: SId,
+			},
+			select: {
+				watching: true,
+			}
+		});
+		const watching = watcher.watching;
+		watcher = await this.prismaService.user.update({
+			where: {
+				socketId: SId
+			},
+			data: {
+				watching: gameId,
+			}
+		});
+		return (watching);
+	}
 }

@@ -17,7 +17,6 @@ const Game = () => {
 			useState<PlayerInterface>({userId: 0, displayName: "right", score: 0, side: 0});
 	const [playerLeft, setPlayerLeft] =
 			useState<PlayerInterface>({userId: 0, displayName: "left", score: 0, side: 0});
-	const [spectator, setSpectator] = useState<boolean>(false);
 	const [playing, setPlaying] = useState<boolean>(false);
 
 	// USE_EFFECT \\
@@ -53,8 +52,6 @@ const Game = () => {
 		playerLeft.score = players[l].score;
 		setPlayerRight(playerRight);
 		setPlayerLeft(playerLeft);
-	//	if (socket.id !== playerRight.socketId && socket.id !== playerLeft.socketId)
-		//	setSpectator(true);
 		setRerender(!rerender);
 		setPlaying(true);
 	}
@@ -87,7 +84,7 @@ const Game = () => {
 		bgColor: "#333",
 		fgColor: '#fff',
 		players: 2,
-		players2: [playerRight, playerLeft]
+		players2: [playerRight, playerLeft],
 	}), [])
 
 	return (

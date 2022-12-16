@@ -33,6 +33,7 @@ model User {
   side      Int?
   victories Int     @default(0)
   paddleY   Float   @default(0.5)
+  watching  Int     @default(-1)
 
   log Boolean @default(true)
 

@@ -104,10 +104,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   @SubscribeMessage('watch game')
-  async watchGame(client, playerIds: string[]): Promise<void> {
-    const players = await this.gameService.getPlayersBySIds(playerIds);
+  async watchGame(client, playerNames: string[]): Promise<void> {
+    const players = await this.userService.getPlayersByNames(playerNames);
     const gameRoom = "game".concat(String(players[0].gameId));
-    client.join(gameRoom);
+		const watching = await this.gameService.updateWatching(client.id, players[0].gameId);
+		client.leave("game".concat(String(watching)));
+    client.join(gameRoom)
     this.server.to(client.id).emit('game started', players);
   }
 
