@@ -82,8 +82,8 @@ export class GameGateway {
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
     let newpaddleY: number = (await user).paddleY - 0.05;
-    if (newpaddleY > 1)
-      newpaddleY = 1;
+    if (newpaddleY <= 0)
+      newpaddleY = 0;
 
     const updateUser = await this.prismaService.user.update({
       where: { socketId: client.id, },
@@ -96,8 +96,8 @@ export class GameGateway {
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
     let newpaddleY: number = (await user).paddleY + 0.05;
-    if (newpaddleY < 0)
-      newpaddleY = 0;
+    if (newpaddleY >= 1)
+      newpaddleY = 1;
 
     const updateUser = await this.prismaService.user.update({
       where: { socketId: client.id, },
@@ -157,6 +157,9 @@ export class GameGateway {
       p1score: 0,
       p2score: 0,
       winner: 0,
+      paddleOffcet: 0.1,
+      paddleThickness: 0.02,
+      ballRadius: 0.02,
     };
     return gi;
   }
@@ -192,59 +195,63 @@ export class GameGateway {
 
     let ball_dx: number = 0.015;
     let ball_dy: number = 0.01;
-
-    //let paddle_height = 0.2;
-
+    let paddleMissed = 0;
+    let divCoeff = 0.05;
 
     while (1) {
+
       gi = await this.getPaddlePositions(gi, p1Id, p2Id);
 
       gi.ballX += ball_dx;
       gi.ballY += ball_dy;
 
-      if (gi.ballY >= 1 || gi.ballY <= 0) {
+      if (gi.ballY + gi.ballRadius >= 1 || gi.ballY - gi.ballRadius <= 0) {
         ball_dy = -ball_dy
-        ball_dx *= 1.05;
       }
 
-      if (gi.ballX <= 0.0) {
-        if (Math.abs(gi.ballY - gi.p1Y) < gi.paddleHeight / 2) {
-          ball_dx = - ball_dx;
+      if (paddleMissed == 0) {
+        if (gi.ballX + gi.ballRadius>= (1 - gi.paddleOffcet)) {
+          if (Math.abs(gi.ballY - gi.p2Y) <= gi.paddleHeight / 2) {
+            ball_dx = -ball_dx;
+            ball_dx *= 1.5;
+          }
+          else
+            paddleMissed = 1;
         }
-        else {
+        else if (gi.ballX - gi.ballRadius<= gi.paddleOffcet) {
+          if (Math.abs(gi.ballY - gi.p1Y) <= gi.paddleHeight / 2) {
+            ball_dx = -ball_dx;
+            ball_dx *= 1.5;
+          }
+          else
+            paddleMissed = 1;
+        }
+      }
+
+      if (gi.ballX <= 0 || gi.ballX >= 1) {
+        if (gi.ballX <= 0) {
           console.log('player2 wins');
-          gi.ballX = 0.5;
-          gi.ballY = 0.5;
-          ball_dx = 0.015;
-          ball_dy = 0.01;
           gi.p2score++;
-          //return;
         }
-      }
-
-      if (gi.ballX >= 1.0) {
-        if (Math.abs(gi.ballY - gi.p2Y) < gi.paddleHeight / 2) {
-          ball_dx = - ball_dx;
-        }
-        else {
+        if (gi.ballX >= 0) {
           console.log('player1 wins');
-          gi.ballX = 0.5;
-          gi.ballY = 0.5;
-          ball_dx = -0.015;
-          ball_dy = 0.01;
           gi.p1score++;
-          //return;
         }
+        gi.ballX = 0.5;
+        gi.ballY = 0.5;
+        ball_dx = 0.015;
+        ball_dy = 0.01;
+        paddleMissed = 0;
       }
-
-      if (gi.p1score >= 10)
-        gi.winner = 1;
-
-      if (gi.p2score >= 10)
-        gi.winner = 2;
 
       this.server.to(gameRoom).emit('gameInterface', gi);
-      await this.delay(50); //in ms
+      await this.delay(30); //in ms
+
+      if (gi.p1score >= 100)
+        gi.winner = 1;
+
+      if (gi.p2score >= 100)
+        gi.winner = 2;
 
       if (gi.winner) {
         this.finishGame(gameRoom, p1Id, p2Id, gi.winner);

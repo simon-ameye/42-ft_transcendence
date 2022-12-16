@@ -10,4 +10,7 @@ export interface GameInterface {
   p1score: number,
   p2score: number,
   winner: number,
+  paddleOffcet: number,
+  ballRadius: number,
+  paddleThickness: number,
 }
