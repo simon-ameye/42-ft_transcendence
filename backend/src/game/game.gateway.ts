@@ -280,12 +280,12 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
         }
       }
 
-      if (gi.p1score >= 30) {
+      if (gi.p1score >= 10) {
         gi.winner = 1;
         this.server.to(gameRoom).emit('gameInterface', gi);
         return;
       }
-      if (gi.p2score >= 30) {
+      if (gi.p2score >= 10) {
         gi.winner = 2;
         this.server.to(gameRoom).emit('gameInterface', gi);
         return
