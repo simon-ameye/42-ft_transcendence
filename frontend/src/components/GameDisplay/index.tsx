@@ -160,11 +160,15 @@ const GameDisplay = (props: { config: GameConfig }) => {
         <label>Change mode :</label>
         <button onClick={changeMode}>{mode}</button>
       </div> */}
-      <div className="score" style={{ width: canvasSize.x }}>
-        <h1 className="score-1">{gi?.p1score}</h1>
-        <h5 className="name-1">{gi?.p1Name}</h5>
-        <h1 className="score-2">{gi?.p2score}</h1>
-        <h5 className="name-2">{gi?.p2Name}</h5>
+      <div className="scoreboard" style={{ width: canvasSize.x }}>
+        <div className="p1-scoreboard">
+          <h5 className="name-1">{gi?.p1Name}</h5>
+          <h2 className="score-1">{gi?.p1score}</h2>
+        </div>
+        <div className="p2-scoreboard">
+          <h5 className="name-2">{gi?.p2Name}</h5>
+          <h2 className="score-2">{gi?.p2score}</h2>
+        </div>
       </div>
       <canvas width={canvasSize.x} height={canvasSize.y} ref={canvas} />
       <div className="color" style={{ width: canvasSize.x }}>
