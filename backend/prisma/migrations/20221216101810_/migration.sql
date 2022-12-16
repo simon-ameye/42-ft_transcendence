@@ -18,8 +18,9 @@ CREATE TABLE "users" (
     "inGame" BOOLEAN NOT NULL DEFAULT false,
     "score" INTEGER NOT NULL DEFAULT 0,
     "gameId" INTEGER,
-    "side" INTEGER NOT NULL,
+    "side" INTEGER,
     "victories" INTEGER NOT NULL DEFAULT 0,
+    "paddleY" DOUBLE PRECISION NOT NULL DEFAULT 0.5,
     "log" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")

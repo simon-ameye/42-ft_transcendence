@@ -1,4 +1,4 @@
-export interface	OppenentsInterface {
-	one: string,
-	two: string 
+export interface OppenentsInterface {
+  one: string,
+  two: string
 }

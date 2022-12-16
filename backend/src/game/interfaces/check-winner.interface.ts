@@ -1,4 +1,4 @@
-export interface	CheckWinnerInterface {
-	gameId: number,
-	winnerId: number
+export interface CheckWinnerInterface {
+  gameId: number,
+  winnerId: number
 }

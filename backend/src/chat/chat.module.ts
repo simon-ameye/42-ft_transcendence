@@ -9,6 +9,6 @@ import { JwtStrategy } from 'src/auth/strategy';
 @Module({
   imports: [EventEmitterModule.forRoot()],
   controllers: [ChatController],
-	providers: [ChatGateway, ChatService, ChannelService, JwtStrategy],
+  providers: [ChatGateway, ChatService, ChannelService, JwtStrategy],
 })
-export class ChatModule {}
+export class ChatModule { }

@@ -11,66 +11,67 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email String @unique
-  hash String?
-  displayName String @unique
-  imageUrl String?
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  email        String   @unique
+  hash         String?
+  displayName  String   @unique
+  imageUrl     String?
   googleSecret String?
-  qrcode String?
+  qrcode       String?
   // add path of the image
 
-  socketId        String? @unique
-  blockedUserIds  Int[]
-  friends         Int[]
-  matching Matching?
+  socketId       String?   @unique
+  blockedUserIds Int[]
+  friends        Int[]
+  matching       Matching?
 
-  inGame Boolean @default(false)
-	score	Int @default(0)
-	gameId Int?
-	side	Int?
-  victories Int @default(0)
+  inGame    Boolean @default(false)
+  score     Int     @default(0)
+  gameId    Int?
+  side      Int?
+  victories Int     @default(0)
+  paddleY   Float   @default(0.5)
 
-	log	Boolean @default(true)
+  log Boolean @default(true)
 
   @@map("users")
 }
 
-model Channel{
-  id              Int         @id @default(autoincrement())
-  name            String      @default("unknown channel")
-  mode            ChannelMode @default(PUBLIC)
-  password        String      @default("")
-  ownerId         Int         @default(0)
-  adminIds        Int[]
-  banedUserIds    Int[]
-  messageIds      Int[]
-  userIds         Int[]
-  muteUserIds     Int[]
-  muteRelease     DateTime[]
+model Channel {
+  id           Int         @id @default(autoincrement())
+  name         String      @default("unknown channel")
+  mode         ChannelMode @default(PUBLIC)
+  password     String      @default("")
+  ownerId      Int         @default(0)
+  adminIds     Int[]
+  banedUserIds Int[]
+  messageIds   Int[]
+  userIds      Int[]
+  muteUserIds  Int[]
+  muteRelease  DateTime[]
 }
 
 model Message {
-  id              Int         @id @default(autoincrement())
-  text            String?
-  authorId        Int                                        //one  to many field
-  date            DateTime    @default(now())
+  id       Int      @id @default(autoincrement())
+  text     String?
+  authorId Int //one  to many field
+  date     DateTime @default(now())
 }
 
 enum ChannelMode {
-  PUBLIC                                                       //everybody can join, but there may be a password. No password => password = ''
-  DIRECT                                                       //direct messages between two users
-  PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
+  PUBLIC //everybody can join, but there may be a password. No password => password = ''
+  DIRECT //direct messages between two users
+  PRIVATE //new users must be invited by channel users (not clear in the subject)
 }
 
-model	Matching {
-	user User @relation(fields: [userId], references: [id])
-	userId Int @unique
+model Matching {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
 }
 
-model	Game {
-  id Int @id @default(autoincrement())
-	players Int[]
+model Game {
+  id      Int   @id @default(autoincrement())
+  players Int[]
 }

@@ -32,13 +32,13 @@ export class ChannelService {
     channelInterface.mode = (await channel).mode;
     channelInterface.isProtected = (await channel).password != '';
     if ((await channel).mode == ChannelMode.DIRECT) {
-      try{
+      try {
         channelInterface.name =
           (await this.prisma.user.findUnique({ where: { id: (await channel).userIds[0] } })).displayName
           + " & " +
           (await this.prisma.user.findUnique({ where: { id: (await channel).userIds[1] } })).displayName;
       }
-      catch{
+      catch {
         channelInterface.name = "error while generating name";
       }
     }
@@ -54,8 +54,8 @@ export class ChannelService {
           return (channelInterface);
         let messageInterface: MessageInterface =
         {
-          message : "",
-          author : "",
+          message: "",
+          author: "",
           date: "",
         };
         messageInterface.message = ((await message).text);
@@ -67,9 +67,9 @@ export class ChannelService {
         channelInterface.messages.push(messageInterface);
       }
     }
-    for (let chanUserId of (await channel).userIds){
-      var chanUser = this.prisma.user.findUnique({ where: { id: chanUserId }})
-      let UserInterface: UserInterface = { id: chanUserId , name : (await chanUser).displayName}
+    for (let chanUserId of (await channel).userIds) {
+      var chanUser = this.prisma.user.findUnique({ where: { id: chanUserId } })
+      let UserInterface: UserInterface = { id: chanUserId, name: (await chanUser).displayName }
       channelInterface.users.push(UserInterface);
     }
     return (channelInterface);

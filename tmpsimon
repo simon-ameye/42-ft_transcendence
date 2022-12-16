@@ -1,3 +1,44 @@
+
+in prisma
+  paddleY Float @default(0.5)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////gateway
+
 import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, MessageBody } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
@@ -5,6 +46,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { GameService } from './game.service';
 import { MatchingQueueInterface, PlayerInterface, CheckWinnerInterface } from './interfaces';
 import { UserService } from '../user/user.service';
+import { User } from '@prisma/client';
 import { GameInterface } from './interfaces/game.interface';
 
 @WebSocketGateway(4343, {
@@ -88,16 +130,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('add point')
   async addPoint(client, player: PlayerInterface): Promise<void> {
-    const gameRoom = await this.gameService.updateScoreBySId(client.id, +1);
+    const gameRoom = await this.gameService.updateScore(player.userId, +1);
     player.score += 1;
     this.server.to(gameRoom).emit('update score', player);
     const data: CheckWinnerInterface = await this.gameService.isWinner(gameRoom);
     if (data.gameId) {
-      const versus = await this.gameService.getStrGameByGameId(data.gameId);
-      this.gameService.deleteGame(data.gameId);
+      this.gameService.deleteGameAndPlayers(data.gameId);
       this.gameService.addVictory(data.winnerId);
       this.server.to(gameRoom).emit('game finished', data.winnerId);
-      this.server.emit('game over', versus);
     }
     else
       this.kickoff(gameRoom);
@@ -130,6 +170,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     //const	oppenentSId = await this.userService.getSIdByName(oppenentName);
     //this.server.to(oppenentSId).emit('arrow up');
 
+
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
 
     let newpaddleY: number = (await user).paddleY + 0.05;
@@ -145,7 +186,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('arrow down')
   async ArrowDown(client, oppenentName: string): Promise<void> {
-    //const oppenentSId = await this.userService.getSIdByName(oppenentName);
+    //const	oppenentSId = await this.userService.getSIdByName(oppenentName);
     //this.server.to(oppenentSId).emit('arrow down');
 
     const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
@@ -177,6 +218,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     this.server.to(data.SIdOne).emit('join room', gameRoom);
     this.server.to(data.SIdTwo).emit('join room', gameRoom);
     this.kickoff(gameRoom);
+
 
     let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
     let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
@@ -257,3 +299,36 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
   //  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
