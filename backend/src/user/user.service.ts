@@ -53,12 +53,36 @@ export class UserService {
   }
 
   async friendsList(dto: UserDto) {
-    // unique friend is private_google for tests
-    const users = await this.prisma.friends.findMany({
+    const friends = await this.prisma.friends.findMany({
       where: {
-
+        OR: [
+          {
+            user_id: dto.id,
+          },
+          {
+            friend_id: dto.id,
+          }
+        ],
+        status: "accepted",
+      },
+      select: {
+        user: true,
+        friend: true,
       }
     })
+
+    let users: Array<User> = []
+
+    friends.forEach(friend => {
+      if (friend.user.id != dto.id) {
+        delete (friend.user['hash'])
+        users.push(friend.user)
+      }
+      else {
+        delete (friend.friend['hash'])
+        users.push(friend.friend)
+      }
+    });
 
     return users
   }

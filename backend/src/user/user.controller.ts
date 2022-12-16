@@ -85,7 +85,6 @@ export class UserController {
     return this.userService.modifySocketId(user, body.socketId);
   }
 
-  //// IMAGE UPLOAD
   @UseGuards(AuthGuard('jwt'))
   @Put('uploadImage')
   @UseInterceptors(

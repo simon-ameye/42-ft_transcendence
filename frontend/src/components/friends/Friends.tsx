@@ -8,6 +8,7 @@ import { useCookies } from 'react-cookie';
 import { socket } from '../../App';
 import { request } from 'http';
 import User from '../User';
+import { async } from 'rxjs';
 
 type User = {
   email: string;
@@ -62,6 +63,8 @@ const Friends = () => {
       </div>
     }
       {c.user.displayName}
+
+      {/* <>{console.log(receivedFriendRequest)}</> */}
     </ListItem >
   ))
 
@@ -114,26 +117,31 @@ const Friends = () => {
     return () => {
       socket.off("accept friend", acceptedFriendRequest);
     }
-  }, []);
+  }, [receivedFriendRequest]);
 
   useEffect(() => {
     socket.on("deny friend", deniedFriendRequest);
     return () => {
       socket.off("deny friend", deniedFriendRequest);
     }
-  }, []);
+  }, [receivedFriendRequest]);
 
-  const deniedFriendRequest = (request: User) => {
-    //setReceivedFriendRequest(receivedFriendRequest.concat())
+  const deniedFriendRequest = (relation: FriendRequest) => {
+    if (relation != undefined) {
+      setReceivedFriendRequest(receivedFriendRequest.filter(item => item.id != relation.id))
+    }
   }
 
-  const acceptedFriendRequest = (request: User) => {
+  const acceptedFriendRequest = (request: User, relation: FriendRequest) => {
     setFriends(friends => [...friends, request])
+    if (relation != undefined) {
+      setReceivedFriendRequest(receivedFriendRequest.filter(item => item.id != relation.id))
+    }
   }
 
   const receiveFriendRequest = (request: FriendRequest) => {
-    console.log("received")
-    setReceivedFriendRequest(receivedFriendRequest => [...receivedFriendRequest, request])
+    if (request != undefined)
+      setReceivedFriendRequest(receivedFriendRequest => [...receivedFriendRequest, request])
   }
 
   return (
@@ -154,4 +162,3 @@ const Friends = () => {
 }
 
 export default Friends;
-

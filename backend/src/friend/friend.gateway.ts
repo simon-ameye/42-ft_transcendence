@@ -45,20 +45,21 @@ export class FriendGateway implements OnModuleInit, OnGatewayDisconnect, OnGatew
 
   @SubscribeMessage('accept friend')
   async handleAccept(client: Socket, relation: Friends) {
-    console.log("accept friend");
-    let friendShip = this.friendService.acceptFriendRequest(relation.id);
+    if (await this.friendService.acceptFriendRequest(relation.id) == null) {
+      return;
+    }
     let friendUser = await this.userService.getUserById(relation.user_id);
     let user = await this.userService.getUserById(relation.friend_id);
+    delete (user['hash'])
     this.server.to([friendUser.socketId]).emit("accept friend", user);
-    this.server.to([user.socketId]).emit("accept friend", friendUser);
+    this.server.to(client.id).emit("accept friend", friendUser, relation);
   }
 
-  /// needs modif to be good with sockets
   @SubscribeMessage('deny friend')
   async handleDeny(client: Socket, relation: Friends) {
-    let friendShip = this.friendService.denyFriendRequest(relation.id);
+    let friendShip = await this.friendService.denyFriendRequest(relation.id);
     let friendUser = await this.userService.getUserById(relation.user_id);
-    this.server.to([friendUser.socketId]).emit("deny friend");
+    this.server.to(client.id).emit("deny friend", relation);
   }
 
   async handleDisconnect(client: Socket) {

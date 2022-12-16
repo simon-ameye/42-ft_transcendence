@@ -9,7 +9,6 @@ export class FriendService {
   constructor(private prisma: PrismaService) { }
 
   async addFriend(senderId: number, receiverId: number) {
-    // maybe needs modif
     let exist = await this.prisma.friends.findFirst({
       where: {
         user_id: senderId,
@@ -45,15 +44,16 @@ export class FriendService {
   }
 
   async acceptFriendRequest(relationId: number) {
-    /// may be useless
     const exist = await this.prisma.friends.findFirst({
       where: {
         id: relationId,
+        status: "pending",
       }
     });
 
-    if (exist == undefined)
+    if (exist == undefined) {
       return null
+    }
 
     const updateFriend = await this.prisma.friends.update({
       where: {
@@ -64,7 +64,6 @@ export class FriendService {
       }
     });
 
-    //// include the user friend to output it after
     return updateFriend;
   }
 
@@ -72,6 +71,7 @@ export class FriendService {
     const exist = await this.prisma.friends.findFirst({
       where: {
         id: relationId,
+        status: "pending",
       }
     });
 
@@ -87,6 +87,4 @@ export class FriendService {
 
     return updateFriend;
   }
-  /// accept friend -> if relation pending then accept
-  /// deny friend -> if relation pending then deny
 }
