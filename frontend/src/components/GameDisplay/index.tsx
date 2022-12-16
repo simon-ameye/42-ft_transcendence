@@ -95,7 +95,7 @@ const GameDisplay = (props: { config: GameConfig }) => {
 
 
   const handleGameInterface = (gi: GameInterface) => {
-    console.log('recieved');
+   // console.log('recieved');
     setgi(gi);
   }
 
