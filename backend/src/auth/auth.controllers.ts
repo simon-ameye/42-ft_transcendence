@@ -19,6 +19,7 @@ export class AuthController {
   }
   @Post('signin')
   signin(@Body() dto: AuthDto) {
+		console.log("SIGNIN")
     return this.authService.signin(dto);
   }
 
@@ -42,7 +43,7 @@ export class AuthController {
 		return (this.authService.signup2FA(body, response));
 	}
 
-	@Post('google2FA/login')
+	@Post('google2FA/signin')
 	verify2FA(@Body() body: {email: string, code: string}) {
 		return (this.authService.verify2FA(body));
 	}

@@ -102,17 +102,23 @@ export class AuthService {
   }
 
   async signin(dto: AuthDto): Promise<{access_token: string}> {
-    // find user
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user) {
-      throw new ForbiddenException(
-        'Credentials incorrect',
-      );
-    }
+		let user;
+    try {
+    	user = await this.prismaService.user.findUnique({
+    	  where: {
+    	    email: dto.email,
+    	  },
+    	});
+    } catch(e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code == "P2002") {
+          throw new ForbiddenException(
+            'Credentials taken',
+          );
+        }
+        throw e;
+      }
+		}
     const pwMatch = await argon.verify(
       user.hash,
       dto.password

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { socket } from '../App';
@@ -32,25 +33,36 @@ export default function Auth () {
 				token: data.access_token
 			}
 		})
-			.then(res => displayWelcomeMsg(res.data))
+			.then(res => updateUserSocket())
 			.catch(err => console.log(err));
-	}
-
-	const displayWelcomeMsg = (displayName: string) => {
-		setCookie('displayName', displayName, { path: '/' });
-		updateUserSocket();
 	}
 
 	const updateUserSocket = () => {
 		axios.put('http://localhost:3001/user/modifySocketId', {
 			socketId: socket.id
 		})
-			.then(res => console.log(res))
+			.then(res => socket.emit('reload'))
 			.catch(err => console.log(err));
 	}
 
 	const	goHome = () => {
 		navigate('/');
+	}
+
+	// USE_EFFECT \\
+
+	useEffect(() => {
+		socket.on("reload", reloadListener);
+		return () => {
+			socket.off("reload", reloadListener);
+		}
+	}, []);
+
+	// LISTENER \\
+
+	const reloadListener = () => {
+		console.log('heyo');
+		window.location.reload();
 	}
 
 	return (

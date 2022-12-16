@@ -17,8 +17,11 @@ const User = () => {
 	const [qrcode, setQrcode] = useState<string>('');
 	const [displayqrcode, setDisplayqrcode] = useState<boolean>(false);
 	const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
-	
 	const [userToken, setUserToken] = useState('');
+	const [userGoogleCode, setUserGoogleCode] = useState<string>('');
+	const [userMailIn, setUserMailIn] = useState('');
+	const [userMailIn2, setUserMailIn2] = useState('');
+	const [userPassIn, setUserPassIn] = useState('');
 
 	useEffect(() => {
 		console.log({qrcode: cookie.qrcode});
@@ -29,6 +32,24 @@ const User = () => {
 				.catch(err => console.log(err))
 		}
 	}, []);
+
+	// USE_EFFECT \\
+
+	useEffect(() => {
+		socket.on("reload", reloadListener);
+		return () => {
+			socket.off("reload", reloadListener);
+		}
+	}, []);
+
+	// LISTENER \\
+
+	const reloadListener = () => {
+		console.log('heyo');
+		window.location.reload();
+	}
+
+	// FUNCTIONS \\
 	
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -47,9 +68,14 @@ const User = () => {
     axios.put('http://localhost:3001/user/modifySocketId', {
       socketId: socket.id
     })
-      .then(res => navigate('/auth'))
+      .then(res => goToAuthPage())
       .catch(err => console.log(err));
   }
+
+	const goToAuthPage = () => {
+		socket.emit('reload');
+		navigate('/auth');
+	}
 
   const handleLogin = () => {
     window.location.href = 'http://localhost:3001/auth/42api/login';
@@ -68,7 +94,7 @@ const User = () => {
 			.catch(err => console.log(err));
 	}
 
-	const handleGoogleAuth = (e: React.FormEvent) => {
+	const handleGoogleAuthSignup = (e: React.FormEvent) => {
 		e.preventDefault();
 		axios.post('http://localhost:3001/auth/google2FA/signup',{
 			email: userMail,
@@ -86,18 +112,31 @@ const User = () => {
 			setDisplayqrcodeMessage("Display QR Code");
 	}
 
-	const updateUserSocketGoogle = (qrcodeURL: string) => {
-		window.location.href = 'http://localhost:3000';
-//		axios.put('http://localhost:3001/user/modifySocketId', {
-//			socketId: socket.id
-//		})
-//			.then(res => console.log(res))
-//			.catch(err => console.log(err));
+	const handleGoogleAuthSignin = (e: React.FormEvent) => {
+		e.preventDefault();
+		axios.post('http://localhost:3001/auth/google2FA/signin',{
+			email: userMail,
+			code: userGoogleCode,
+		})
+			.then(res => setQrcode(res.data))
+			.catch(err => console.log(err))
+	}
+
+	const handleSignin = (e: React.FormEvent) => {
+		e.preventDefault();
+
+		axios.post('http://localhost:3001/auth/signin', {
+			email: userMailIn,
+			password: userPassIn,
+		})
+			.then(res => updateUserSocket())
+			.catch(err => console.log(err))
 	}
 
 	return (
 		<>
 			<Navbar />
+			<h1>SIGN UP</h1>
 			<div className="createUser">
 				<div className="createUserContent">
 					<form onSubmit={handleSubmit}>
@@ -162,7 +201,7 @@ const User = () => {
 						value={userDisplayName}
 						onChange={(e) => setUserDisplayName(e.target.value)}
 					/>
-					<button onClick={handleGoogleAuth} className='login-btn'>
+					<button onClick={handleGoogleAuthSignup} className='login-btn'>
 						<p>Login with</p>
 						<img src={GoogleAuthImage} alt="google authentificator" style={{ width: '100px' }}></img>
 				</button>
@@ -171,6 +210,63 @@ const User = () => {
 					<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
 						{displayqrcode && <img src={qrcode} alt="qrcode" style={{ width: '400px' }}></img>
 				}
+			<br></br>
+			<br></br>
+			<br></br>
+			<br></br>
+			<h1>SIGN IN</h1>
+			<div className="createUser">
+				<div className="createUserContent">
+					<form onSubmit={handleSignin}>
+						<label>Email</label>
+						<input 
+							type="email"
+							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+							placeholder='ex: "test@test.fr"'
+							required
+							value={userMailIn}
+							onChange={(e) => setUserMailIn(e.target.value)}
+						/>
+						<label>Password</label>
+						<input
+							type="password"
+							placeholder='"123" is not a strong password ¯\_(ツ)_/¯'
+							required
+							value={userPassIn}
+							onChange={(e) => setUserPassIn(e.target.value)}
+						/>
+						<button type="submit" className='submit-btn'>submit</button>
+					</form>
+				</div>
+				<div className="or">OR</div>
+				<button onClick={handleLogin} className='login-btn'>
+					<p>Login with</p>
+					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
+				</button>
+			</div>
+				<form>
+					<label>Email</label>
+					<input 
+						type="email"
+						pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+						placeholder='ex: "test@test.fr"'
+						required
+						value={userMailIn2}
+						onChange={(e) => setUserMailIn2(e.target.value)}
+					/>
+					<label>google code</label>
+					<input 
+						type="text"
+						required
+						placeholder='google authentificator code'
+						value={userDisplayName}
+						onChange={(e) => setUserDisplayName(e.target.value)}
+					/>
+					<button onClick={handleGoogleAuthSignin} className='login-btn'>
+						<p>Login with</p>
+						<img src={GoogleAuthImage} alt="google authentificator" style={{ width: '100px' }}></img>
+				</button>
+				</form>
 		</>
 	);
 };

@@ -16,7 +16,7 @@ export class GameService {
     let users: string[] = new Array(len);
     for (let i = 0; i < len; ++i)
       users[i] = await this.userService.getNameById(queue[i].userId);
-    return (users);
+    return (users)
   }
 
   async getGameList(): Promise<string[]> {
