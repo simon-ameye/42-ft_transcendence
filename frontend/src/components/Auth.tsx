@@ -61,7 +61,6 @@ export default function Auth () {
 	// LISTENER \\
 
 	const reloadListener = () => {
-		console.log('heyo');
 		window.location.reload();
 	}
 

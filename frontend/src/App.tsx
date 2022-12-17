@@ -34,6 +34,13 @@ function App() {
 		}
 	});
 
+	useEffect(() => {
+		socket.on("reload", reloadListener);
+		return () => {
+			socket.off("reload", reloadListener);
+		}
+	});
+
 	// LISTENER \\
 
 	const heyoListener = () => {
@@ -42,6 +49,10 @@ function App() {
 		})
 			.then(res => socket.emit('is playing'))
 			.catch(err => console.log(err));
+	}
+
+	const reloadListener = () => {
+		window.location.reload();
 	}
 
   return cookie.displayName ? (

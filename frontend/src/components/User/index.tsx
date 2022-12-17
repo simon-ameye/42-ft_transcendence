@@ -125,6 +125,7 @@ const User = () => {
 	const handleSignin = (e: React.FormEvent) => {
 		e.preventDefault();
 
+		console.log('signin');
 		axios.post('http://localhost:3001/auth/signin', {
 			email: userMailIn,
 			password: userPassIn,
@@ -183,29 +184,31 @@ const User = () => {
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>
 			</div>
-				<form>
-					<label>Email</label>
-					<input 
-						type="email"
-						pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-						placeholder='ex: "test@test.fr"'
-						required
-						value={userMail}
-						onChange={(e) => setUserMail(e.target.value)}
-					/>
-					<label>Display name</label>
-					<input 
-						type="text"
-						required
-						placeholder='Display on pong ranking etc..'
-						value={userDisplayName}
-						onChange={(e) => setUserDisplayName(e.target.value)}
-					/>
-					<button onClick={handleGoogleAuthSignup} className='login-btn'>
-						<p>Login with</p>
-						<img src={GoogleAuthImage} alt="google authentificator" style={{ width: '100px' }}></img>
-				</button>
-				</form>
+				<div className="createUser">
+					<form>
+						<label>Email</label>
+						<input 
+							type="email"
+							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+							placeholder='ex: "test@test.fr"'
+							required
+							value={userMail}
+							onChange={(e) => setUserMail(e.target.value)}
+						/>
+						<label>Display name</label>
+						<input 
+							type="text"
+							required
+							placeholder='Display on pong ranking etc..'
+							value={userDisplayName}
+							onChange={(e) => setUserDisplayName(e.target.value)}
+						/>
+						<button onClick={handleGoogleAuthSignup} className='login-btn'>
+							<p>Login with</p>
+							<img src={GoogleAuthImage} alt="google authentificator" style={{ width: '100px' }}></img>
+						</button>
+					</form>
+				</div>
 				{qrcode &&
 					<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
 						{displayqrcode && <img src={qrcode} alt="qrcode" style={{ width: '400px' }}></img>
@@ -244,29 +247,31 @@ const User = () => {
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>
 			</div>
-				<form>
-					<label>Email</label>
-					<input 
-						type="email"
-						pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-						placeholder='ex: "test@test.fr"'
-						required
-						value={userMailIn2}
-						onChange={(e) => setUserMailIn2(e.target.value)}
-					/>
-					<label>google code</label>
-					<input 
-						type="text"
-						required
-						placeholder='google authentificator code'
-						value={userDisplayName}
-						onChange={(e) => setUserDisplayName(e.target.value)}
-					/>
-					<button onClick={handleGoogleAuthSignin} className='login-btn'>
-						<p>Login with</p>
-						<img src={GoogleAuthImage} alt="google authentificator" style={{ width: '100px' }}></img>
-				</button>
-				</form>
+				<div className="createUser">
+					<form>
+						<label>Email</label>
+						<input 
+							type="email"
+							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+							placeholder='ex: "test@test.fr"'
+							required
+							value={userMailIn2}
+							onChange={(e) => setUserMailIn2(e.target.value)}
+						/>
+						<label>google code</label>
+						<input 
+							type="text"
+							required
+							placeholder='google authentificator code'
+							value={userDisplayName}
+							onChange={(e) => setUserDisplayName(e.target.value)}
+						/>
+						<button onClick={handleGoogleAuthSignin} className='login-btn'>
+							<p>Login with</p>
+							<img src={GoogleAuthImage} alt="google authentificator" style={{ width: '100px' }}></img>
+						</button>
+					</form>
+				</div>
 		</>
 	);
 };

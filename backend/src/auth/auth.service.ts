@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, Res } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto, UserDto } from "./dto";
+import { AuthDto, UserDto, SigninDto } from "./dto";
 import { Prisma } from ".prisma/client";
 import * as argon from 'argon2'
 import { map } from "rxjs/operators";
@@ -101,7 +101,10 @@ export class AuthService {
     }
   }
 
-  async signin(dto: AuthDto): Promise<{access_token: string}> {
+  async signin(
+			dto: SigninDto,
+			@Res({ passthrough: true }) response: Response
+		): Promise<{access_token: string}> {
 		let user;
     try {
     	user = await this.prismaService.user.findUnique({
@@ -119,6 +122,7 @@ export class AuthService {
         throw e;
       }
 		}
+		console.log("USER FOUND");
     const pwMatch = await argon.verify(
       user.hash,
       dto.password
@@ -129,7 +133,19 @@ export class AuthService {
       )
     };
     delete user.hash;
-		return (this.signToken(user));
+		const jwtToken = await this.signJwtToken(user);
+		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+		response.status(202).cookie('displayName', user.displayName, { path: '/' });
+		const displayName = user.displayName;
+		user = await this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				log: true
+			}
+		});
+		return (displayName);
   }
 
 	async	signup2FA(
@@ -205,7 +221,7 @@ export class AuthService {
 	}
 
 	async logout(user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
-		const updatedUser = this.prismaService.user.update({
+		const updatedUser = await this.prismaService.user.update({
 			where: {
 				id: user.id
 			},

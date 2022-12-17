@@ -1,10 +1,9 @@
 import { Body, Controller, Delete, Get, Post, UseGuards, Query, Res, Req } from "@nestjs/common";
 import { Response, Request } from 'express';
 import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto";
+import { AuthDto, UserDto, SigninDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUser } from "./decorators";
-import { UserDto } from "./dto";
 
 @Controller('auth')
 export class AuthController {
@@ -17,10 +16,14 @@ export class AuthController {
 	) {
     return this.authService.signup(dto, response);
   }
+
   @Post('signin')
-  signin(@Body() dto: AuthDto) {
+  signin(
+			@Body() dto: SigninDto,
+			@Res({ passthrough: true} ) response: Response
+		) {
 		console.log("SIGNIN")
-    return this.authService.signin(dto);
+    return this.authService.signin(dto, response);
   }
 
 	@UseGuards(AuthGuard('42API'))
@@ -50,7 +53,10 @@ export class AuthController {
 
 	@UseGuards(AuthGuard('jwt'))
 	@Delete('logout')
-	async logout(@GetUser() user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+	async logout(
+			@GetUser() user: UserDto,
+			@Res({ passthrough: true }) response: Response
+	): Promise<void> {
 		return (this.authService.logout(user, response));
 	}
 }
