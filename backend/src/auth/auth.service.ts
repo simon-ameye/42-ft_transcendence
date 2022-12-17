@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, Res } from "@nestjs/common";
+import { ForbiddenException, Injectable, Res, HttpException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto, UserDto, SigninDto } from "./dto";
 import { Prisma } from ".prisma/client";
@@ -36,7 +36,14 @@ export class AuthService {
 					email: res.email,
 				},
 			});
-			if (!user) {
+			if (user && user.log == true) {
+				console.log('USER ALREADY LOG IN');
+				throw new HttpException({
+					status: 460,
+					error: 'User already log in'
+				}, 460);
+			}
+			else if (!user) {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
@@ -65,9 +72,25 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
-			return (user.displayName);
+			const displayName = user.displayName;
+			user = await this.prismaService.user.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					log: true
+				}
+			});
+			return (displayName);
 		} catch(e) {
-			return (e.message);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code == "P2002") {
+          throw new ForbiddenException(
+            'Credentials taken',
+          );
+        }
+			}
+      throw e;
 		}
   }
 
@@ -119,10 +142,9 @@ export class AuthService {
             'Credentials taken',
           );
         }
-        throw e;
       }
+      throw e;
 		}
-		console.log("USER FOUND");
     const pwMatch = await argon.verify(
       user.hash,
       dto.password

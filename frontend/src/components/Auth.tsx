@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -34,7 +34,7 @@ export default function Auth () {
 			}
 		})
 			.then(res => updateUserSocket())
-			.catch(err => console.log(err));
+			.catch(err => handleIntraErr(err));
 	}
 
 	const updateUserSocket = () => {
@@ -43,6 +43,20 @@ export default function Auth () {
 		})
 			.then(res => socket.emit('reload'))
 			.catch(err => console.log(err));
+	}
+
+	const	handleIntraErr = (err: AxiosError) => {
+		if (err.response) {
+			if (err.response.status == 460) {
+				alert('You are already log in from an other device');
+			}
+			else if (err.response.status == 403) {
+				alert('Your credentials are already taken');
+			}
+		}
+		else
+			console.log(err);
+		navigate('/');
 	}
 
 	const	goHome = () => {
@@ -67,7 +81,7 @@ export default function Auth () {
 	return (
 		<>
 			<div>
-				<h1>Hello {cookie.displayName}!</h1>
+				<h1>Welcome {cookie.displayName} to ft_transcendence!</h1>
 			</div>
 			<div>
 				<button onClick={goHome}>Go to home page</button>

@@ -23,6 +23,8 @@ const User = () => {
 	const [userMailIn2, setUserMailIn2] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
 
+	// USE_EFFECT \\
+
 	useEffect(() => {
 		console.log({qrcode: cookie.qrcode});
 		console.log({displayname: cookie.displayName});
@@ -32,8 +34,6 @@ const User = () => {
 				.catch(err => console.log(err))
 		}
 	}, []);
-
-	// USE_EFFECT \\
 
 	useEffect(() => {
 		socket.on("reload", reloadListener);
@@ -77,7 +77,7 @@ const User = () => {
 		navigate('/auth');
 	}
 
-  const handleLogin = () => {
+  const handleIntra = () => {
     window.location.href = 'http://localhost:3001/auth/42api/login';
   }
 
@@ -179,7 +179,7 @@ const User = () => {
 					</form>
 				</div>
 				<div className="or">OR</div>
-				<button onClick={handleLogin} className='login-btn'>
+				<button onClick={handleIntra} className='login-btn'>
 					<p>Login with</p>
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>
@@ -242,7 +242,7 @@ const User = () => {
 					</form>
 				</div>
 				<div className="or">OR</div>
-				<button onClick={handleLogin} className='login-btn'>
+				<button onClick={handleIntra} className='login-btn'>
 					<p>Login with</p>
 					<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo"></img>
 				</button>
