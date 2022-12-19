@@ -7,9 +7,10 @@ import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
 import ChatBox from './components/Chat/ChatBox'
-import Profile from './components/Profile/Profile'
+import Profile from './components/Profile'
 import NotFound from './components/NotFound';
 import Game from './components/GameSetup';
+import Upload from './components/Profile/upload';
 
 axios.defaults.withCredentials = true;
 
@@ -43,6 +44,7 @@ function App() {
 			<Route path="/game/live" element={<LiveGame />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
+				{/* for now just upload in profile */}
         <Route path="/Profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
