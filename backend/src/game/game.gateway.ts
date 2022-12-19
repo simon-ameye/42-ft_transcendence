@@ -105,6 +105,16 @@ export class GameGateway {
     })
   }
 
+  @SubscribeMessage('powerUp')
+  async powerUp(client): Promise<void> {
+    const user = await this.prismaService.user.findUnique({ where: { socketId: client.id } })
+
+    const updateGames = await this.prismaService.game.updateMany({
+      where: { players: { has: user.id }, },
+      data: { powerUp: true, },
+    })
+  }
+
   async startGameAuto(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
     this.server.to(data.SIdOne).emit('game started auto');
     this.server.to(data.SIdTwo).emit('game started auto');
@@ -124,8 +134,13 @@ export class GameGateway {
 
     let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
     let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
-
-    this.gameProcess(gameRoom, p1Id, p2Id);
+    let game = this.prismaService.game.findFirst({ where: { AND: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } });
+    if (!(await game))
+    {
+      console.log('No game was started with those two players !');
+      return;
+    }
+    this.gameProcess(gameRoom, p1Id, p2Id, (await game).id);
   }
 
   delay(time) {
@@ -160,6 +175,7 @@ export class GameGateway {
       paddleOffcet: 0.1,
       paddleThickness: 0.02,
       ballRadius: 0.02,
+      powerUp: false,
     };
     return gi;
   }
@@ -190,13 +206,12 @@ export class GameGateway {
     this.server.emit('game over', versus);
   }
 
-  async gameProcess(gameRoom: string, p1Id: number, p2Id: number) {
+  async gameProcess(gameRoom: string, p1Id: number, p2Id: number, gameId: number) {
     let gi = await this.initGameInterface(p1Id, p2Id);
 
     let ball_dx: number = 0.015;
     let ball_dy: number = 0.01;
     let paddleMissed = 0;
-    let divCoeff = 0.05;
 
     while (1) {
 
@@ -210,18 +225,20 @@ export class GameGateway {
       }
 
       if (paddleMissed == 0) {
-        if (gi.ballX + gi.ballRadius>= (1 - gi.paddleOffcet)) {
+        if (gi.ballX + gi.ballRadius >= (1 - gi.paddleOffcet)) {
           if (Math.abs(gi.ballY - gi.p2Y) <= gi.paddleHeight / 2) {
             ball_dx = -ball_dx;
-            ball_dx *= 1.5;
+            if (gi.powerUp)
+              ball_dx *= 1.5;
           }
           else
             paddleMissed = 1;
         }
-        else if (gi.ballX - gi.ballRadius<= gi.paddleOffcet) {
+        else if (gi.ballX - gi.ballRadius <= gi.paddleOffcet) {
           if (Math.abs(gi.ballY - gi.p1Y) <= gi.paddleHeight / 2) {
             ball_dx = -ball_dx;
-            ball_dx *= 1.5;
+            if (gi.powerUp)
+              ball_dx *= 1.5;
           }
           else
             paddleMissed = 1;
@@ -242,6 +259,12 @@ export class GameGateway {
         ball_dx = 0.015;
         ball_dy = 0.01;
         paddleMissed = 0;
+        var game = this.prismaService.game.findUnique({ where: { id: gameId } });
+        if (!await game) {
+          console.log('Game process: it seems that the game has been deleted');
+          return;
+        }
+        gi.powerUp = (await game).powerUp;
       }
 
       this.server.to(gameRoom).emit('gameInterface', gi);

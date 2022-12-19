@@ -63,6 +63,7 @@ CREATE TABLE "Matching" (
 CREATE TABLE "Game" (
     "id" SERIAL NOT NULL,
     "players" INTEGER[],
+    "powerUp" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Game_pkey" PRIMARY KEY ("id")
 );

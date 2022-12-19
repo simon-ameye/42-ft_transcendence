@@ -73,6 +73,7 @@ model Matching {
 }
 
 model Game {
-  id      Int   @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   players Int[]
+  powerUp Boolean @default(false)
 }

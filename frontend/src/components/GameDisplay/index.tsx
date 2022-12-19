@@ -133,6 +133,10 @@ const GameDisplay = (props: { config: GameConfig }) => {
     socket.emit('arrow down');
   }, ['ArrowDown'])
 
+  const powerUp = () => {
+    console.log('Powering up !');
+    socket.emit('powerUp');
+  }
 
   const joinRoomListener = (gameRoom: string) => {
     socket.emit('join room', gameRoom);
@@ -165,6 +169,7 @@ const GameDisplay = (props: { config: GameConfig }) => {
           <h5 className="name-1">{gi?.p1Name}</h5>
           <h2 className="score-1">{gi?.p1score}</h2>
         </div>
+        <div className="p2-scoreboard">{gi?.powerUp ? 'Power up enabled !!' : ''}</div>
         <div className="p2-scoreboard">
           <h5 className="name-2">{gi?.p2Name}</h5>
           <h2 className="score-2">{gi?.p2score}</h2>
@@ -175,6 +180,9 @@ const GameDisplay = (props: { config: GameConfig }) => {
         <div className="background-color">
           <label>background color :</label>
           <input type="color" value={backColor} onChange={e => setBackColor(e.target.value)} />
+        </div>
+        <div className="pad-ball-color">
+          <button onClick={powerUp}>Power UP !</button>
         </div>
         <div className="pad-ball-color">
           <label>pad/ball color :</label>

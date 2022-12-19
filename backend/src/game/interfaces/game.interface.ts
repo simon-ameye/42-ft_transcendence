@@ -13,4 +13,5 @@ export interface GameInterface {
   paddleOffcet: number,
   ballRadius: number,
   paddleThickness: number,
+  powerUp: boolean,
 }
