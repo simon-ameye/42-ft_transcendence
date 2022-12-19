@@ -11,13 +11,13 @@ import Profile from './components/Profile'
 import NotFound from './components/NotFound';
 import Game from './components/GameSetup';
 import Upload from './components/Profile/upload';
+import Friends from './components/Friends';
 
 axios.defaults.withCredentials = true;
 
 export let socket = io('http://localhost:4343', { withCredentials: true });
 
 function App() {
-
 	socket.emit('hello');
 
 	useEffect(() => {
@@ -46,6 +46,7 @@ function App() {
         <Route path="/ChatBox" element={<ChatBox />} />
 				{/* for now just upload in profile */}
         <Route path="/Profile" element={<Profile />} />
+				<Route path="/friends" element={<Friends />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

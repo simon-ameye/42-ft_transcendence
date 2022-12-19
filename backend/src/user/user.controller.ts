@@ -1,16 +1,17 @@
-import { Controller,
-  MaxFileSizeValidator, 
-  Post, 
-  Get, 
+import {
+  Controller,
+  MaxFileSizeValidator,
+  Post,
+  Get,
   Put,
   UploadedFile,
   Body,
-  ParseFilePipe, 
-  FileTypeValidator, 
+  ParseFilePipe,
+  FileTypeValidator,
   UseInterceptors,
   UseGuards,
-	Query,
-	Req
+  Query,
+  Req
 } from '@nestjs/common';
 
 import { Express, Request } from 'express';
@@ -20,17 +21,29 @@ import { Res } from '@nestjs/common';
 import { UserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators';
-
+import { User } from '@prisma/client';
 // clean dependencies + unused dtos
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  getUser(@GetUser() user: UserDto) {
+    return user; // by now returns the token
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('getEmail')
   getEmail(@GetUser() user: UserDto) {
     return user.email;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('users')
+  getUsers(@GetUser() user: UserDto) {
+    return this.userService.getUsers(user);
   }
 
   // DisplayName
@@ -42,6 +55,18 @@ export class UserController {
 
   // DisplaySocketId
   @UseGuards(AuthGuard('jwt'))
+  @Get('receivedfriendRequest')
+  getreceivedfriendRequest(@GetUser() user: UserDto) {
+    return this.userService.pendingFriend(user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('friendsList')
+  friendsList(@GetUser() user: UserDto) {
+    return this.userService.friendsList(user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get('socketId')
   getSocketId(@GetUser() user: UserDto) {
     return user.socketId;
@@ -50,14 +75,14 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Put('modifyName')
   modifyName(@GetUser() user: UserDto,
-		@Body() body: {displayName: string}) {
+    @Body() body: { displayName: string }) {
     return this.userService.modifyName(user, body.displayName);
   }
 
-	@UseGuards(AuthGuard('jwt'))
-	@Put('modifySocketId')
-	modifySocketId(@Body() body: {socketId: string}, @GetUser() user: UserDto) {
-		return this.userService.modifySocketId(user, body.socketId);
-	}
+  @UseGuards(AuthGuard('jwt'))
+  @Put('modifySocketId')
+  modifySocketId(@Body() body: { socketId: string }, @GetUser() user: UserDto) {
+    return this.userService.modifySocketId(user, body.socketId);
+  }
 
 }
