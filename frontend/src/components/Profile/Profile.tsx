@@ -1,29 +1,32 @@
 import Navbar from '../Navbar';
 import { useEffect, useState } from "react";
-import { socket } from '../../App';
-import { ListItem } from '@mui/material'
 import axios from 'axios';
-import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
-import { RiChat3Fill } from 'react-icons/ri';
-import { RiChatPrivateFill } from 'react-icons/ri';
-import { BsFillPeopleFill } from 'react-icons/bs';
 import ProfileInterface from './Interface/ProfileInterface';
 import './style.scss'
 
 
 const Profile = () => {
   const [profileInterface, setprofileInterface] = useState<ProfileInterface | undefined>()
-  const [userProfilePicture, setUserProfilePicture] = useState('');
+  const [imageFile, setImageFile] = useState()
+  const [imageUrl, setImageUrl] = useState<string>()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // downoad image and stock the path to it
-    axios.post('http://localhost:3001/profile/uploadImage', {
-      imageUrl: userProfilePicture
-    })
-      .then()
-      .catch(err => console.log(err))
+  const handleSubmit = async(event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const formData = new FormData(); 
+    if (imageFile === undefined)
+      return;
+    formData.append("image", imageFile!) // dangerous
+    //console.log(userProfilePicture)
+    try {
+      const response = await axios({
+        method: "post",
+        url: "localhost:3001/profile/uploadImage",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } catch(error) {
+      console.log(imageFile)
+    }
   }
 
   function getProfileInterface() {
@@ -34,11 +37,11 @@ const Profile = () => {
       }).catch(err => console.log(err));
   }
   
-  /*function getProfileImage() {
+ /* function getProfileImage() {
     axios.get('http://localhost:3001/profile/getImage', {
     }).then(
       function (response) {
-        setprofileInterface(response.data);
+        setUserProfilePicture(response.data)
       }).catch(err => console.log(err));
   }*/
 
@@ -53,9 +56,9 @@ const Profile = () => {
   return (
     <div className='profile'>
       <Navbar />
-      <div className='email'>{profileInterface?.email}</div>
-      <div className='displayName'>{profileInterface?.displayName}</div>
-      <div className='profileImage'> profile image : {userProfilePicture}</div>
+      {/* <div className='email'>{profileInterface?.email}</div> */}
+      {/* <div className='displayName'>{profileInterface?.displayName}</div> */}
+      {/* <div className='profileImage'> profile image : {userProfilePicture}</div> */}
       {/* <div>matching: {profileInterface?.matching}</div> */}
       {/* <div>inGame: {profileInterface?.inGame}</div> */}
       {/* <div>victories: {profileInterface?.victories}</div> */}
@@ -64,15 +67,12 @@ const Profile = () => {
       {/* <div>blockedUserIds: {profileInterface?.blockedUserIds}</div> */}
       <form onSubmit={handleSubmit}>
       <input
-        id="file"
         type="file"
-        value={userProfilePicture}
-        onChange={(e) => setUserProfilePicture(e.target.value)}
+        value={imageFile || ''}
+        onChange={(e) => setImageFile(e.target.value)}
       />
-      <div className="uploadProfileImage">
-        <label className="upload" htmlFor="file">Upload profile picture</label>
-        <button type="submit" className='submit-btn'>submit</button>
-      </div>
+        { <label className="upload" htmlFor="image">Upload profile picture</label> }
+        { <button type="submit" className='submit-btn'>submit</button> }
       </form>
     </div>
   )

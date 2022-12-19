@@ -27,10 +27,11 @@ export class ProfileController {
   }*/
 
   //// IMAGE UPLOAD
+
   @UseGuards(AuthGuard('jwt'))
   @Post('uploadImage')
   @UseInterceptors(
-    FileInterceptor('image', {
+    FileInterceptor('file', {
       dest: './uploads',
     }
   ))
@@ -46,9 +47,9 @@ export class ProfileController {
     file: Express.Multer.File,
     @GetUser() user: UserDto,
   ) {
-    console.log(file)
-    //let response = await this.profileService.upload(user, file.path);
-    //return response;
+    console.log("UPLOAD FILE")
+    let response = await this.profileService.upload(user, file.path);
+    return response;
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -41,7 +41,7 @@ export class AuthService {
 					data: {
 						email: String(res.email),
 						displayName: String(res.login),
-						imageUrl: String(res.image_url)
+						imageUrl: "./uploads/default.png"
 					}
 				});
 			//	const fs = require('fs');

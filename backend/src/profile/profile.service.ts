@@ -3,6 +3,7 @@ import { ChannelMode } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { ProfileInterface } from "./interfaces/profile.interface";
 import { UserDto } from "src/user/dto";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class ProfileService {
@@ -13,8 +14,6 @@ export class ProfileService {
 
   async getProfile(userId: number): Promise<ProfileInterface> {
     var user = this.prisma.user.findUnique({ where: { id: userId } });
-    //if (!await user)
-    //  return (profileInterface);
 
     let profileInterface: ProfileInterface = {
       id: (await user).id,
@@ -32,7 +31,7 @@ export class ProfileService {
     return (profileInterface);
   }
 
-  async upload(dto: UserDto, path: string) {
+  async upload(dto: UserDto, path: string): Promise<string> {
     if (!dto) {
       console.log("not expected error");
     }
@@ -44,6 +43,7 @@ export class ProfileService {
         imageUrl: path,
       },
     })
+    return updateUser.imageUrl
   }
 
 
