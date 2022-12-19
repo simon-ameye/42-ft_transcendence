@@ -10,13 +10,13 @@ import ChatBox from './components/Chat/ChatBox'
 import Profile from './components/Profile/Profile'
 import NotFound from './components/NotFound';
 import Game from './components/GameSetup';
+import Friends from './components/Friends';
 
 axios.defaults.withCredentials = true;
 
 export let socket = io('http://localhost:4343', { withCredentials: true });
 
 function App() {
-
 	socket.emit('hello');
 
 	useEffect(() => {
@@ -44,6 +44,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/ChatBox" element={<ChatBox />} />
         <Route path="/Profile" element={<Profile />} />
+				<Route path="/friends" element={<Friends />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
