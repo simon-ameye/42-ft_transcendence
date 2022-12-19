@@ -10,6 +10,10 @@ header {
   color: $nav_text;
   margin-bottom: 2rem;
 
+  span {
+    padding-left: 10px;
+  }
+
   .title {
     font-size: 25px;
     //padding-right: 1rem;

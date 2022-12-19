@@ -11,6 +11,7 @@ import ChatBox from './components/Chat/ChatBox'
 import Profile from './components/Profile/Profile'
 import NotFound from './components/NotFound';
 import { useCookies } from 'react-cookie';
+import Default from './layouts/Default';
 
 axios.defaults.withCredentials = true;
 
@@ -55,26 +56,26 @@ function App() {
 		window.location.reload();
 	}
 
-  return cookie.displayName ? (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/ChatBox" element={<ChatBox />} />
+	return cookie.displayName ? (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/auth" element={<Auth />} />
+				<Route path="/" element={<Home />} />
+				<Route path="/ChatBox" element={<ChatBox />} />
 				<Route path="/game" element={<Game />} />
 				<Route path="/game/live" element={<GameLive />} />
 				<Route path="/Profile" element={<Profile />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  ) : (
-    <BrowserRouter>
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</BrowserRouter>
+	) : (
+		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<User />} />
-        <Route path="/auth" element={<Auth />} />
-  	    <Route path="*" element={<NotFound />} />
+				<Route path="/auth" element={<Auth />} />
+				<Route path="*" element={<NotFound />} />
 			</Routes>
-    </BrowserRouter>
+		</BrowserRouter>
 	);
 }
 
