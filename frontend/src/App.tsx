@@ -1,17 +1,28 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from './components/Home';
 import User from './components/User';
+<<<<<<< HEAD
 import Notifications from './components/Notifications';
 import Chat from './pages/chat';
 import Home from './pages/home';
 import NotFound from './pages/notFound';
 import Game from './pages/Game';
+=======
+>>>>>>> main
 import LiveGame from './components/AbrunGame/live-game.component';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios from 'axios';
+<<<<<<< HEAD
 import Profile from './components/Profile/Profile';
 import Friends from './components/friends/Friends';
+=======
+import ChatBox from './components/Chat/ChatBox'
+import Profile from './components/Profile/Profile'
+import NotFound from './components/NotFound';
+import Game from './components/GameSetup';
+>>>>>>> main
 
 axios.defaults.withCredentials = true;
 
@@ -35,6 +46,7 @@ function App() {
 			.catch(err => console.log(err));
 	}
 
+<<<<<<< HEAD
 	return (
 		<BrowserRouter>
 			<Routes>
@@ -49,6 +61,22 @@ function App() {
 			</Routes>
 		</BrowserRouter>
 	);
+=======
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/game" element={<Game />} />
+			<Route path="/game/live" element={<LiveGame />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/ChatBox" element={<ChatBox />} />
+        <Route path="/Profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
+>>>>>>> main
 }
 
 export default App;

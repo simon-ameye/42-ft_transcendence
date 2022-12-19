@@ -6,9 +6,15 @@ import { UserModule } from './user/user.module';
 import { FriendModule } from './friend/friend.module';
 import { FriendService } from './friend/friend.service';
 import { GameModule } from './game/game.module';
+import { ChatModule } from './chat/chat.module';
+import { ProfileModule } from './profile/profile.module';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
-  imports: [AuthModule,
+  imports: [
+	ChatModule,
+  ProfileModule,
+	AuthModule,
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -16,6 +22,7 @@ import { GameModule } from './game/game.module';
     PrismaModule,
     FriendModule,
     GameModule,
+    LeaderboardModule,
   ],
   //providers: [FriendService],
 })

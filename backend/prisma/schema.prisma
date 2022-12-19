@@ -21,8 +21,16 @@ model User {
   googleSecret String?
   status       String?
   // add path of the image
+<<<<<<< HEAD
   socketId     String?   @unique
   matching     Matching?
+=======
+
+  socketId        String? @unique
+  blockedUserIds  Int[]
+  friends         Int[]
+  matching Matching?
+>>>>>>> main
 
   inGame    Boolean @default(false)
   victories Int     @default(0)
@@ -34,6 +42,7 @@ model User {
   @@map("users")
 }
 
+<<<<<<< HEAD
 model Friends {
   id        Int      @id @default(autoincrement())
   user_id   Int
@@ -43,6 +52,34 @@ model Friends {
   status    fstatus
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+=======
+model Channel{
+  id              Int         @id @default(autoincrement())
+  name            String      @default("unknown channel")
+  mode            ChannelMode @default(PUBLIC)
+  password        String      @default("")
+  ownerId         Int         @default(0)
+  adminIds        Int[]
+  banedUserIds    Int[]
+  messageIds      Int[]
+  userIds         Int[]
+  muteUserIds     Int[]
+  muteRelease     DateTime[]
+}
+
+model Message {
+  id              Int         @id @default(autoincrement())
+  text            String?
+  authorId        Int                                        //one  to many field
+  date            DateTime    @default(now())
+}
+
+enum ChannelMode {
+  PUBLIC                                                       //everybody can join, but there may be a password. No password => password = ''
+  DIRECT                                                       //direct messages between two users
+  PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
+}
+>>>>>>> main
 
   @@unique([user_id, friend_id])
 }

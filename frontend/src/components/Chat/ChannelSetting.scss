@@ -1,0 +1,6 @@
+@import '../../styles/settings';
+
+.channel_setting{
+  .Button{
+  @include btn-anim;
+}}
