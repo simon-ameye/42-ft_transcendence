@@ -38,6 +38,11 @@ const Navbar = () => {
           <i className="fa-solid fa-user"></i>
           <span>User</span>
         </NavLink>
+        <NavLink to="/friends" className='navItem'>
+					<i className="fa-solid fa-user"></i>
+					<span>Friends</span>
+					{ /* do a button instead of a navlink*/}
+				</NavLink>
         <div className='navItem'>
           <div className='navList'>
             <div onClick={handleOpen}><i className="fa-solid fa-user" />{cookie.displayName}<AiFillCaretDown size={10}/></div>

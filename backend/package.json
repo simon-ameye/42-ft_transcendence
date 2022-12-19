@@ -42,11 +42,7 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "express-session": "^1.17.3",
-<<<<<<< HEAD
-    "openssl": "^1.1.0",
-=======
     "openssl": "^2.0.0",
->>>>>>> main
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-oauth2": "^1.6.1",
