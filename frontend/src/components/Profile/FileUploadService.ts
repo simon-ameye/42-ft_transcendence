@@ -12,13 +12,13 @@ const upload = (file: File): Promise<any> => {
   });
 };
 
-const getFiles = () : Promise<any> => {
+const getFile = () : Promise<any> => {
   return axios.get("http://localhost:3001/profile/getImage");
 };
 
 const FileUploadService = {
   upload,
-  getFiles,
+  getFile,
 };
 
 export default FileUploadService;

@@ -47,7 +47,7 @@ export class ProfileController {
     file: Express.Multer.File,
     @GetUser() user: UserDto,
   ) {
-    console.log("UPLOAD FILE")
+    console.log(file.path)
     let response = await this.profileService.upload(user, file.path);
     return response;
   }
