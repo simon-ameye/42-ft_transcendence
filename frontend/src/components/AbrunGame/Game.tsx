@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { socket } from '../../App';
 import axios from 'axios';
 import OppenentsInterface from '../../interfaces/oppenents.interface';
@@ -6,19 +6,23 @@ import PlayerInterface from '../../interfaces/player.interface';
 import InvitPopup from './invit-popup.component';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import Navbar from '../Navbar';
+import { ListItem } from '@mui/material';
+import { RiPingPongFill } from 'react-icons/ri';
+
 
 export default function GameHome() {
 
-		// VARIABLES \\
-	
+	// VARIABLES \\
+
 	const [cookie] = useCookies(['displayName']);
 	const navigate = useNavigate();
-	const	[matchingQueue, setMatchingQueue] = useState<string[]>([]);
+	const [matchingQueue, setMatchingQueue] = useState<string[]>([]);
 	const [gameList, setGameList] = useState<string[]>([]);
-	
-		// FUNCTIONS \\
-	
-	const	addToQueue = () => {
+
+	// FUNCTIONS \\
+
+	const addToQueue = () => {
 		if (!matchingQueue.includes(cookie.displayName)) {
 			socket.emit("join matching queue");
 		}
@@ -30,60 +34,84 @@ export default function GameHome() {
 	}
 
 	const watchMatch = (strGame: string) => {
-		const playerIds = strGame.split(" ");
-		playerIds.splice(1, 1);
+		const playerNames = strGame.split(" ");
+		playerNames.splice(1, 1);
 		navigate('/game/live');
-		socket.emit("watch game", playerIds);
+		socket.emit("watch game", playerNames);
 	}
-	
-		// USE_EFFECT \\
-	
-	 useEffect (() => {
-	 axios.get('http://localhost:3001/game/queue')
-	 	.then(res => {
-			setMatchingQueue(res.data);
-	 	})
-	 	.catch(err => {
-	 		console.log(err);
-	 	})
+
+	const MatchingQueue = matchingQueue.map((matchingQueue, index) => {
+		if (cookie.displayName && matchingQueue !== cookie.displayName) {
+			return <ListItem button onClick={() => sendInvit(matchingQueue)} key={index}>{matchingQueue} </ListItem>
+		}
+	})
+
+	const GameInProgress = gameList.map((gameList, index) => (
+		<ListItem button onClick={() => watchMatch(gameList)} key={index}>{gameList} </ListItem>
+	))
+
+	// USE_EFFECT \\
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/game/queue')
+			.then(res => {
+				setMatchingQueue(res.data);
+			})
+			.catch(err => {
+				console.log(err);
+			})
 	}, []);
-	
-	 useEffect (() => {
-	 axios.get('http://localhost:3001/game/list')
-	 	.then(res => {
-			setGameList(res.data);
-	 	})
-	 	.catch(err => {
-	 		console.log(err);
-	 	})
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/game/list')
+			.then(res => {
+				setGameList(res.data);
+			})
+			.catch(err => {
+				console.log(err);
+			})
 	}, []);
-	
+
 
 	useEffect(() => {
 		socket.on("join matching queue", joinMatchingQueueListener);
 		return () => {
 			socket.off("join matching queue", joinMatchingQueueListener);
 		}
-	})
+	});
 
 	useEffect(() => {
 		socket.on("deleteOppenents", deleteOppenentsListener);
 		return () => {
 			socket.off("deleteOppenents", deleteOppenentsListener);
 		}
-	})
+	});
 
 	useEffect(() => {
 		socket.on("update game list", updateGameListListener);
 		return () => {
 			socket.off("update game list", updateGameListListener);
 		}
-	})
+	});
 
-		// LISTENER \\
-	
-	const	joinMatchingQueueListener = (displayName: string) => {
-			setMatchingQueue([...matchingQueue, displayName]);
+	useEffect(() => {
+		socket.on("game started auto", gameAutoListener);
+		return () => {
+			socket.off("game started auto", gameAutoListener);
+		}
+	});
+
+	useEffect(() => {
+		socket.on("game over", gameOverListener);
+		return () => {
+			socket.off("game over", gameOverListener);
+		}
+	});
+
+	// LISTENER \\
+
+	const joinMatchingQueueListener = (displayName: string) => {
+		setMatchingQueue([...matchingQueue, displayName]);
 	}
 
 	const deleteOppenentsListener = (oppenents: OppenentsInterface) => {
@@ -102,40 +130,55 @@ export default function GameHome() {
 		setGameList([...gameList, strGame]);
 	}
 
-	function MissedGoal() {
- 	 return <h1>MISSED!</h1>;
+	const gameAutoListener = () => {
+		navigate('/game/live');
 	}
 
-		// RETURN \\
+	const	gameOverListener = (versus: string) => {
+		let index = gameList.indexOf(versus);
+		if (index >= 0)
+			gameList.splice(index, 1);
+		else
+			console.log(versus);
+		setGameList([...gameList]);
+	}
+
+	function MissedGoal() {
+		return <h1>MISSED!</h1>;
+	}
+
+	// RETURN \\
 
 	return (
-		<>
-			{cookie.displayName &&
-				<div>
-					<button onClick={() => addToQueue()}>Join game</button>
+		<div>
+			<Navbar />
+			<div className='Join_game'>
+				{/* Left Side*/}
+				<div className='leftside_game'>
+					<div className='game-container'>
+						<br></br>
+						{cookie.displayName}
+						<br></br>
+						<div className='Join_game_button'>
+							{cookie.displayName &&
+								<div className='pong_join_game'>
+									<button className='pong_button' onClick={() => addToQueue()}><i className="fa-solid fa-table-tennis-paddle-ball"></i></button>
+								</div>}
+						</div>
+						<div className='Matching_queue'>
+							<br></br>
+							Matching Queue
+							{MatchingQueue}
+						</div>
+						<div>
+							<br></br>
+							<h5>Watch game in progress</h5>
+							{GameInProgress}
+						</div>
+					</div>
 				</div>
-			}
-			<div>
-				<h5>Matching Queue</h5>
-				<ul>
-					{matchingQueue.map((matchingQueue, index) => (
-						<li key={index}>{matchingQueue}    {cookie.displayName && matchingQueue !== cookie.displayName && <button 
-								onClick={() => sendInvit(matchingQueue)}>Invit</button>}
-						</li>
-					))}
-				</ul>
-			</div>
-			<div>
-				<h5>Game in progress</h5>
-				<ul>
-					{gameList.map((gameList, index) => (
-						<li key={index}>{gameList}      <button 
-								onClick={() => watchMatch(gameList)}>Watch</button>
-						</li>
-					))}
-				</ul>
 			</div>
 			<InvitPopup />
-		</>
+		</div>
 	)
 }

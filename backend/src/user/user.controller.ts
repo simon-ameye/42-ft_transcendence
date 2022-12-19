@@ -113,4 +113,10 @@ export class UserController {
   displayImage(@GetUser() user: UserDto, @Res() res) {
     res.sendFile(user.imageUrl, { root: './' })
   }
+
+	@UseGuards(AuthGuard('jwt'))
+	@Get('qrcode')
+	getQrcode(@GetUser() user: UserDto) {
+		return (this.userService.getQrcode(user));
+	}
 }

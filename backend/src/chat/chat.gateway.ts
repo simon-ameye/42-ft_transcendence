@@ -19,32 +19,31 @@ import { AuthGuard } from "@nestjs/passport";
 })
 export class ChatGateway implements OnModuleInit {
   constructor(private chatService: ChatService,
-              private channelService : ChannelService) {}
+    private channelService: ChannelService) { }
 
-	@WebSocketServer()
-	server: Server;
+  @WebSocketServer()
+  server: Server;
 
-	onModuleInit() {
-      this.server.on('connection', (socket) => {
-			//send all the messages for the user
-			console.log('A new client runs connection with socket ', socket.id);
-		})
-	}
+  onModuleInit() {
+    this.server.on('connection', (socket) => {
+      //send all the messages for the user
+      console.log('A new client runs connection with socket ', socket.id);
+    })
+  }
 
-	@SubscribeMessage('setConnection')
-	onSetConnection(
+  @SubscribeMessage('setConnection')
+  onSetConnection(
     @ConnectedSocket() socket: any,
-    @MessageBody() userId: number){
-      console.log('A new client runs setConnection with socket ', socket.id, ' and id ', userId);
-      return (this.chatService.setConnection(Number(userId), socket.id));
-	}
+    @MessageBody() userId: number) {
+    console.log('A new client runs setConnection with socket ', socket.id, ' and id ', userId);
+    return (this.chatService.setConnection(Number(userId), socket.id));
+  }
 
   @OnEvent('flushAllChannels')
   async flushAllChannels() {
     let channelInterfaces = await this.channelService.getChannelInterfaces();
 
-    for (let channelInterface of channelInterfaces)
-    {
+    for (let channelInterface of channelInterfaces) {
       this.server.to(channelInterface.userSocketId).emit('channelInterface', channelInterface)
     }
   }

@@ -50,7 +50,6 @@ const Home = () => {
 			</div>
 			<div>
 				<br></br>
-				<h1> Hello {cookie.displayName}!</h1>
 				<div className='test'>
 					<Box
 						sx={{

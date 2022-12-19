@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { socket } from '../App';
@@ -32,31 +33,55 @@ export default function Auth () {
 				token: data.access_token
 			}
 		})
-			.then(res => displayWelcomeMsg(res.data))
-			.catch(err => console.log(err));
-	}
-
-	const displayWelcomeMsg = (displayName: string) => {
-		setCookie('displayName', displayName, { path: '/' });
-		updateUserSocket();
+			.then(res => updateUserSocket())
+			.catch(err => handleIntraErr(err));
 	}
 
 	const updateUserSocket = () => {
 		axios.put('http://localhost:3001/user/modifySocketId', {
 			socketId: socket.id
 		})
-			.then(res => console.log(res))
+			.then(res => socket.emit('reload'))
 			.catch(err => console.log(err));
+	}
+
+	const	handleIntraErr = (err: AxiosError) => {
+		if (err.response) {
+			if (err.response.status == 460) {
+				alert('You are already log in from an other device');
+			}
+			else if (err.response.status == 403) {
+				alert('Your credentials are already taken');
+			}
+		}
+		else
+			console.log(err);
+		navigate('/');
 	}
 
 	const	goHome = () => {
 		navigate('/');
 	}
 
+	// USE_EFFECT \\
+
+	useEffect(() => {
+		socket.on("reload", reloadListener);
+		return () => {
+			socket.off("reload", reloadListener);
+		}
+	}, []);
+
+	// LISTENER \\
+
+	const reloadListener = () => {
+		window.location.reload();
+	}
+
 	return (
 		<>
 			<div>
-				<h1>Hello {cookie.displayName}!</h1>
+				<h1>Welcome {cookie.displayName} to ft_transcendence!</h1>
 			</div>
 			<div>
 				<button onClick={goHome}>Go to home page</button>

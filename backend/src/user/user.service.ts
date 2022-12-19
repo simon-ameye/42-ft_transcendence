@@ -4,6 +4,7 @@ import { table } from 'console';
 import { userInfo } from 'os';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
+import { PlayerInterface } from '../game/interfaces';
 
 @Injectable()
 export class UserService {
@@ -148,15 +149,54 @@ export class UserService {
     return (user.displayName);
   }
 
-  async getSIdByName(displayName: string): Promise<string> {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        displayName
-      },
-      select: {
-        socketId: true,
-      }
-    });
-    return (user.socketId);
-  }
+	async	getSIdByName(displayName: string): Promise<string> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				displayName
+			},
+			select: {
+				socketId: true,
+			}
+		});
+		return (user.socketId);
+	}
+
+	async getSIdById(id: number): Promise<string> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id
+			},
+			select: {
+				socketId: true,
+			}
+		});
+		return (user.socketId);
+	}
+
+	async getQrcode(dto: UserDto): Promise<string> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				email: dto.email
+			},
+			select : {
+				qrcode: true,
+			}
+		});
+		return (user.qrcode);
+	}
+
+	async getPlayersByNames(names: string[]): Promise<PlayerInterface[]> {
+		const players = await this.prisma.user.findMany({
+			where: {
+				OR: [ {displayName: names[0] }, { displayName: names[1] }]
+			},
+			select: {
+				id: true,
+				displayName: true,
+				score: true,
+				gameId: true
+			}
+		});
+		return (players);
+	}
 }
