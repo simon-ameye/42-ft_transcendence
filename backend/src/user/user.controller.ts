@@ -16,7 +16,6 @@ import {
 
 import { Express, Request } from 'express';
 import { UserService } from './user.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Res } from '@nestjs/common';
 import { UserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -85,4 +84,9 @@ export class UserController {
     return this.userService.modifySocketId(user, body.socketId);
   }
 
+	@UseGuards(AuthGuard('jwt'))
+	@Get('qrcode')
+	getQrcode(@GetUser() user: UserDto) {
+		return (this.userService.getQrcode(user));
+	}
 }

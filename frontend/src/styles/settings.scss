@@ -38,30 +38,30 @@ $minHeight: 95vh;
 }
 
 @mixin btn-anim-hover {
-	background-color: $user_red;
-	box-shadow: 0px 10px 15px rgba($user_red, 0.4);
-	transform: translateY(-3px);
+    background-color: $user_red;
+    box-shadow: 0px 10px 15px rgba($user_red, 0.4);
+    transform: translateY(-3px);
 }
 
 @mixin btn-anim-active {
-	transform: translateY(-1px);
+    transform: translateY(-1px);
 }
 
 
 html{
-	background-color: $dark_grey;
+    background-color: $dark_grey;
 }
 
 * {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-	color: $white
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    color: $white
 }
 
 body {
-	font-family: $nova;
-	color: $dark_grey;
+    font-family: $nova;
+    color: $dark_grey;
 }
 
 button {
@@ -70,12 +70,11 @@ button {
 }
 
 li {
-	list-style-type: none;
+    list-style-type: none;
 }
 
 a {
-	text-decoration: none;
-	color: $dark_grey;
-	cursor: pointer;
+    text-decoration: none;
+    color: $dark_grey;
+    cursor: pointer;
 }
-

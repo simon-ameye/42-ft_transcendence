@@ -11,25 +11,30 @@ datasource db {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  email        String    @unique
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  email        String   @unique
   hash         String?
-  displayName  String    @unique
+  displayName  String   @unique
   imageUrl     String?
   googleSecret String?
+  qrcode       String?
   status       String?
   // add path of the image
   socketId     String?   @unique
   matching     Matching?
 
-  blockedUserIds  Int[]
-  // to modify
-  friends         Int[]
+  blockedUserIds Int[]
+  friends        Int[]
 
-  inGame    Boolean @default(false)
-  victories Int     @default(0)
+  inGame       Boolean @default(false)
+  score     Int     @default(0)
+  gameId    Int?
+  side      Int?
+  victories Int         @default(0)
+  paddleY   Float   @default(0.5)
+  watching  Int     @default(-1)
 
   log               Boolean   @default(true)
   userFriends       Friends[] @relation(name: "users")
@@ -65,16 +70,16 @@ model Channel{
 }
 
 model Message {
-  id              Int         @id @default(autoincrement())
-  text            String?
-  authorId        Int                                        //one  to many field
-  date            DateTime    @default(now())
+  id       Int      @id @default(autoincrement())
+  text     String?
+  authorId Int //one  to many field
+  date     DateTime @default(now())
 }
 
 enum ChannelMode {
-  PUBLIC                                                       //everybody can join, but there may be a password. No password => password = ''
-  DIRECT                                                       //direct messages between two users
-  PRIVATE                                                      //new users must be invited by channel users (not clear in the subject)
+  PUBLIC //everybody can join, but there may be a password. No password => password = ''
+  DIRECT //direct messages between two users
+  PRIVATE //new users must be invited by channel users (not clear in the subject)
 }
 
 enum fstatus {
@@ -89,15 +94,8 @@ model Matching {
   userId Int  @unique
 }
 
-model Player {
-  userId      Int    @unique
-  displayName String
-  score       Int    @default(0)
-  game        Game?  @relation("players", fields: [gameId], references: [id])
-  gameId      Int?
-}
-
 model Game {
-  id      Int      @id @default(autoincrement())
-  players Player[] @relation("players")
+  id      Int     @id @default(autoincrement())
+  players Int[]
+  powerUp Boolean @default(false)
 }

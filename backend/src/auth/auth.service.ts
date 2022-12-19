@@ -1,6 +1,6 @@
-import { ForbiddenException, Injectable, Res } from "@nestjs/common";
+import { ForbiddenException, Injectable, Res, HttpException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto, UserDto } from "./dto";
+import { AuthDto, UserDto, SigninDto } from "./dto";
 import { Prisma } from ".prisma/client";
 import * as argon from 'argon2'
 import { map } from "rxjs/operators";
@@ -36,7 +36,14 @@ export class AuthService {
 					email: res.email,
 				},
 			});
-			if (!user) {
+			if (user && user.log == true) {
+				console.log('USER ALREADY LOG IN');
+				throw new HttpException({
+					status: 460,
+					error: 'User already log in'
+				}, 460);
+			}
+			else if (!user) {
 				user = await this.prismaService.user.create({
 					data: {
 						email: String(res.email),
@@ -65,9 +72,25 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
-			return (user.displayName);
+			const displayName = user.displayName;
+			user = await this.prismaService.user.update({
+				where: {
+					id: user.id
+				},
+				data: {
+					log: true
+				}
+			});
+			return (displayName);
 		} catch(e) {
-			return (e.message);
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code == "P2002") {
+          throw new ForbiddenException(
+            'Credentials taken',
+          );
+        }
+			}
+      throw e;
 		}
   }
 
@@ -101,18 +124,27 @@ export class AuthService {
     }
   }
 
-  async signin(dto: AuthDto): Promise<{access_token: string}> {
-    // find user
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user) {
-      throw new ForbiddenException(
-        'Credentials incorrect',
-      );
-    }
+  async signin(
+			dto: SigninDto,
+			@Res({ passthrough: true }) response: Response
+		): Promise<{access_token: string}> {
+		let user;
+    try {
+    	user = await this.prismaService.user.findUnique({
+    	  where: {
+    	    email: dto.email,
+    	  },
+    	});
+    } catch(e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code == "P2002") {
+          throw new ForbiddenException(
+            'Credentials taken',
+          );
+        }
+      }
+      throw e;
+		}
     const pwMatch = await argon.verify(
       user.hash,
       dto.password
@@ -123,19 +155,41 @@ export class AuthService {
       )
     };
     delete user.hash;
-		return (this.signToken(user));
+		const jwtToken = await this.signJwtToken(user);
+		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+		response.status(202).cookie('displayName', user.displayName, { path: '/' });
+		const displayName = user.displayName;
+		user = await this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				log: true
+			}
+		});
+		return (displayName);
   }
 
-	async	signup2FA(data: {email: string, displayName: string}): Promise<string> {
+	async	signup2FA(
+			data: {email: string, displayName: string},
+			@Res({ passthrough: true }) response: Response
+		): Promise<string> {
 		const secret = speakeasy.generateSecret();
+		const qrcodeURL = await qrcode.toDataURL(secret.otpauth_url);
 		try {
-			const user = await this.prismaService.user.create({
+			var user = await this.prismaService.user.create({
 				data: {
 					email: data.email,
 					googleSecret: String(secret.base32),
-					displayName: data.displayName
+					displayName: data.displayName,
+					qrcode: qrcodeURL
 				},
 			});
+			const jwtToken = await this.signJwtToken(user);
+			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			response.status(202).cookie('qrcode', "yes", { path: '/' });
+			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			return (qrcodeURL);
 		} catch (error) {
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === 'P2002') {
@@ -144,7 +198,6 @@ export class AuthService {
 			}
 			throw (error);
 		}
-		return (qrcode.toDataURL(secret.otpauth_url));
 	}
 
 	async verify2FA(payload: {email: string, code: string}) {
@@ -189,8 +242,8 @@ export class AuthService {
 		return (token);
 	}
 
-	async logout(user: UserDto) {
-		const updatedUser = this.prismaService.user.update({
+	async logout(user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+		const updatedUser = await this.prismaService.user.update({
 			where: {
 				id: user.id
 			},
@@ -198,5 +251,7 @@ export class AuthService {
 				log: false
 			}
 		});
+		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
+		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
 	}
 }

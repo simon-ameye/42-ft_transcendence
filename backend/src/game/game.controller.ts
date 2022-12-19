@@ -6,20 +6,20 @@ import { GameService } from './game.service';
 
 @Controller('game')
 export class GameController {
-	constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService) { }
 
-	@Get('queue')
-	getQueue() {
-		return (this.gameService.getQueue());
-	}
+  @Get('queue')
+  getQueue() {
+    return (this.gameService.getQueue());
+  }
 
-	@Get('list')
-	getGameList() {
-		return (this.gameService.getGameList());
-	}
-	
-	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return (this.gameService.findOne(id));
-	}
+  @Get('list')
+  getGameList() {
+    return (this.gameService.getGameList());
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return (this.gameService.findOne(id));
+  }
 }

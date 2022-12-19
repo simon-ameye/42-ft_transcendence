@@ -166,7 +166,7 @@ export class ChatService {
 
     const updateChannel = await this.prisma.channel.update({
       where: { id: channelId, },
-      data: { messageIds: { push: (await newMessage).id, }, },
+      data: { messageIds: { push: newMessage.id, }, },
     })
 
     this.eventEmitter.emit('flushAllChannels');

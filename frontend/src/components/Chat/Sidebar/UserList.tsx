@@ -73,6 +73,12 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
     getUserTable()
   }, [])
 
+  const inviteToGame = () => {
+    alert('not done yet')
+  }
+  const accessUserProfile = () => {
+    alert('not done yet')
+  }
 
   return (
     <div className='ChannelList'>
@@ -89,6 +95,12 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
           </DialogActions>
           <DialogActions>
             <button onClick={addUserToChannel}>addUserToChannel</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={inviteToGame}>inviteToGame</button>
+          </DialogActions>
+          <DialogActions>
+            <button onClick={accessUserProfile}>accessUserProfile</button>
           </DialogActions>
           <DialogActions>
             <button onClick={handleClose}>Cancel</button>

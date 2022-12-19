@@ -70,12 +70,6 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
       minutes: values.minutes,
     }).then(res => res.data.length > 0 ? alert(res.data) : console.log('OK')).catch()
   }
-  const inviteToGame = () => {
-    alert('not done yet')
-  }
-  const accessUserProfile = () => {
-    alert('not done yet')
-  }
 
   const userList = actualChannelInterface?.users.map((c, i) => (
     <ListItem key={i} onClick={event => handleClickOpen(c.id)}>
@@ -112,8 +106,7 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
               padding: 5
             }}
             onChange={(e: any) => {
-              if (e.target.value  >= 1000)
-              {
+              if (e.target.value >= 1000) {
                 alert("max value is 1000");
                 e.target.value = 1000;
               }
@@ -122,12 +115,6 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
           />
           <DialogActions>
             <button onClick={muteUser}>muteUser</button>
-          </DialogActions>
-          <DialogActions>
-            <button onClick={inviteToGame}>inviteToGame</button>
-          </DialogActions>
-          <DialogActions>
-            <button onClick={accessUserProfile}>accessUserProfile</button>
           </DialogActions>
           <DialogActions>
             <button onClick={handleClose}>Cancel</button>

@@ -1,0 +1,17 @@
+export interface ProfileInterface {
+  id: number,
+  createdAt: string,
+  updatedAt: string,
+  email: string,
+  hash: string,
+  displayName: string,
+  imageUrl: string,
+  googleSecret: string,
+  socketId: string,
+  blockedUserIds: number[],
+  friends: number[],
+  matching: boolean,
+  inGame: boolean,
+  victories: number,
+  log: boolean,
+}
