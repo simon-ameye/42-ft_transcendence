@@ -9,6 +9,8 @@ import { socket } from '../../App';
 import { request } from 'http';
 import User from '../User';
 import { async } from 'rxjs';
+import Default from '../../layouts/Default';
+import './style.scss'
 
 type User = {
   email: string;
@@ -48,31 +50,36 @@ const Friends = () => {
   }
 
   const userList = users.map((c, i) => (
-    <ListItem key={i}> {
-      <button onClick={event => sendFriendRequest(c.id, c.socketId)}> send </button>
-    }
+    <div className='user'>
       {c.displayName}
-    </ListItem >
+      <ListItem key={i}> {
+        <button onClick={event => sendFriendRequest(c.id, c.socketId)}>Add <i className='fa-solid fa-plus'></i></button>
+      }
+      </ListItem>
+    </div>
   ))
 
   const receivedList = receivedFriendRequest.map((c, i) => (
-    <ListItem key={i}> {
-      <div className='accept | deny'>
-        <button onClick={event => acceptFriendRequest(c)}> accept </button>
-        <button onClick={event => denyFriendRequest(c)}> deny  </button>
-      </div>
-    }
+    <>
       {c.user.displayName}
+      <ListItem key={i}> {
+        <div className='accept | deny'>
+          <button className="accept-btn" onClick={event => acceptFriendRequest(c)}><i className="fa-solid fa-check"></i></button>
+          <button className="deny-btn" onClick={event => denyFriendRequest(c)}><i className='fa-solid fa-xmark'></i></button>
+        </div>
+      }
 
-      {/* <>{console.log(receivedFriendRequest)}</> */}
-    </ListItem >
+        {/* <>{console.log(receivedFriendRequest)}</> */}
+      </ListItem >
+    </>
   ))
 
   const friendList = friends.map((c, i) => (
     // friend component
-    <ListItem key={i}>
+    <li>
       {c.displayName}
-    </ListItem >
+      <ListItem key={i} />
+    </li>
   ))
 
   useEffect(() => {
@@ -145,19 +152,28 @@ const Friends = () => {
   }
 
   return (
-    <div>
-      <Navbar></Navbar>
-      <h1>Users</h1>
-      {userList}
-      <div>
-        <h1>friend requests</h1>
-        {receivedList}
+    <Default>
+      <div className="friends-container">
+        <div className='friends-panel'>
+          <h1>Users list :</h1>
+          <div className='user-list'>
+            {userList}
+          </div>
+          <h1>Friend requests :</h1>
+          <div className='friend-request'>
+            {receivedList.length ?
+              receivedList : <span>No friends request</span>}
+          </div>
+          <h1>Friends list :</h1>
+          <div className='friend-list'>
+            <ul>
+              {friendList.length ?
+                friendList : <span>No friends, sad</span>}
+            </ul>
+          </div>
+        </div>
       </div>
-      <div>
-        <h1>friends</h1>
-        {friendList}
-      </div>
-    </div>
+    </Default>
   )
 }
 

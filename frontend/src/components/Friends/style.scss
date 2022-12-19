@@ -1,0 +1,71 @@
+@import '../../styles/settings';
+
+.friends-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+
+  .friends-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+      color: #60797c;
+      margin-top: 3vh;
+    }
+
+    button {
+      background-color: transparent;
+    }
+
+    .user-list {
+      display: flex;
+      flex-direction: row;
+      font-size: 25px;
+
+      .user {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        button {
+          border: 1px white solid;
+          padding: 0.5vh;
+        }
+      }
+    }
+
+    .friend-request {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+    }
+
+    .accept-btn {
+      i {
+        color: rgb(0, 151, 0);
+        font-size: 25px;
+      }
+    }
+
+    .deny-btn {
+      i {
+        color: red;
+        font-size: 25px;
+      }
+    }
+  }
+
+  .friend-list {
+    font-size: 25px;
+
+    ul li {
+      list-style-type: disc;
+    }
+  }
+}
