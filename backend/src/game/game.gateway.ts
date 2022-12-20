@@ -40,17 +40,27 @@ export class GameGateway {
 
   @SubscribeMessage('send invitation')
   async invitSocket(client, receiverName: string): Promise<void> {
-    const clientName = await this.userService.getNameBySId(client.id);
-		if (clientName != receiverName) {
-	    const receiverSId = await this.userService.getSIdByName(receiverName);
-	    this.server.to(receiverSId).emit('received invitation', clientName);
+		const userAvailable = await this.gameService.isUserAvailable(receiverName);
+		if (userAvailable > 0) {
+			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: receiverName });
+		} else {
+	    const clientName = await this.userService.getNameBySId(client.id);
+			if (clientName != receiverName) {
+		    const receiverSId = await this.userService.getSIdByName(receiverName);
+		    this.server.to(receiverSId).emit('received invitation', clientName);
+			}
 		}
   }
 
   @SubscribeMessage('invitation accepted')
   async acceptInvit(client, senderName: string): Promise<void> {
-		const senderSId = await this.userService.getSIdByName(senderName);
-    this.startGame({SIdOne: client.id, SIdTwo: senderSId});
+		const userAvailable = await this.gameService.isUserAvailable(senderName);
+		if (userAvailable > 0) {
+			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: senderName });
+		} else {
+			const senderSId = await this.userService.getSIdByName(senderName);
+	    this.startGame({SIdOne: client.id, SIdTwo: senderSId});
+		}
   }
 
   @SubscribeMessage('watch game')
@@ -60,7 +70,7 @@ export class GameGateway {
     const watching = await this.gameService.updateWatching(client.id, players[0].gameId);
 		if (watching)
     	client.leave("game".concat(String(watching)));
-    this.server.to(client.id).emit('game started', players);
+		client.join(gameRoom);
   }
 
   @SubscribeMessage('arrow up')
@@ -123,7 +133,6 @@ export class GameGateway {
     let game = this.prismaService.game.findFirst({ where: { AND: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } });
     if (!(await game))
     {
-      console.log('No game was started with those two players !');
       return;
     }
     this.gameProcess(gameRoom, p1Id, p2Id, (await game).id);
@@ -233,11 +242,9 @@ export class GameGateway {
 
       if (gi.ballX <= 0 || gi.ballX >= 1) {
         if (gi.ballX <= 0) {
-          console.log('player2 wins');
           gi.p2score++;
         }
         if (gi.ballX >= 0) {
-          console.log('player1 wins');
           gi.p1score++;
         }
         gi.ballX = 0.5;
@@ -247,7 +254,6 @@ export class GameGateway {
         paddleMissed = 0;
         var game = this.prismaService.game.findUnique({ where: { id: gameId } });
         if (!await game) {
-          console.log('Game process: it seems that the game has been deleted');
           return;
         }
         gi.powerUp = (await game).powerUp;
@@ -256,10 +262,10 @@ export class GameGateway {
       this.server.to(gameRoom).emit('gameInterface', gi);
       await this.delay(30); //in ms
 
-      if (gi.p1score >= 100)
+      if (gi.p1score >= 10)
         gi.winner = 1;
 
-      if (gi.p2score >= 100)
+      if (gi.p2score >= 10)
         gi.winner = 2;
 
       if (gi.winner) {

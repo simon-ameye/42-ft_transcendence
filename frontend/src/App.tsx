@@ -12,6 +12,7 @@ import Profile from './components/Profile/Profile'
 import NotFound from './components/NotFound';
 import { useCookies } from 'react-cookie';
 import InvitPopup from './components/AbrunGame/invit-popup.component';
+import UnavailableInterface from './interfaces/unavailable.interface';
 
 axios.defaults.withCredentials = true;
 
@@ -50,6 +51,13 @@ function App() {
 		}
 	});
 
+	useEffect(() => {
+		socket.on("cannot invit", cannotInvitListener);
+		return () => {
+			socket.off("cannot invit", cannotInvitListener);
+		}
+	});
+
 	// LISTENER \\
 
 	const heyoListener = () => {
@@ -68,6 +76,18 @@ function App() {
 
 	const startGameListener = () => {
 		navigate('/game/live');
+	}
+
+	const cannotInvitListener = (unavailable: UnavailableInterface) => {
+		if (unavailable.why == 1) {
+			alert(unavailable.name + ' is not log in');
+		}
+		else if (unavailable.why == 2) {
+			alert(unavailable.name + ' is already in a game');
+		}
+		else if (unavailable.why == 3) {
+			alert(unavailable.name + ' is in the matching queue');
+		}
 	}
 
 	// FUNCTIONS \\
