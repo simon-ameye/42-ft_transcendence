@@ -11,6 +11,7 @@ import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
 import { Response } from 'express';
+import { Status } from ".prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -248,7 +249,8 @@ export class AuthService {
 				id: user.id
 			},
 			data: {
-				log: false
+				log: false,
+        status: Status.OFFLINE
 			}
 		});
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});

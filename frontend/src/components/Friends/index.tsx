@@ -18,6 +18,7 @@ type User = {
   imageUrl: string;
   id: number;
   socketId: string;
+  status: string;
 }
 
 type FriendRequest = {
@@ -77,7 +78,7 @@ const Friends = () => {
   const friendList = friends.map((c, i) => (
     // friend component
     <li>
-      {c.displayName}
+      {c.displayName} : {c.status}
       <ListItem key={i} />
     </li>
   ))
@@ -93,14 +94,17 @@ const Friends = () => {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/user/friendsList')
-      .then(res => {
-        setFriends(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }, []);
+    const interval = setInterval(() => {
+      axios.get('http://localhost:3001/user/friendsList')
+        .then(res => {
+          setFriends(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }, 1000)
+    return () => clearInterval(interval)
+  });
 
   useEffect(() => {
     axios.get('http://localhost:3001/user/receivedfriendRequest')
