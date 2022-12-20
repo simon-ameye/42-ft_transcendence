@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../Navbar';
 import './style.scss';
-import GoogleAuthImage from '../../images/googleAuth.png';
+import GoogleAuthImage from '../../assets/googleAuth.png';
 import { useCookies } from 'react-cookie';
 import Default from '../../layouts/Default';
 
@@ -179,7 +178,7 @@ const User = () => {
 							</div>
 						</form>
 					</div>
-					<form>
+					{/*<form>
 						<label>Email</label>
 						<input
 							type="email"
@@ -205,7 +204,7 @@ const User = () => {
 					{qrcode &&
 						<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
 					{displayqrcode && <img src={qrcode} alt="qrcode" style={{ width: '400px' }}></img>
-					}
+					}*/}
 				</div>
 				<h1>SIGN IN :</h1>
 				<div className="sign-in-container">
@@ -223,7 +222,7 @@ const User = () => {
 							<label>Password</label>
 							<input
 								type="password"
-								placeholder='"123" is not a strong password'
+								placeholder='Password'
 								required
 								value={userPassIn}
 								onChange={(e) => setUserPassIn(e.target.value)}
@@ -231,7 +230,7 @@ const User = () => {
 							<button type="submit" className='submit-btn'>submit</button>
 						</form>
 					</div>
-					<div className="createUserContent">
+					{/*<div className="createUserContent">
 						<form>
 							<label>Email</label>
 							<input
@@ -255,10 +254,10 @@ const User = () => {
 								<img src={GoogleAuthImage} alt="google authentificator" className='g-auth-logo'></img>
 							</button>
 						</form>
-					</div>
+					</div>*/}
 					<div className="createUserContent">
 						<button onClick={handleIntra} className='login-btn'>
-							<p>Login with</p>
+							<p>Sign-in with</p>
 							<img src='https://profile.intra.42.fr/assets/42_logo_black-684989d43d629b3c0ff6fd7e1157ee04db9bb7a73fba8ec4e01543d650a1c607.png' alt="42-logo" className='school-logo'></img>
 						</button>
 					</div>
