@@ -35,9 +35,9 @@ export default function InvitPopup() {
 	// USE_EFFECT \\
 
 	useEffect(() => {
-		socket.on("send invitation", invitListener);
+		socket.on("received invitation", receivedInvitationListener);
 		return () => {
-			socket.off("send invitation", invitListener);
+			socket.off("received invitation", receivedInvitationListener);
 		}
 	})
 
@@ -52,14 +52,14 @@ export default function InvitPopup() {
 
 	// LISTENER \\
 
-	const invitListener = (senderName: string) => {
+	const receivedInvitationListener = (senderName: string) => {
 		setInvitText("You receive an invitation to pong game from ".concat(senderName));
 		setInvit(true);
 	}
 
 	const invitAcceptedSenderListener = (gameRoom: string) => {
 		socket.emit("invitation accepted sender", gameRoom);
-		navigate('/game/live2');
+		navigate('/game/live');
 	}
 
 	// RETURN \\

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { useNavigate, Route, Routes } from 'react-router-dom'
 import Home from './components/Home';
 import User from './components/User';
 import Game from './components/AbrunGame/Game';
@@ -11,6 +11,7 @@ import ChatBox from './components/Chat/ChatBox'
 import Profile from './components/Profile/Profile'
 import NotFound from './components/NotFound';
 import { useCookies } from 'react-cookie';
+import InvitPopup from './components/AbrunGame/invit-popup.component';
 
 axios.defaults.withCredentials = true;
 
@@ -23,7 +24,8 @@ function App() {
 	socket.emit('hello');
 
 	// VARIABLES \\
-	const [cookie, setCookie] = useCookies(['displayName', 'jwtToken']);
+	const [cookie] = useCookies(['displayName', 'jwtToken']);
+	const navigate = useNavigate();
 
 	// USE EFFECT \\
 
@@ -38,6 +40,13 @@ function App() {
 		socket.on("reload", reloadListener);
 		return () => {
 			socket.off("reload", reloadListener);
+		}
+	});
+
+	useEffect(() => {
+		socket.on("start game", startGameListener);
+		return () => {
+			socket.off("start game", startGameListener);
 		}
 	});
 
@@ -57,6 +66,10 @@ function App() {
 		window.location.reload();
 	}
 
+	const startGameListener = () => {
+		navigate('/game/live');
+	}
+
 	// FUNCTIONS \\
 
 	const handleTokenCorrupted = (err: AxiosError) => {
@@ -65,25 +78,24 @@ function App() {
 	}
 
   return cookie.displayName ? (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/ChatBox" element={<ChatBox />} />
+		<>
+  	  <Routes>
+  	    <Route path="/auth" element={<Auth />} />
+  	    <Route path="/" element={<Home />} />
+  	    <Route path="/ChatBox" element={<ChatBox />} />
 				<Route path="/game" element={<Game />} />
 				<Route path="/game/live" element={<GameLive />} />
 				<Route path="/Profile" element={<Profile />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  ) : (
-    <BrowserRouter>
-			<Routes>
-				<Route path="/" element={<User />} />
-        <Route path="/auth" element={<Auth />} />
   	    <Route path="*" element={<NotFound />} />
-			</Routes>
-    </BrowserRouter>
+  	  </Routes>
+			<InvitPopup />
+		</>
+  ) : (
+		<Routes>
+			<Route path="/" element={<User />} />
+      <Route path="/auth" element={<Auth />} />
+	    <Route path="*" element={<NotFound />} />
+		</Routes>
 	);
 }
 

@@ -34,37 +34,23 @@ export class GameGateway {
     const userId = await this.gameService.addClientToMatchingQueue(client.id);
     if (userId) {
       const oppenentSId = await this.userService.getSIdById(userId);
-      this.startGameAuto({ SIdOne: client.id, SIdTwo: oppenentSId });
+      this.startGame({ SIdOne: client.id, SIdTwo: oppenentSId });
     }
   }
 
-  @SubscribeMessage('invitation')
+  @SubscribeMessage('send invitation')
   async invitSocket(client, receiverName: string): Promise<void> {
-    const receiverSId = await this.userService.getSIdByName(receiverName);
     const clientName = await this.userService.getNameBySId(client.id);
-    this.server.to(receiverSId).emit('send invitation', clientName);
+		if (clientName != receiverName) {
+	    const receiverSId = await this.userService.getSIdByName(receiverName);
+	    this.server.to(receiverSId).emit('received invitation', clientName);
+		}
   }
 
   @SubscribeMessage('invitation accepted')
-  async acceptInvit(client, senderDName: string): Promise<void> {
-    const senderSId = await this.userService.getSIdByName(senderDName);
-    const gameRoom = await this.gameService.startGame(
-      { "one": client.id, "two": senderSId });
-    client.join(gameRoom);
-    this.server.to(senderSId).emit('invitation accepted sender',
-      { "gameRoom": gameRoom, "oppenentSId": client.id });
-    const clientDName = await this.userService.getNameBySId(client.id);
-    this.server.emit('deleteOppenents',
-      { "one": clientDName, "two": senderDName });
-  }
-
-  @SubscribeMessage('invitation accepted sender')
-  async acceptInvitSender(client, data: { gameRoom: string, oppenentSId: string }): Promise<void> {
-    client.join(data.gameRoom);
-    const playerSIds = [client.id, data.oppenentSId];
-    const players = await this.gameService.getPlayersBySIds(playerSIds);
-    this.server.to(data.gameRoom).emit('game started', players);
-    this.server.emit('update game list', players);
+  async acceptInvit(client, senderName: string): Promise<void> {
+		const senderSId = await this.userService.getSIdByName(senderName);
+    this.startGame({SIdOne: client.id, SIdTwo: senderSId});
   }
 
   @SubscribeMessage('watch game')
@@ -72,8 +58,8 @@ export class GameGateway {
     const players = await this.userService.getPlayersByNames(playerNames);
     const gameRoom = "game".concat(String(players[0].gameId));
     const watching = await this.gameService.updateWatching(client.id, players[0].gameId);
-    client.leave("game".concat(String(watching)));
-    client.join(gameRoom)
+		if (watching)
+    	client.leave("game".concat(String(watching)));
     this.server.to(client.id).emit('game started', players);
   }
 
@@ -115,9 +101,9 @@ export class GameGateway {
     })
   }
 
-  async startGameAuto(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
-    this.server.to(data.SIdOne).emit('game started auto');
-    this.server.to(data.SIdTwo).emit('game started auto');
+  async startGame(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
+    this.server.to(data.SIdOne).emit('start game');
+    this.server.to(data.SIdTwo).emit('start game');
     const pOneDName = await this.userService.getNameBySId(data.SIdOne);
     const pTwoDName = await this.userService.getNameBySId(data.SIdTwo);
     const gameRoom = await this.gameService.startGame(

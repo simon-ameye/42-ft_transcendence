@@ -3,7 +3,6 @@ import { socket } from '../../App';
 import axios from 'axios';
 import OppenentsInterface from '../../interfaces/oppenents.interface';
 import PlayerInterface from '../../interfaces/player.interface';
-import InvitPopup from './invit-popup.component';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Navbar from '../Navbar';
@@ -28,11 +27,6 @@ export default function GameHome() {
 		}
 	}
 
-	const sendInvit = (receiverId: string) => {
-		if (socket.id !== receiverId)
-			socket.emit("invitation", receiverId);
-	}
-
 	const watchMatch = (strGame: string) => {
 		const playerNames = strGame.split(" ");
 		playerNames.splice(1, 1);
@@ -41,9 +35,7 @@ export default function GameHome() {
 	}
 
 	const MatchingQueue = matchingQueue.map((matchingQueue, index) => {
-		if (cookie.displayName && matchingQueue !== cookie.displayName) {
-			return <ListItem button onClick={() => sendInvit(matchingQueue)} key={index}>{matchingQueue} </ListItem>
-		}
+			return <ListItem key={index}>{matchingQueue} </ListItem>
 	})
 
 	const GameInProgress = gameList.map((gameList, index) => (
@@ -91,13 +83,6 @@ export default function GameHome() {
 		socket.on("update game list", updateGameListListener);
 		return () => {
 			socket.off("update game list", updateGameListListener);
-		}
-	});
-
-	useEffect(() => {
-		socket.on("game started auto", gameAutoListener);
-		return () => {
-			socket.off("game started auto", gameAutoListener);
 		}
 	});
 
@@ -150,10 +135,6 @@ export default function GameHome() {
 		setGameList([...gameList, strGame]);
 	}
 
-	const gameAutoListener = () => {
-		navigate('/game/live');
-	}
-
 	const	gameOverListener = (versus: string) => {
 		let index = gameList.indexOf(versus);
 		if (index >= 0)
@@ -198,7 +179,6 @@ export default function GameHome() {
 					</div>
 				</div>
 			</div>
-			<InvitPopup />
 		</div>
 	)
 }
