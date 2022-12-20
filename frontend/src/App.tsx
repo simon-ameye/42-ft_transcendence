@@ -56,27 +56,27 @@ function App() {
 		window.location.reload();
 	}
 
-  return cookie.displayName ? (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/ChatBox" element={<ChatBox />} />
+	return cookie.displayName ? (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/auth" element={<Auth />} />
+				<Route path="/" element={<Home />} />
+				<Route path="/ChatBox" element={<ChatBox />} />
 				<Route path="/game" element={<Game />} />
 				<Route path="/game/live" element={<GameLive />} />
 				<Route path="/Profile" element={<Profile />} />
 				<Route path="/friends" element={<Friends />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  ) : (
-    <BrowserRouter>
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</BrowserRouter>
+	) : (
+		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<User />} />
-        <Route path="/auth" element={<Auth />} />
-  	    <Route path="*" element={<NotFound />} />
+				<Route path="/auth" element={<Auth />} />
+				<Route path="*" element={<NotFound />} />
 			</Routes>
-    </BrowserRouter>
+		</BrowserRouter>
 	);
 }
 
