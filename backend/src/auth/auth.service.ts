@@ -25,7 +25,7 @@ export class AuthService {
   async getIntraUser(
 			token: string,
 			@Res({ passthrough: true }) response: Response
-		): Promise<string> {
+		): Promise<void> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -74,7 +74,6 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
-			const displayName = user.displayName;
 			user = await this.prismaService.user.update({
 				where: {
 					id: user.id
@@ -83,7 +82,6 @@ export class AuthService {
 					log: true
 				}
 			});
-			return (displayName);
 		} catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -99,7 +97,7 @@ export class AuthService {
   async signup(
 			dto: AuthDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<string> {
+		): Promise<void> {
     const hash = await argon.hash(dto.password);
     try {
       const user = await this.prismaService.user.create({
@@ -109,11 +107,9 @@ export class AuthService {
 					displayName: dto.displayName
         },
       });
-      delete user.hash;
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
-			return (user.displayName);
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -129,26 +125,19 @@ export class AuthService {
   async signin(
 			dto: SigninDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<{access_token: string}> {
-		let user;
-    try {
-    	user = await this.prismaService.user.findUnique({
-    	  where: {
-    	    email: dto.email,
-    	  },
-    	});
-    } catch(e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code == "P2002") {
-					throw new HttpException({
-						status: 461,
-						error: 'Credentials invalided'
-					}, 461);
-        }
-      }
-      throw e;
+		): Promise<void> {
+    let user = await this.prismaService.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+		if (!user) {
+			throw new HttpException({
+				status: 461,
+				error: 'Credentials invalided'
+			}, 461);
 		}
-		if (user && user.log == true) {
+		if (user.log == true) {
 			throw new HttpException({
 				status: 460,
 				error: 'User already log in'
@@ -170,11 +159,9 @@ export class AuthService {
 				error: 'Credentials invalided'
 			}, 461);
     };
-    delete user.hash;
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
-		const displayName = user.displayName;
 		user = await this.prismaService.user.update({
 			where: {
 				id: user.id
@@ -183,7 +170,6 @@ export class AuthService {
 				log: true
 			}
 		});
-		return (displayName);
   }
 
 	async	signup2FA(
@@ -256,6 +242,14 @@ export class AuthService {
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
+		const updateUser = await this.prismaService.user.update({
+			where: {
+				id: user.id
+			},
+			data: {
+				log: true
+			}
+		});
 	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {

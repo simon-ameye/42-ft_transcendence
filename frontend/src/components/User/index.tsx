@@ -5,19 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import './style.scss';
 import GoogleAuthImage from '../../images/googleAuth.png';
-import { useCookies } from 'react-cookie';
 
 const User = () => {
 	const navigate = useNavigate();
-	const [cookie] = useCookies(['displayName']);
 	const [userMailUp, setUserMailUp] = useState('');
 	const [userPassUp, setUserPassUp] = useState('');
 	const [userDisplayNameUp, setUserDisplayNameUp] = useState('');
 	const [userMailQrUp, setUserMailQrUp] = useState('');
 	const [userDisplayNameQrUp, setUserDisplayNameQrUp] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
-	const [userToken, setUserToken] = useState('');
-	const [userGoogleCode, setUserGoogleCode] = useState<string>('');
 	const [userMailIn, setUserMailIn] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
 	const [userMailQrIn, setUserMailQrIn] = useState('');
@@ -71,12 +67,6 @@ const User = () => {
     window.location.href = 'http://localhost:3001/auth/42api/login';
   }
 
-	const	logOut = () => {
-		axios.delete('http://localhost:3001/auth/logout')
-			.then(res => navigate('/'))
-			.catch(err => console.log(err));
-	}
-
 	const handleGoogleAuthSignup = (e: React.FormEvent) => {
 		e.preventDefault();
 		axios.post('http://localhost:3001/auth/google2FA/signup',{
@@ -112,16 +102,16 @@ const User = () => {
 
 	const handleSignError = (err: AxiosError) => {
 		if (err.response) {
-			if (err.response.status == 403) {
+			if (err.response.status === 403) {
 				alert('Credentials already taken');
 			}
-			else if (err.response.status == 461) {
+			else if (err.response.status === 461) {
 				alert('Credentials invalided');
 			}
-			else if (err.response.status == 462) {
+			else if (err.response.status === 462) {
 				alert('Use an other way to log in');
 			}
-			else if (err.response.status == 460) {
+			else if (err.response.status === 460) {
 				alert('You are already log in');
 			}
 		}
