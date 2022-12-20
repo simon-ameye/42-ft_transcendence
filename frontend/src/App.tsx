@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom'
 import Home from './components/Home';
 import User from './components/User';
 import io from 'socket.io-client';
@@ -12,6 +12,7 @@ import NotFound from './components/NotFound';
 import Game from './components/GameSetup';
 import { useCookies } from 'react-cookie';
 import Friends from './components/Friends';
+import PublicProfile from './components/Profile/public';
 
 axios.defaults.withCredentials = true;
 
@@ -66,6 +67,7 @@ function App() {
 				<Route path="/game" element={<Game />} />
 				<Route path="/game/live" element={<GameLive />} />
 				<Route path="/friends" element={<Friends />} />
+				<Route path="/publicProfile/:id" element={<PublicProfile/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

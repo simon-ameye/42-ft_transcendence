@@ -25,10 +25,14 @@ const FileUpload: React.FC = () => {
 
   return (
     <div className="upload">
-      <input type="file" onChange={selectFile}></input>
+      <label className="custom-file-upload">
+        <input type="file" onChange={selectFile}></input>
+        browse
+      </label>
       <button
         disabled={!file}
         onClick={upload}
+        className=""
       >
         Upload
       </button>

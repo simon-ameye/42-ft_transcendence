@@ -9,6 +9,8 @@ import { socket } from '../../App';
 import { request } from 'http';
 import User from '../User';
 import { async } from 'rxjs';
+import { NavLink, Navigate, redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type User = {
   email: string;
@@ -32,6 +34,7 @@ type FriendRequest = {
 const Friends = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [cookie] = useCookies(['displayName']);
+  const navigate = useNavigate();
   const [receivedFriendRequest, setReceivedFriendRequest] = useState<FriendRequest[]>([]);
   const [friends, setFriends] = useState<User[]>([])
 
@@ -63,14 +66,17 @@ const Friends = () => {
       </div>
     }
       {c.user.displayName}
-
-      {/* <>{console.log(receivedFriendRequest)}</> */}
     </ListItem >
   ))
+  
+  const redirectProfile = (id: number) => {
+    navigate("/publicProfile/" + id)
+  }
 
   const friendList = friends.map((c, i) => (
     // friend component
-    <ListItem key={i}>
+    <ListItem key={i} onClick={(e) => redirectProfile(c.id)}> {
+    }
       {c.displayName}
     </ListItem >
   ))

@@ -1,11 +1,37 @@
 @import '../../styles/settings';
 
 .profile {
+  //border: 1px solid white;
+  width: 100%;
+  padding: 10px;
+}
 
+.imageDiv {
+  //border: 1px solid purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 
+
+.profileImage {
+  border-radius: 50%;
+  max-width: 100%;
+  
 }
 
 .displayName {
   display: flex;
   justify-content: space-evenly;
 	align-items: right;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 2px 12px;
+  cursor: pointer;
 }

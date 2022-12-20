@@ -31,13 +31,11 @@ export class ProfileService {
     return (profileInterface);
   }
 
-  async upload(dto: UserDto, path: string): Promise<string> {
-    if (!dto) {
-      console.log("not expected error");
-    }
+  async upload(id: number, path: string): Promise<string> {
+    console.log("upload", path)
     const updateUser = await this.prisma.user.update({
       where: {
-        id: dto.id,
+        id: id,
       },
       data: {
         imageUrl: path,
@@ -45,6 +43,4 @@ export class ProfileService {
     })
     return updateUser.imageUrl
   }
-
-
 }
