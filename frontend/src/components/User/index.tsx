@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
@@ -10,15 +10,18 @@ import { useCookies } from 'react-cookie';
 const User = () => {
 	const navigate = useNavigate();
 	const [cookie] = useCookies(['displayName']);
-	const [userMail, setUserMail] = useState('');
-	const [userPass, setUserPass] = useState('');
-	const [userDisplayName, setUserDisplayName] = useState('');
+	const [userMailUp, setUserMailUp] = useState('');
+	const [userPassUp, setUserPassUp] = useState('');
+	const [userDisplayNameUp, setUserDisplayNameUp] = useState('');
+	const [userMailQrUp, setUserMailQrUp] = useState('');
+	const [userDisplayNameQrUp, setUserDisplayNameQrUp] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 	const [userToken, setUserToken] = useState('');
 	const [userGoogleCode, setUserGoogleCode] = useState<string>('');
 	const [userMailIn, setUserMailIn] = useState('');
-	const [userMailIn2, setUserMailIn2] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
+	const [userMailQrIn, setUserMailQrIn] = useState('');
+	const [userCodeQrIn, setUserCodeQrIn] = useState('');
 
 	// USE_EFFECT \\
 
@@ -42,13 +45,13 @@ const User = () => {
 		e.preventDefault();
 
 		axios.post('http://localhost:3001/auth/signup',{
-			email: userMail,
-			password: userPass,
-			displayName: userDisplayName,
+			email: userMailUp,
+			password: userPassUp,
+			displayName: userDisplayNameUp,
 			imageUrl: userProfilePicture
 		})
 			.then(res => updateUserSocket())
-			.catch(err => console.log(err))
+			.catch(err => handleSignError(err))
 	}
 
   const updateUserSocket = () => {
@@ -68,13 +71,6 @@ const User = () => {
     window.location.href = 'http://localhost:3001/auth/42api/login';
   }
 
-  const getSocketId = () => {
-    axios.get('http://localhost:3001/user/socketId', {
-    })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-  }
-
 	const	logOut = () => {
 		axios.delete('http://localhost:3001/auth/logout')
 			.then(res => navigate('/'))
@@ -84,33 +80,51 @@ const User = () => {
 	const handleGoogleAuthSignup = (e: React.FormEvent) => {
 		e.preventDefault();
 		axios.post('http://localhost:3001/auth/google2FA/signup',{
-			email: userMail,
-			displayName: userDisplayName,
+			email: userMailQrUp,
+			displayName: userDisplayNameQrUp,
 		})
 			.then(res => goToAuthPage())
-			.catch(err => console.log(err))
+			.catch(err => handleSignError(err))
 	}
 
 	const handleGoogleAuthSignin = (e: React.FormEvent) => {
 		e.preventDefault();
+		console.log({email: userMailQrIn});
+		console.log({code: userCodeQrIn});
 		axios.post('http://localhost:3001/auth/google2FA/signin',{
-			email: userMail,
-			code: userGoogleCode,
+			email: userMailQrIn,
+			code: userCodeQrIn,
 		})
 			.then(res => goToAuthPage())
-			.catch(err => console.log(err))
+			.catch(err => handleSignError(err))
 	}
 
 	const handleSignin = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		console.log('signin');
 		axios.post('http://localhost:3001/auth/signin', {
 			email: userMailIn,
 			password: userPassIn,
 		})
 			.then(res => updateUserSocket())
-			.catch(err => console.log(err))
+			.catch(err => handleSignError(err))
+	}
+
+	const handleSignError = (err: AxiosError) => {
+		if (err.response) {
+			if (err.response.status == 403) {
+				alert('Credentials already taken');
+			}
+			else if (err.response.status == 461) {
+				alert('Credentials invalided');
+			}
+			else if (err.response.status == 462) {
+				alert('Use an other way to log in');
+			}
+			else if (err.response.status == 460) {
+				alert('You are already log in');
+			}
+		}
 	}
 
 	return (
@@ -126,24 +140,24 @@ const User = () => {
 							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
 							placeholder='ex: "test@test.fr"'
 							required
-							value={userMail}
-							onChange={(e) => setUserMail(e.target.value)}
+							value={userMailUp}
+							onChange={(e) => setUserMailUp(e.target.value)}
 						/>
 						<label>Display name</label>
 						<input 
 							type="text"
 							required
 							placeholder='Display on pong ranking etc..'
-							value={userDisplayName}
-							onChange={(e) => setUserDisplayName(e.target.value)}
+							value={userDisplayNameUp}
+							onChange={(e) => setUserDisplayNameUp(e.target.value)}
 						/>
 						<label>Password</label>
 						<input
 							type="password"
 							placeholder='"123" is not a strong password ¯\_(ツ)_/¯'
 							required
-							value={userPass}
-							onChange={(e) => setUserPass(e.target.value)}
+							value={userPassUp}
+							onChange={(e) => setUserPassUp(e.target.value)}
 						/>
 						<input
 							id="file"
@@ -171,16 +185,16 @@ const User = () => {
 							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
 							placeholder='ex: "test@test.fr"'
 							required
-							value={userMail}
-							onChange={(e) => setUserMail(e.target.value)}
+							value={userMailQrUp}
+							onChange={(e) => setUserMailQrUp(e.target.value)}
 						/>
 						<label>Display name</label>
 						<input 
 							type="text"
 							required
 							placeholder='Display on pong ranking etc..'
-							value={userDisplayName}
-							onChange={(e) => setUserDisplayName(e.target.value)}
+							value={userDisplayNameQrUp}
+							onChange={(e) => setUserDisplayNameQrUp(e.target.value)}
 						/>
 						<button onClick={handleGoogleAuthSignup} className='login-btn'>
 							<p>Login with</p>
@@ -230,16 +244,16 @@ const User = () => {
 							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
 							placeholder='ex: "test@test.fr"'
 							required
-							value={userMailIn2}
-							onChange={(e) => setUserMailIn2(e.target.value)}
+							value={userMailQrIn}
+							onChange={(e) => setUserMailQrIn(e.target.value)}
 						/>
 						<label>google code</label>
 						<input 
 							type="text"
 							required
 							placeholder='google authentificator code'
-							value={userDisplayName}
-							onChange={(e) => setUserDisplayName(e.target.value)}
+							value={userCodeQrIn}
+							onChange={(e) => setUserCodeQrIn(e.target.value)}
 						/>
 						<button onClick={handleGoogleAuthSignin} className='login-btn'>
 							<p>Login with</p>

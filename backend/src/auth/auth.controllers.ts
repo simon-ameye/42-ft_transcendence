@@ -42,12 +42,12 @@ export class AuthController {
 	async signup2FA(
 			@Body() body: {email: string, displayName: string},
 			@Res({ passthrough: true} ) response: Response
-		): Promise<string> {
+		): Promise<void> {
 		return (this.authService.signup2FA(body, response));
 	}
 
 	@Post('google2FA/signin')
-	verify2FA(
+	async verify2FA(
 			@Body() body: {email: string, code: string},
 			@Res({ passthrough: true }) response: Response
 		) {

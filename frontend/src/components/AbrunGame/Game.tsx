@@ -108,6 +108,13 @@ export default function GameHome() {
 		}
 	});
 
+	useEffect(() => {
+		socket.on("delete in matching", deleteInMatchingListener);
+		return () => {
+			socket.off("delete in matching", deleteInMatchingListener);
+		}
+	});
+
 	// LISTENER \\
 
 	const joinMatchingQueueListener = (displayName: string) => {
@@ -121,6 +128,19 @@ export default function GameHome() {
 		index = matchingQueue.indexOf(oppenents.two);
 		if (index >= 0)
 			matchingQueue.splice(index, 1);
+		setMatchingQueue([...matchingQueue]);
+	}
+
+	const	deleteInMatchingListener = (players: string[]) => {
+		let i = 0;
+		const lenP = players.length;
+		let index;
+		while (i < lenP) {
+			index = matchingQueue.indexOf(players[i]);
+			if (index >= 0)
+				matchingQueue.splice(index, 1);
+			++i;
+		}
 		setMatchingQueue([...matchingQueue]);
 	}
 
