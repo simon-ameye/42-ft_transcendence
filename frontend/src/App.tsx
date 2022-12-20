@@ -5,7 +5,7 @@ import User from './components/User';
 import Game from './components/AbrunGame/Game';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import GameLive from './components/GameSetup';
 import ChatBox from './components/Chat/ChatBox'
 import Profile from './components/Profile/Profile'
@@ -44,15 +44,24 @@ function App() {
 	// LISTENER \\
 
 	const heyoListener = () => {
-		axios.put('http://localhost:3001/user/modifySocketId', {
-			socketId: socket.id
-		})
-			.then(res => socket.emit('is playing'))
-			.catch(err => console.log(err));
+		if (cookie.displayName) {
+			axios.put('http://localhost:3001/user/modifySocketId', {
+				socketId: socket.id
+			})
+				.then(res => socket.emit('is playing'))
+				.catch(err => handleTokenCorrupted(err));
+		}
 	}
 
 	const reloadListener = () => {
 		window.location.reload();
+	}
+
+	// FUNCTIONS \\
+
+	const handleTokenCorrupted = (err: AxiosError) => {
+		if (err.response && err.response.status == 403)
+			alert('Cookies corrupted');
 	}
 
   return cookie.displayName ? (

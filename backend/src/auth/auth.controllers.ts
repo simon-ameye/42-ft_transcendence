@@ -47,8 +47,11 @@ export class AuthController {
 	}
 
 	@Post('google2FA/signin')
-	verify2FA(@Body() body: {email: string, code: string}) {
-		return (this.authService.verify2FA(body));
+	verify2FA(
+			@Body() body: {email: string, code: string},
+			@Res({ passthrough: true }) response: Response
+		) {
+		return (this.authService.verify2FA(body, response));
 	}
 
 	@UseGuards(AuthGuard('jwt'))

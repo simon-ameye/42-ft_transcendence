@@ -9,14 +9,11 @@ import { useCookies } from 'react-cookie';
 
 const User = () => {
 	const navigate = useNavigate();
-	const [cookie] = useCookies(['displayName', 'qrcode']);
+	const [cookie] = useCookies(['displayName']);
 	const [userMail, setUserMail] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [userDisplayName, setUserDisplayName] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
-	const [qrcode, setQrcode] = useState<string>('');
-	const [displayqrcode, setDisplayqrcode] = useState<boolean>(false);
-	const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
 	const [userToken, setUserToken] = useState('');
 	const [userGoogleCode, setUserGoogleCode] = useState<string>('');
 	const [userMailIn, setUserMailIn] = useState('');
@@ -24,16 +21,6 @@ const User = () => {
 	const [userPassIn, setUserPassIn] = useState('');
 
 	// USE_EFFECT \\
-
-	useEffect(() => {
-		console.log({qrcode: cookie.qrcode});
-		console.log({displayname: cookie.displayName});
-		if (cookie.qrcode !== undefined && cookie.qrcode === 'yes') {
-			axios.get('http://localhost:3001/user/qrcode')
-				.then(res => setQrcode(res.data))
-				.catch(err => console.log(err))
-		}
-	}, []);
 
 	useEffect(() => {
 		socket.on("reload", reloadListener);
@@ -100,16 +87,8 @@ const User = () => {
 			email: userMail,
 			displayName: userDisplayName,
 		})
-			.then(res => setQrcode(res.data))
+			.then(res => goToAuthPage())
 			.catch(err => console.log(err))
-	}
-
-	const	displayQrcode = () => {
-		setDisplayqrcode(!displayqrcode);
-		if (!displayqrcode)
-			setDisplayqrcodeMessage("Hide QR Code");
-		else
-			setDisplayqrcodeMessage("Display QR Code");
 	}
 
 	const handleGoogleAuthSignin = (e: React.FormEvent) => {
@@ -118,7 +97,7 @@ const User = () => {
 			email: userMail,
 			code: userGoogleCode,
 		})
-			.then(res => setQrcode(res.data))
+			.then(res => goToAuthPage())
 			.catch(err => console.log(err))
 	}
 
@@ -209,10 +188,6 @@ const User = () => {
 						</button>
 					</form>
 				</div>
-				{qrcode &&
-					<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
-						{displayqrcode && <img src={qrcode} alt="qrcode" style={{ width: '400px' }}></img>
-				}
 			<br></br>
 			<br></br>
 			<br></br>

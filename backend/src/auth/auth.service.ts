@@ -200,7 +200,10 @@ export class AuthService {
 		}
 	}
 
-	async verify2FA(payload: {email: string, code: string}) {
+	async verify2FA(
+			payload: {email: string, code: string},
+			@Res({ passthrough: true }) response: Response
+		): Promise<void> {
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				email: payload.email,
@@ -215,7 +218,9 @@ export class AuthService {
 		});
 		if (!verify)
 			throw new ForbiddenException('Credentials invalid');
-		return (this.signToken(user))
+		const jwtToken = await this.signJwtToken(user);
+		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+		response.status(202).cookie('displayName', user.displayName, { path: '/' });
 	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {
@@ -243,15 +248,27 @@ export class AuthService {
 	}
 
 	async logout(user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
+		try {
+			const matching = await this.prismaService.matching.delete({
+				where: {
+					userId: user.id
+				}
+			});
+		} catch (e) {
+		}
 		const updatedUser = await this.prismaService.user.update({
 			where: {
 				id: user.id
 			},
 			data: {
-				log: false
+				log: false,
+				inGame: false,
+				score: 0,
+				watching: -1,
 			}
 		});
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
 		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
+		response.status(202).cookie('qrcode', 'none', { path: '/', expires: new Date(Date.now())});
 	}
 }
