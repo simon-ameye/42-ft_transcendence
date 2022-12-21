@@ -1,22 +1,26 @@
 @import '../../styles/settings';
 
 .profile {
-  //border: 1px solid white;
+  border: 1px solid white;
   width: 100%;
   padding: 10px;
 }
 
 .imageDiv {
-  //border: 1px solid purple;
+  border: 1px solid purple;
   display: flex;
   align-items: center;
   justify-content: center;
 } 
 
+.displayName {
+  border: 1px solid red;
+  color: green($user_green);
+}
+
 .profileImage {
   border-radius: 50%;
   max-width: 100%;
-  
 }
 
 .displayName {

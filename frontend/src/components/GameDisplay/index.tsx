@@ -8,14 +8,11 @@ import { List } from "@mui/material";
 import { useKeyDown } from "../hooks/useKeyDown";
 import { useNavigate } from "react-router-dom";
 import { XY } from "../interface/position";
-
-const LINE_WIDTH = 1;
-const LINE_OFFSET = 30;
+import Matchmaking from "../Matchmaking"
 
 const GameDisplay = (props: { config: GameConfig }) => {
   const [backColor, setBackColor] = useState("#333333");
   const [compColor, setCompColor] = useState("#ffffff");
-  // const [mode, setMode] = useState("Player vs Player")
 
   const [gi, setgi] = useState<GameInterface | undefined>()
 
@@ -41,7 +38,7 @@ const GameDisplay = (props: { config: GameConfig }) => {
     drawRect(context, { x: 0.5, y: 0.5 }, { x: 1, y: 1 }, bgColor);
 
     // Line
-    //drawRect(context, { x: LINE_WIDTH, y: canvasSize.y - LINE_OFFSET * 2 }, fgColor, canvasSize.x / 2 + LINE_WIDTH / 2, LINE_OFFSET);
+    drawRect(context, { x: 0.5, y: 0.5 }, { x: 0.001, y: 0.9 }, fgColor);
 
     // P1
     drawRect(context, { x: gi.paddleOffcet - gi.paddleThickness / 2, y: gi.p1Y }, { x: gi.paddleThickness, y: gi.paddleHeight }, fgColor);
@@ -64,36 +61,6 @@ const GameDisplay = (props: { config: GameConfig }) => {
 
   }, [gi, canvas, drawAll])
 
-  // const botMovements = () => {
-  //   if (props.config.p2PosY > 0 - props.config.paddleSize.y) {
-  //     props.config.p2PosY = props.ball.y - props.config.paddleSize.y / 2
-  //   }
-  //   else if (props.config.p2PosY <= 0) {
-  //     props.config.p2PosY = props.config.canvasSize.y
-  //   }
-  // }
-  // if (props.config.players == 1)
-  //   botMovements()
-
-  // const resetGame = () => {
-  //   props.ball.x = props.config.canvasSize.x / 2 - props.config.ballSize.x
-  //   props.ball.y = (window.innerHeight / 1.6) / 2 - (150 / 2)
-  //   props.config.scoreP1 = 0
-  //   props.config.scoreP2 = 0
-  //   props.config.p1PosY = (window.innerHeight / 1.6) / 2 - (150 / 2)
-  //   props.config.p2PosY = (window.innerHeight / 1.6) / 2 - (150 / 2)
-  // }
-  // const changeMode = () => {
-  //   if (mode === "Player vs Cheater") {
-  //     setMode("Player vs Player")
-  //     props.config.players = 2
-  //   }
-  //   else {
-  //     setMode("Player vs Cheater")
-  //     props.config.players = 1
-  //   }
-  //   resetGame()
-  // }
   props.config.bgColor = backColor;
   props.config.fgColor = compColor;
 
@@ -143,27 +110,12 @@ const GameDisplay = (props: { config: GameConfig }) => {
   }
 
   const gameFinishedListener = () => {
-    navigate('/game');
+    //navigate('/game');
+    setgi(undefined)
   }
 
-  return (
+  return gi ? (
     <>
-      {/* <div>
-        <div>__________________________________________________________</div>
-        <List>ballx : {gi?.ballX}</List>
-        <List>bally : {gi?.ballY}</List>
-        <List>p1Y : {gi?.p1Y}</List>
-        <List>p2Y : {gi?.p2Y}</List>
-        <List>p1Name : {gi?.p1Name}</List>
-        <List>p2Name : {gi?.p2Name}</List>
-        <List>viewerNames : {gi?.p1Y}</List>
-        <div>__________________________________________________________</div>
-      </div> */}
-
-      {/* <div className='gameMode' style={{ width: window.innerWidth / 2 }}>
-        <label>Change mode :</label>
-        <button onClick={changeMode}>{mode}</button>
-      </div> */}
       <div className="scoreboard" style={{ width: canvasSize.x }}>
         <div className="p1-scoreboard">
           <h5 className="name-1">{gi?.p1Name}</h5>
@@ -190,7 +142,8 @@ const GameDisplay = (props: { config: GameConfig }) => {
         </div>
       </div>
     </>
-  )
+  ) : <Matchmaking />
+
 }
 
 export default GameDisplay

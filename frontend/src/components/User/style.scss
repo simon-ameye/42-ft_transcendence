@@ -1,105 +1,117 @@
 @import '../../styles/settings';
 
-.createUser {
-	margin-top: 50px;
+.authentification-container {
 	display: flex;
-	justify-content: space-evenly;
+	flex-direction: column;
+	width: 75vw;
+	height: 75vh;
+	justify-content: center;
 	align-items: center;
+
+	h1 {
+		display: flex;
+		width: 100%;
+	}
+}
+
+input::placeholder,
+input {
+	color: black;
+	padding: 5px;
+	border-radius: 10px;
+	margin: 10px;
+}
+
+.sign-up-container {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	justify-content: space-evenly;
+	border-bottom: 1px white solid;
+	padding-bottom: 2vh;
+	margin-bottom: 2vh;
+	align-items: center;
+
 	form {
-		width: 300px;
-		margin: 0 auto;
-		margin-left: 300px;
-		text-align: center;
-		label {
-			text-align: left;
-			display: block;
-		}
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
 		input {
 			width: 100%;
-			padding: 6px 10px;
-			margin: 10px 0;
-			border: 1px solid $white;
-			box-sizing: border-box;
-			display: block;
-			border-radius: 8px;
-			color: $dark_grey;
 		}
 
-		input[type="file"]{
-			display: none;
+		.submit-upload {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+
+			.upload {
+				@include btn-anim;
+				margin-bottom: 10px;
+			}
+
+			.upload:hover {
+				@include btn-anim-hover;
+				background-color: #2b3536;
+			}
+
 		}
 
-		.upload {
-			@include btn-anim;
-			background-color: $user_green;
-			text-align: center;
-			text-transform: none;
-			letter-spacing: normal;
-		}
-
-		.upload:hover {
-			@include btn-anim-hover;
-			background-color: $user_green;
-			box-shadow: 0px 10px 15px rgba($user_green, 0.4);
-		}
-
-		.upload:active {
-			@include btn-anim-active;
+		.login-btn,
+		.submit-btn {
+			width: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
-	.or {
-		text-transform: uppercase;
-		font-size: 30px;
-		font-weight: 700;
-	}
 }
 
-.submit-btn, .login-btn {
-	@include btn-anim;
-}
+.sign-in-container {
+	display: flex;
+	height: 100%;
+	width: 100%;
+	justify-content: space-evenly;
+	align-items: center;
 
-.submit-btn:hover, .login-btn:hover {
-	@include btn-anim-hover
-}
-
-.submit-btn:active, .login-btn:active {
-	@include btn-anim-active
-}
-
-.login-btn {
-	margin-right: 300px;
-	background-color: $user_green;
-
-	p {
-		margin-bottom: 5px;
-	}
-
-	img {
-		width: 25px
-	}
-}
-
-.login-btn:hover{
-	background-color: $user_green;
-	box-shadow: 0px 10px 15px rgba($user_green, 0.4);
-}
-
-@media only screen and (max-width: 800px) {
-	.createUser {
+	form {
+		display: flex;
 		flex-direction: column;
-		form, .login-btn{
-			margin-left: 0;
-			margin-right: 0;
+		align-items: center;
+
+		input {
+			width: 100%;
 		}
-		.login-btn {
-			margin-top: 0;
+
+		.login-btn,
+		.submit-btn {
+			width: 50%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
-	}
-	.or {
-		margin: 20px 0 20px 0;
 	}
 }
 
-h1 {
-	text-align: center;
+.login-btn,
+.submit-btn {
+	@include btn-anim;
+	background-color: $user_green;
+}
+
+.login-btn:hover,
+.submit-btn:hover {
+	@include btn-anim-hover;
+	background-color: #183b1f;
+}
+
+input[type="file"] {
+	display: none;
+}
+
+.g-auth-logo,
+.school-logo {
+	width: 50px;
 }

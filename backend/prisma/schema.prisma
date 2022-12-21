@@ -20,7 +20,7 @@ model User {
   imageUrl     String?
   googleSecret String?
   qrcode       String?
-  status       String?
+  //status       String?
   // add path of the image
   socketId     String?   @unique
   matching     Matching?
@@ -39,6 +39,10 @@ model User {
   log               Boolean   @default(true)
   userFriends       Friends[] @relation(name: "users")
   friendUserFriends Friends[] @relation(name: "friend_users")
+
+  status            Status       @default(OFFLINE)
+
+  matchHistory      String[]
 
   @@map("users")
 }
@@ -98,4 +102,10 @@ model Game {
   id      Int     @id @default(autoincrement())
   players Int[]
   powerUp Boolean @default(false)
+}
+
+enum Status {
+  OFFLINE //everybody can join, but there may be a password. No password => password = ''
+  ONLINE //direct messages between two users
+  PLAYING //new users must be invited by channel users (not clear in the subject)
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { User, Status } from '@prisma/client';
 import { table } from 'console';
 import { userInfo } from 'os';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -112,6 +112,16 @@ export class UserService {
       },
       data: {
         socketId: socketId,
+      },
+    })
+
+    await this.prisma.user.updateMany({
+      where: {
+        id: user.id,
+        status: Status.OFFLINE,
+      },
+      data: {
+        status: Status.ONLINE, //if status if offline only (not PLAYING)
       },
     })
   }

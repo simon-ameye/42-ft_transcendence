@@ -11,6 +11,8 @@ import User from '../User';
 import { async } from 'rxjs';
 import { NavLink, Navigate, redirect } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Default from '../../layouts/Default';
+import './style.scss'
 
 type User = {
   email: string;
@@ -18,6 +20,7 @@ type User = {
   imageUrl: string;
   id: number;
   socketId: string;
+  status: string;
 }
 
 type FriendRequest = {
@@ -52,30 +55,34 @@ const Friends = () => {
 
 
   const userList = users.map((c, i) => (
-    <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)}> {
-      <button onClick={event => sendFriendRequest(c.id, c.socketId)}> send </button>
-    }
+    <div className='user'>
       {c.displayName}
-    </ListItem >
+      <ListItem key={i}> {
+        <button onClick={event => sendFriendRequest(c.id, c.socketId)}>Add <i className='fa-solid fa-plus'></i></button>
+      }
+      </ListItem>
+    </div>
   ))
 
   const receivedList = receivedFriendRequest.map((c, i) => (
-    <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)}> {
-      <div className='accept | deny'>
-        <button onClick={event => acceptFriendRequest(c)}> accept </button>
-        <button onClick={event => denyFriendRequest(c)}> deny  </button>
-      </div>
-    }
+    <>
       {c.user.displayName}
-    </ListItem >
+      <ListItem key={i}> {
+        <div className='accept | deny'>
+          <button className="accept-btn" onClick={event => acceptFriendRequest(c)}><i className="fa-solid fa-check"></i></button>
+          <button className="deny-btn" onClick={event => denyFriendRequest(c)}><i className='fa-solid fa-xmark'></i></button>
+        </div>
+      }
+      </ListItem >
+    </>
   ))
   
   const friendList = friends.map((c, i) => (
     // friend component
-    <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)}> {
-    }
-      {c.displayName}
-    </ListItem >
+    <li>
+      {c.displayName} : {c.status}
+      <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)} />
+    </li>
   ))
 
   useEffect(() => {
@@ -89,14 +96,17 @@ const Friends = () => {
   }, []);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/user/friendsList')
-      .then(res => {
-        setFriends(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }, []);
+    const interval = setInterval(() => {
+      axios.get('http://localhost:3001/user/friendsList')
+        .then(res => {
+          setFriends(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }, 1000)
+    return () => clearInterval(interval)
+  });
 
   useEffect(() => {
     axios.get('http://localhost:3001/user/receivedfriendRequest')
@@ -148,19 +158,28 @@ const Friends = () => {
   }
 
   return (
-    <div>
-      <Navbar></Navbar>
-      <h1>Users</h1>
-      {userList}
-      <div>
-        <h1>friend requests</h1>
-        {receivedList}
+    <Default>
+      <div className="friends-container">
+        <div className='friends-panel'>
+          <h1>Users list :</h1>
+          <div className='user-list'>
+            {userList}
+          </div>
+          <h1>Friend requests :</h1>
+          <div className='friend-request'>
+            {receivedList.length ?
+              receivedList : <span>No friends request</span>}
+          </div>
+          <h1>Friends list :</h1>
+          <div className='friend-list'>
+            <ul>
+              {friendList.length ?
+                friendList : <span>No friends, sad</span>}
+            </ul>
+          </div>
+        </div>
       </div>
-      <div>
-        <h1>friends</h1>
-        {friendList}
-      </div>
-    </div>
+    </Default>
   )
 }
 

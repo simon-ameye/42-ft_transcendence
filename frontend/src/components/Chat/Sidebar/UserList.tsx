@@ -8,7 +8,8 @@ import UserInterface from '../Interface/UserInterface';
 import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
 import { useEffect, useState } from "react";
 import { CompressOutlined } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { socket } from '../../../App';
+import { useNavigate } from 'react-router';
 
 export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
   const [userInterfaces, setuserInterfaces] = useState<UserInterface[]>([])
@@ -75,12 +76,11 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
     getUserTable()
   }, [])
 
-  const inviteToGame = () => {
-    alert('not done yet')
+  const inviteToGame = (receiverName: string) => {
+		socket.emit("send invitation", receiverName);
   }
 
   const accessUserProfile = () => {
-    console.log(values.userId)
     navigate("/publicProfile/" + values.userId)
   }
 
@@ -101,7 +101,7 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
             <button onClick={addUserToChannel}>addUserToChannel</button>
           </DialogActions>
           <DialogActions>
-            <button onClick={inviteToGame}>inviteToGame</button>
+            <button onClick={() => inviteToGame('abrun')}>inviteToGame</button>
           </DialogActions>
           <DialogActions>
             <button onClick={accessUserProfile}>accessUserProfile</button>

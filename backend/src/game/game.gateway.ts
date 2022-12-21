@@ -1,4 +1,4 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -6,6 +6,8 @@ import { GameService } from './game.service';
 import { MatchingQueueInterface, PlayerInterface, CheckWinnerInterface } from './interfaces';
 import { UserService } from '../user/user.service';
 import { GameInterface } from './interfaces/game.interface';
+import { Status } from ".prisma/client";
+
 
 @WebSocketGateway(4343, {
   cors: {
@@ -34,37 +36,33 @@ export class GameGateway {
     const userId = await this.gameService.addClientToMatchingQueue(client.id);
     if (userId) {
       const oppenentSId = await this.userService.getSIdById(userId);
-      this.startGameAuto({ SIdOne: client.id, SIdTwo: oppenentSId });
+      this.startGame({ SIdOne: client.id, SIdTwo: oppenentSId });
     }
   }
 
-  @SubscribeMessage('invitation')
+  @SubscribeMessage('send invitation')
   async invitSocket(client, receiverName: string): Promise<void> {
-    const receiverSId = await this.userService.getSIdByName(receiverName);
-    const clientName = await this.userService.getNameBySId(client.id);
-    this.server.to(receiverSId).emit('send invitation', clientName);
+		const userAvailable = await this.gameService.isUserAvailable(receiverName);
+		if (userAvailable > 0) {
+			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: receiverName });
+		} else {
+	    const clientName = await this.userService.getNameBySId(client.id);
+			if (clientName != receiverName) {
+		    const receiverSId = await this.userService.getSIdByName(receiverName);
+		    this.server.to(receiverSId).emit('received invitation', clientName);
+			}
+		}
   }
 
   @SubscribeMessage('invitation accepted')
-  async acceptInvit(client, senderDName: string): Promise<void> {
-    const senderSId = await this.userService.getSIdByName(senderDName);
-    const gameRoom = await this.gameService.startGame(
-      { "one": client.id, "two": senderSId });
-    client.join(gameRoom);
-    this.server.to(senderSId).emit('invitation accepted sender',
-      { "gameRoom": gameRoom, "oppenentSId": client.id });
-    const clientDName = await this.userService.getNameBySId(client.id);
-    this.server.emit('deleteOppenents',
-      { "one": clientDName, "two": senderDName });
-  }
-
-  @SubscribeMessage('invitation accepted sender')
-  async acceptInvitSender(client, data: { gameRoom: string, oppenentSId: string }): Promise<void> {
-    client.join(data.gameRoom);
-    const playerSIds = [client.id, data.oppenentSId];
-    const players = await this.gameService.getPlayersBySIds(playerSIds);
-    this.server.to(data.gameRoom).emit('game started', players);
-    this.server.emit('update game list', players);
+  async acceptInvit(client, senderName: string): Promise<void> {
+		const userAvailable = await this.gameService.isUserAvailable(senderName);
+		if (userAvailable > 0) {
+			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: senderName });
+		} else {
+			const senderSId = await this.userService.getSIdByName(senderName);
+	    this.startGame({SIdOne: client.id, SIdTwo: senderSId});
+		}
   }
 
   @SubscribeMessage('watch game')
@@ -72,9 +70,9 @@ export class GameGateway {
     const players = await this.userService.getPlayersByNames(playerNames);
     const gameRoom = "game".concat(String(players[0].gameId));
     const watching = await this.gameService.updateWatching(client.id, players[0].gameId);
-    client.leave("game".concat(String(watching)));
-    client.join(gameRoom)
-    this.server.to(client.id).emit('game started', players);
+		if (watching)
+    	client.leave("game".concat(String(watching)));
+		client.join(gameRoom);
   }
 
   @SubscribeMessage('arrow up')
@@ -115,9 +113,17 @@ export class GameGateway {
     })
   }
 
-  async startGameAuto(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
-    this.server.to(data.SIdOne).emit('game started auto');
-    this.server.to(data.SIdTwo).emit('game started auto');
+  async startGame(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
+    let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
+    let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
+
+    if (await this.prismaService.game.findFirst({ where: { OR: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } })) {
+      console.log('A game is already running with those two players !');
+      return;
+    }
+
+    this.server.to(data.SIdOne).emit('start game');
+    this.server.to(data.SIdTwo).emit('start game');
     const pOneDName = await this.userService.getNameBySId(data.SIdOne);
     const pTwoDName = await this.userService.getNameBySId(data.SIdTwo);
     const gameRoom = await this.gameService.startGame(
@@ -132,15 +138,18 @@ export class GameGateway {
     this.server.to(data.SIdTwo).emit('join room', gameRoom);
     this.kickoff(gameRoom);
 
-    let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
-    let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
     let game = this.prismaService.game.findFirst({ where: { AND: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } });
     if (!(await game))
     {
-      console.log('No game was started with those two players !');
       return;
     }
-    this.gameProcess(gameRoom, p1Id, p2Id, (await game).id);
+    await this.prismaService.user.update({ where: { id: p1Id }, data: { status: Status.PLAYING } });
+    await this.prismaService.user.update({ where: { id: p2Id }, data: { status: Status.PLAYING } });
+
+    await this.gameProcess(gameRoom, p1Id, p2Id, (await game).id);
+
+    await this.prismaService.user.update({ where: { id: p1Id }, data: { status: Status.ONLINE } });
+    await this.prismaService.user.update({ where: { id: p2Id }, data: { status: Status.ONLINE } });
   }
 
   delay(time) {
@@ -188,7 +197,7 @@ export class GameGateway {
     return (gi);
   }
 
-  async finishGame(gameRoom: string, p1Id: number, p2Id: number, winner: number) {
+  async finishGame(gameRoom: string, p1Id: number, p2Id: number, gi: GameInterface) {
     let p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
     let gameId = (await p1).gameId;
 
@@ -196,12 +205,19 @@ export class GameGateway {
     this.gameService.deleteGame(gameId);
 
     let winnerId = 0;
-    if (winner == 1)
-      winnerId = p1Id;
-    if (winner == 2)
-      winnerId = p2Id;
+    let looserId = 0;
 
-    this.gameService.addVictory(winnerId);
+    if (gi.winner == 1) {
+      winnerId = p1Id;
+      looserId = p2Id;
+    }
+    if (gi.winner == 2) {
+      winnerId = p2Id;
+      looserId = p1Id;
+    }
+
+    if (gi.winner != 0)
+      this.gameService.addVictory(winnerId, looserId, gi);
     this.server.to(gameRoom).emit('game finished', winnerId);
     this.server.emit('game over', versus);
   }
@@ -247,11 +263,9 @@ export class GameGateway {
 
       if (gi.ballX <= 0 || gi.ballX >= 1) {
         if (gi.ballX <= 0) {
-          console.log('player2 wins');
           gi.p2score++;
         }
         if (gi.ballX >= 0) {
-          console.log('player1 wins');
           gi.p1score++;
         }
         gi.ballX = 0.5;
@@ -262,6 +276,7 @@ export class GameGateway {
         var game = this.prismaService.game.findUnique({ where: { id: gameId } });
         if (!await game) {
           console.log('Game process: it seems that the game has been deleted');
+          this.finishGame(gameRoom, p1Id, p2Id, gi);
           return;
         }
         gi.powerUp = (await game).powerUp;
@@ -270,14 +285,14 @@ export class GameGateway {
       this.server.to(gameRoom).emit('gameInterface', gi);
       await this.delay(30); //in ms
 
-      if (gi.p1score >= 100)
+      if (gi.p1score >= 10)
         gi.winner = 1;
 
-      if (gi.p2score >= 100)
+      if (gi.p2score >= 10)
         gi.winner = 2;
 
       if (gi.winner) {
-        this.finishGame(gameRoom, p1Id, p2Id, gi.winner);
+        this.finishGame(gameRoom, p1Id, p2Id, gi);
         return;
       }
     }
