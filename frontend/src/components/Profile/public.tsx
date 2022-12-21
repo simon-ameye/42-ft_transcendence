@@ -39,7 +39,6 @@ const PublicProfile = () => {
   }, [])
 
   const renderImg = () => {
-    console.log(id);
     let path = "http://localhost:3001/profile/getImageById/:id?id=" + id;
     return (
       <img className='profileImage' src={path} alt='profileImage'
