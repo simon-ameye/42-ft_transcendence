@@ -1,4 +1,4 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -36,37 +36,33 @@ export class GameGateway {
     const userId = await this.gameService.addClientToMatchingQueue(client.id);
     if (userId) {
       const oppenentSId = await this.userService.getSIdById(userId);
-      this.startGameAuto({ SIdOne: client.id, SIdTwo: oppenentSId });
+      this.startGame({ SIdOne: client.id, SIdTwo: oppenentSId });
     }
   }
 
-  @SubscribeMessage('invitation')
+  @SubscribeMessage('send invitation')
   async invitSocket(client, receiverName: string): Promise<void> {
-    const receiverSId = await this.userService.getSIdByName(receiverName);
-    const clientName = await this.userService.getNameBySId(client.id);
-    this.server.to(receiverSId).emit('send invitation', clientName);
+		const userAvailable = await this.gameService.isUserAvailable(receiverName);
+		if (userAvailable > 0) {
+			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: receiverName });
+		} else {
+	    const clientName = await this.userService.getNameBySId(client.id);
+			if (clientName != receiverName) {
+		    const receiverSId = await this.userService.getSIdByName(receiverName);
+		    this.server.to(receiverSId).emit('received invitation', clientName);
+			}
+		}
   }
 
   @SubscribeMessage('invitation accepted')
-  async acceptInvit(client, senderDName: string): Promise<void> {
-    const senderSId = await this.userService.getSIdByName(senderDName);
-    const gameRoom = await this.gameService.startGame(
-      { "one": client.id, "two": senderSId });
-    client.join(gameRoom);
-    this.server.to(senderSId).emit('invitation accepted sender',
-      { "gameRoom": gameRoom, "oppenentSId": client.id });
-    const clientDName = await this.userService.getNameBySId(client.id);
-    this.server.emit('deleteOppenents',
-      { "one": clientDName, "two": senderDName });
-  }
-
-  @SubscribeMessage('invitation accepted sender')
-  async acceptInvitSender(client, data: { gameRoom: string, oppenentSId: string }): Promise<void> {
-    client.join(data.gameRoom);
-    const playerSIds = [client.id, data.oppenentSId];
-    const players = await this.gameService.getPlayersBySIds(playerSIds);
-    this.server.to(data.gameRoom).emit('game started', players);
-    this.server.emit('update game list', players);
+  async acceptInvit(client, senderName: string): Promise<void> {
+		const userAvailable = await this.gameService.isUserAvailable(senderName);
+		if (userAvailable > 0) {
+			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: senderName });
+		} else {
+			const senderSId = await this.userService.getSIdByName(senderName);
+	    this.startGame({SIdOne: client.id, SIdTwo: senderSId});
+		}
   }
 
   @SubscribeMessage('watch game')
@@ -74,9 +70,9 @@ export class GameGateway {
     const players = await this.userService.getPlayersByNames(playerNames);
     const gameRoom = "game".concat(String(players[0].gameId));
     const watching = await this.gameService.updateWatching(client.id, players[0].gameId);
-    client.leave("game".concat(String(watching)));
-    client.join(gameRoom)
-    this.server.to(client.id).emit('game started', players);
+		if (watching)
+    	client.leave("game".concat(String(watching)));
+		client.join(gameRoom);
   }
 
   @SubscribeMessage('arrow up')
@@ -117,7 +113,7 @@ export class GameGateway {
     })
   }
 
-  async startGameAuto(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
+  async startGame(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
     let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
     let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
 
@@ -126,8 +122,8 @@ export class GameGateway {
       return;
     }
 
-    this.server.to(data.SIdOne).emit('game started auto');
-    this.server.to(data.SIdTwo).emit('game started auto');
+    this.server.to(data.SIdOne).emit('start game');
+    this.server.to(data.SIdTwo).emit('start game');
     const pOneDName = await this.userService.getNameBySId(data.SIdOne);
     const pTwoDName = await this.userService.getNameBySId(data.SIdTwo);
     const gameRoom = await this.gameService.startGame(
@@ -142,10 +138,9 @@ export class GameGateway {
     this.server.to(data.SIdTwo).emit('join room', gameRoom);
     this.kickoff(gameRoom);
 
-
-    let game = await this.prismaService.game.findFirst({ where: { OR: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } });
-    if (!game) {
-      console.log('No game running with those two players !');
+    let game = this.prismaService.game.findFirst({ where: { AND: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } });
+    if (!(await game))
+    {
       return;
     }
     await this.prismaService.user.update({ where: { id: p1Id }, data: { status: Status.PLAYING } });
@@ -268,11 +263,9 @@ export class GameGateway {
 
       if (gi.ballX <= 0 || gi.ballX >= 1) {
         if (gi.ballX <= 0) {
-          console.log('player2 wins');
           gi.p2score++;
         }
         if (gi.ballX >= 0) {
-          console.log('player1 wins');
           gi.p1score++;
         }
         gi.ballX = 0.5;

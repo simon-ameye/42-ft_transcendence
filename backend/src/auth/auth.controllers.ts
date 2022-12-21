@@ -22,7 +22,6 @@ export class AuthController {
 			@Body() dto: SigninDto,
 			@Res({ passthrough: true} ) response: Response
 		) {
-		console.log("SIGNIN")
     return this.authService.signin(dto, response);
   }
 
@@ -31,32 +30,35 @@ export class AuthController {
 	login42() {}
 
 	@Get('intra/getMe')
-	async getIntraUser (
+	getIntraUser (
 			@Query() query: {token: string},
 			@Res({ passthrough: true} ) response: Response
-		): Promise<string> {
+		) {
 		return (this.authService.getIntraUser(query.token, response));
 	}
 
 	@Post('google2FA/signup')
-	async signup2FA(
+	signup2FA(
 			@Body() body: {email: string, displayName: string},
 			@Res({ passthrough: true} ) response: Response
-		): Promise<string> {
+		) {
 		return (this.authService.signup2FA(body, response));
 	}
 
 	@Post('google2FA/signin')
-	verify2FA(@Body() body: {email: string, code: string}) {
-		return (this.authService.verify2FA(body));
+	verify2FA(
+			@Body() body: {email: string, code: string},
+			@Res({ passthrough: true }) response: Response
+		) {
+		return (this.authService.verify2FA(body, response));
 	}
 
 	@UseGuards(AuthGuard('jwt'))
 	@Delete('logout')
-	async logout(
+	logout(
 			@GetUser() user: UserDto,
 			@Res({ passthrough: true }) response: Response
-	): Promise<void> {
+	) {
 		return (this.authService.logout(user, response));
 	}
 }

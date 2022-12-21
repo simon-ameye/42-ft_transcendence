@@ -21,4 +21,8 @@ export class AuthGateway {
 	reload(client: Socket) {
 		this.server.to(client.id).emit('reload');
 	}
+
+	async removeUserFromMatching(displayName: string) {
+		this.server.emit('delete in matching', [displayName]);
+	}
 }

@@ -11,22 +11,18 @@ import { ConfigService } from "@nestjs/config";
 import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
 import { Response } from 'express';
-import { AuthGateway } from './auth.gateway';
-import { Status } from ".prisma/client";
 
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService,
 			private httpService: HttpService,
 			private jwtService: JwtService,
-			private configService: ConfigService,
-			private authGateway: AuthGateway
-		) {}
+			private configService: ConfigService) {}
 
   async getIntraUser(
 			token: string,
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
+		): Promise<string> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -75,6 +71,7 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			const displayName = user.displayName;
 			user = await this.prismaService.user.update({
 				where: {
 					id: user.id
@@ -83,6 +80,7 @@ export class AuthService {
 					log: true
 				}
 			});
+			return (displayName);
 		} catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -98,7 +96,7 @@ export class AuthService {
   async signup(
 			dto: AuthDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
+		): Promise<string> {
     const hash = await argon.hash(dto.password);
     try {
       const user = await this.prismaService.user.create({
@@ -108,9 +106,11 @@ export class AuthService {
 					displayName: dto.displayName
         },
       });
+      delete user.hash;
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			return (user.displayName);
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -126,43 +126,58 @@ export class AuthService {
   async signin(
 			dto: SigninDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
-    let user = await this.prismaService.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
+		): Promise<{access_token: string}> {
+		let user;
+    try {
+    	user = await this.prismaService.user.findUnique({
+    	  where: {
+    	    email: dto.email,
+    	  },
+    	});
+    } catch(e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code == "P2002") {
+					throw new HttpException({
+						status: 462,
+						error: 'Credentials incorrect'
+					}, 462);
+        }
+      }
+      throw e;
+		}
 		if (!user) {
 			throw new HttpException({
+				status: 462,
+				error: 'Credentials incorrect'
+			}, 462);
+		}
+		if (!user.hash) {
+			throw new HttpException({
 				status: 461,
-				error: 'Credentials invalided'
+				error: 'Choose an other way to sign in'
 			}, 461);
 		}
-		if (user.log == true) {
+    const pwMatch = await argon.verify(
+      user.hash,
+      dto.password,
+    );
+    if (!pwMatch) {
+			throw new HttpException({
+				status: 462,
+				error: 'Credentials incorrect'
+			}, 462);
+    };
+    delete user.hash;
+		if (user && user.log == true) {
 			throw new HttpException({
 				status: 460,
 				error: 'User already log in'
 			}, 460);
 		}
-		if (!user.hash) {
-			throw new HttpException({
-				status: 462,
-				error: 'Use an other way to log in'
-			}, 462);
-		}
-    const pwMatch = await argon.verify(
-      user.hash,
-      dto.password
-    );
-    if (!pwMatch) {
-			throw new HttpException({
-				status: 461,
-				error: 'Credentials invalided'
-			}, 461);
-    };
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
+		const displayName = user.displayName;
 		user = await this.prismaService.user.update({
 			where: {
 				id: user.id
@@ -171,12 +186,13 @@ export class AuthService {
 				log: true
 			}
 		});
+		return (displayName);
   }
 
 	async	signup2FA(
 			data: {email: string, displayName: string},
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
+		): Promise<string> {
 		const secret = speakeasy.generateSecret();
 		const qrcodeURL = await qrcode.toDataURL(secret.otpauth_url);
 		try {
@@ -192,6 +208,7 @@ export class AuthService {
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('qrcode', "yes", { path: '/' });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			return (qrcodeURL);
 		} catch (error) {
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === 'P2002') {
@@ -204,46 +221,42 @@ export class AuthService {
 
 	async verify2FA(
 			payload: {email: string, code: string},
-			@Res({ passthrough: true }) response: Response
+			@Res() response: Response
 		): Promise<void> {
-		const user = await this.prismaService.user.findUnique({
+		let user = await this.prismaService.user.findUnique({
 			where: {
 				email: payload.email,
 			},
 		});
 		if (!user) {
 			throw new HttpException({
-				status: 461,
-				error: 'Credentials invalided'
-			}, 461);
-		}
-		if (user && user.log == true) {
-			throw new HttpException({
-				status: 460,
-				error: 'User already log in'
-			}, 460);
+				status: 462,
+				error: 'Credentials incorrect'
+			}, 462);
 		}
 		if (!user.googleSecret) {
 			throw new HttpException({
-				status: 462,
-				error: 'Use an other way to log in'
-			}, 462);
+				status: 461,
+				error: 'Choose an other way to sign in'
+			}, 461);
 		}
 		const verify = speakeasy.totp.verify({
 			secret: user.googleSecret,
 			encoding: 'base32',
 			token: payload.code
 		});
-		if (!verify) {
+		if (!verify)
 			throw new HttpException({
-				status: 461,
-				error: 'Credentials invalided'
-			}, 461);
+				status: 462,
+				error: 'Credentials incorrect'
+			}, 462);
+		if (user && user.log == true) {
+			throw new HttpException({
+				status: 460,
+				error: 'User already log in'
+			}, 460);
 		}
-		const jwtToken = await this.signJwtToken(user);
-		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-		response.status(202).cookie('displayName', user.displayName, { path: '/' });
-		const updateUser = await this.prismaService.user.update({
+		user = await this.prismaService.user.update({
 			where: {
 				id: user.id
 			},
@@ -251,6 +264,10 @@ export class AuthService {
 				log: true
 			}
 		});
+		const jwtToken = await this.signJwtToken(user);
+		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+		response.status(202).cookie('qrcode', "yes", { path: '/' });
+		response.status(202).cookie('displayName', user.displayName, { path: '/' });
 	}
 
 	async signToken(user: UserDto): Promise<{access_token: string}> {
@@ -277,42 +294,16 @@ export class AuthService {
 		return (token);
 	}
 
-	async logout(
-			dto: UserDto,
-			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
-		const user = await this.prismaService.user.findUnique({
-			where: {
-				id: dto.id,
-			},
-			select: {
-				id: true,
-				matching: true,
-				watching: true,
-				displayName: true
-			}
-		});
-		if (user.matching) {
-			const matching = await this.prismaService.matching.delete({
-				where: {
-					userId: user.id
-				}
-			});
-			this.authGateway.removeUserFromMatching(user.displayName);
-		}
+	async logout(user: UserDto, @Res({ passthrough: true }) response: Response): Promise<void> {
 		const updatedUser = await this.prismaService.user.update({
 			where: {
 				id: user.id
 			},
 			data: {
-				log: false,
-				inGame: false,
-				watching: 0,
-        status: Status.OFFLINE
+				log: false
 			}
 		});
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
 		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
-		response.status(202).cookie('qrcode', 'none', { path: '/', expires: new Date(Date.now())});
 	}
 }

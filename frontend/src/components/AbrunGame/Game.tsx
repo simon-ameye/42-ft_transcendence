@@ -3,7 +3,6 @@ import { socket } from '../../App';
 import axios from 'axios';
 import OppenentsInterface from '../../interfaces/oppenents.interface';
 import PlayerInterface from '../../interfaces/player.interface';
-import InvitPopup from './invit-popup.component';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Navbar from '../Navbar';
@@ -28,11 +27,6 @@ export default function GameHome() {
 		}
 	}
 
-	const sendInvit = (receiverId: string) => {
-		if (socket.id !== receiverId)
-			socket.emit("invitation", receiverId);
-	}
-
 	const watchMatch = (strGame: string) => {
 		const playerNames = strGame.split(" ");
 		playerNames.splice(1, 1);
@@ -41,9 +35,7 @@ export default function GameHome() {
 	}
 
 	const MatchingQueue = matchingQueue.map((matchingQueue, index) => {
-		if (cookie.displayName && matchingQueue !== cookie.displayName) {
-			return <ListItem button onClick={() => sendInvit(matchingQueue)} key={index}>{matchingQueue} </ListItem>
-		}
+			return <ListItem key={index}>{matchingQueue} </ListItem>
 	})
 
 	const GameInProgress = gameList.map((gameList, index) => (
@@ -95,16 +87,16 @@ export default function GameHome() {
 	});
 
 	useEffect(() => {
-		socket.on("game started auto", gameAutoListener);
+		socket.on("game over", gameOverListener);
 		return () => {
-			socket.off("game started auto", gameAutoListener);
+			socket.off("game over", gameOverListener);
 		}
 	});
 
 	useEffect(() => {
-		socket.on("game over", gameOverListener);
+		socket.on("delete in matching", deleteInMatchingListener);
 		return () => {
-			socket.off("game over", gameOverListener);
+			socket.off("delete in matching", deleteInMatchingListener);
 		}
 	});
 
@@ -124,14 +116,23 @@ export default function GameHome() {
 		setMatchingQueue([...matchingQueue]);
 	}
 
+	const	deleteInMatchingListener = (players: string[]) => {
+		let i = 0;
+		const lenP = players.length;
+		let index;
+		while (i < lenP) {
+			index = matchingQueue.indexOf(players[i]);
+			if (index >= 0)
+				matchingQueue.splice(index, 1);
+			++i;
+		}
+		setMatchingQueue([...matchingQueue]);
+	}
+
 	const updateGameListListener = (players: PlayerInterface[]) => {
 		let strGame = players[0].displayName.concat(" vs ");
 		strGame = strGame.concat(players[1].displayName);
 		setGameList([...gameList, strGame]);
-	}
-
-	const gameAutoListener = () => {
-		navigate('/game/live');
 	}
 
 	const	gameOverListener = (versus: string) => {
@@ -178,7 +179,6 @@ export default function GameHome() {
 					</div>
 				</div>
 			</div>
-			<InvitPopup />
 		</div>
 	)
 }

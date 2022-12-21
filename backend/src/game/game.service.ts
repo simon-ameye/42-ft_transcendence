@@ -314,4 +314,24 @@ export class GameService {
     });
     return (watching);
   }
+
+	async isUserAvailable(displayName: string): Promise<number> {
+		const user = await this.prismaService.user.findUnique({
+			where: {
+				displayName,
+			},
+			select: {
+				log: true,
+				inGame: true,
+				matching: true
+			}
+		});
+		if (!user.log)
+			return (1);
+		if (user.inGame) 
+			return (2);
+		if (user.matching)
+			return (3);
+		return (0);
+	}
 }
