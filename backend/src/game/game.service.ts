@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
 import { OppenentsInterface, PlayerInterface, CheckWinnerInterface } from './interfaces';
+import { windowCount } from 'rxjs';
+import { GameInterface } from './interfaces/game.interface';
 
 @Injectable()
 export class GameService {
@@ -222,28 +224,28 @@ export class GameService {
     return (players);
   }
 
-  async isWinner(gameRoom: string): Promise<CheckWinnerInterface> {
-    const splitter = gameRoom.split("game");
-    const gameId: number = Number(splitter[1]);
-    const players = await this.prismaService.user.findMany({
-      where: {
-        gameId
-      },
-      select: {
-        id: true,
-        displayName: true,
-        score: true,
-        gameId: true,
-      }
-    });
-    for (let i = 0; i < 2; ++i) {
-      if (players[i].score > 600) {
-        await this.addVictory(players[i].id);
-        return ({ gameId: gameId, winnerId: players[i].id });
-      }
-    }
-    return ({ gameId: 0, winnerId: 0 });
-  }
+  //async isWinner(gameRoom: string): Promise<CheckWinnerInterface> {
+  //  const splitter = gameRoom.split("game");
+  //  const gameId: number = Number(splitter[1]);
+  //  const players = await this.prismaService.user.findMany({
+  //    where: {
+  //      gameId
+  //    },
+  //    select: {
+  //      id: true,
+  //      displayName: true,
+  //      score: true,
+  //      gameId: true,
+  //    }
+  //  });
+  //  for (let i = 0; i < 2; ++i) {
+  //    if (players[i].score > 600) {
+  //      await this.addVictory(players[i].id);
+  //      return ({ gameId: gameId, winnerId: players[i].id });
+  //    }
+  //  }
+  //  return ({ gameId: 0, winnerId: 0 });
+  //}
 
   async deleteGame(gameId: number): Promise<void> {
     const deleteGame = await this.prismaService.game.deleteMany({
@@ -262,17 +264,34 @@ export class GameService {
     });
   }
 
-  async addVictory(id: number): Promise<void> {
-    const updatedUser = await this.prismaService.user.update({
+  async addVictory(winnerId: number, looserId: number, gi: GameInterface): Promise<void> {
+    const winner = await this.prismaService.user.findUnique({ where: { id: winnerId } });
+    const looser = await this.prismaService.user.findUnique({ where: { id: looserId } });
+    await this.prismaService.user.update({
       where: {
-        id
+        id: winnerId,
       },
       data: {
         victories: {
           increment: +1
+        },
+        matchHistory: {
+          push: "victory against " + looser.displayName + "( lvl " + looser.victories + " ) score: "+ gi.p1score + "/" + gi.p2score + " on " + Date().toLocaleString()
         }
       }
     });
+
+    await this.prismaService.user.update({
+      where: {
+        id : looserId
+      },
+      data: {
+        matchHistory: {
+          push: "defeat against " + winner.displayName + "( lvl " + winner.victories + " ) score: " + gi.p1score + "/" + gi.p2score + " on " + Date().toLocaleString()
+        }
+      },
+    },
+    );
   }
 
   async updateWatching(SId: string, gameId: number): Promise<number> {

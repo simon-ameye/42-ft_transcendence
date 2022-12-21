@@ -19,7 +19,7 @@ export default function Auth () {
 	axios.post('https://api.intra.42.fr/oauth/token', {
 		grant_type: "authorization_code",
 		client_id: "u-s4t2ud-648c51ea9e1ba58cce46cff68acc6882c3fc4382864770ac7e8f610111a703ec",
-		client_secret: "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",
+    client_secret: "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",
 		code: code,
 		state: state,
 		redirect_uri: "http://localhost:3000/auth"
