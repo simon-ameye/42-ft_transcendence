@@ -12,6 +12,7 @@ import * as speakeasy from "speakeasy";
 import * as qrcode from "qrcode";
 import { Response } from 'express';
 import { AuthGateway } from './auth.gateway';
+import { Status } from ".prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -306,8 +307,8 @@ export class AuthService {
 			data: {
 				log: false,
 				inGame: false,
-				score: 0,
 				watching: 0,
+        status: Status.OFFLINE
 			}
 		});
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});

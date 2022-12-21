@@ -20,38 +20,55 @@ model User {
   imageUrl     String?
   googleSecret String?
   qrcode       String?
+  //status       String?
   // add path of the image
+  socketId     String?   @unique
+  matching     Matching?
 
-  socketId       String?   @unique
   blockedUserIds Int[]
   friends        Int[]
-  matching       Matching?
 
-  inGame    Boolean @default(false)
+  inGame       Boolean @default(false)
   score     Int     @default(0)
   gameId    Int?
   side      Int?
-  victories Int     @default(0)
+  victories Int         @default(0)
   paddleY   Float   @default(0.5)
   watching  Int     @default(-1)
 
-  log Boolean @default(true)
+  log               Boolean   @default(true)
+  userFriends       Friends[] @relation(name: "users")
+  friendUserFriends Friends[] @relation(name: "friend_users")
+
+  status            Status       @default(OFFLINE)
 
   @@map("users")
 }
 
-model Channel {
-  id           Int         @id @default(autoincrement())
-  name         String      @default("unknown channel")
-  mode         ChannelMode @default(PUBLIC)
-  password     String      @default("")
-  ownerId      Int         @default(0)
-  adminIds     Int[]
-  banedUserIds Int[]
-  messageIds   Int[]
-  userIds      Int[]
-  muteUserIds  Int[]
-  muteRelease  DateTime[]
+model Friends {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  friend_id Int
+  user      User     @relation(name: "users", fields: [user_id], references: [id])
+  friend    User     @relation(name: "friend_users", fields: [friend_id], references: [id])
+  status    fstatus
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([user_id, friend_id])
+}
+
+model Channel{
+  id              Int         @id @default(autoincrement())
+  name            String      @default("unknown channel")
+  mode            ChannelMode @default(PUBLIC)
+  password        String      @default("")
+  ownerId         Int         @default(0)
+  adminIds        Int[]
+  banedUserIds    Int[]
+  messageIds      Int[]
+  userIds         Int[]
+  muteUserIds     Int[]
+  muteRelease     DateTime[]
 }
 
 model Message {
@@ -67,6 +84,13 @@ enum ChannelMode {
   PRIVATE //new users must be invited by channel users (not clear in the subject)
 }
 
+enum fstatus {
+  pending
+  accepted
+  declined
+  blocked
+}
+
 model Matching {
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique
@@ -76,4 +100,10 @@ model Game {
   id      Int     @id @default(autoincrement())
   players Int[]
   powerUp Boolean @default(false)
+}
+
+enum Status {
+  OFFLINE //everybody can join, but there may be a password. No password => password = ''
+  ONLINE //direct messages between two users
+  PLAYING //new users must be invited by channel users (not clear in the subject)
 }

@@ -1,0 +1,35 @@
+@import '../../styles/settings';
+
+.login-header {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 75vw;
+
+    h1 i {
+      padding-right: 1vw;
+    }
+
+    h1 {
+      margin-bottom: 3vh;
+    }
+
+    .ask-log {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border-bottom: 1px white solid;
+      width: 100%;
+      padding-bottom: 1vh;
+    }
+  }
+}

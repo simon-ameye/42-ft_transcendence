@@ -15,12 +15,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe( {
     whitelist: true,
   }));
-	app.use(session({
-		secret: 'use random string',
-		resave: false,
-		saveUninitialized: false}),);
   console.log("testing 42API");
-  
+  // please modify this secret
+  app.use(
+    session({
+	    secret: 'use random string',
+	    resave: false,
+	    saveUninitialized: false,
+      //secure: true,
+    }),
+  );
+
   await app.listen(3001);
 }
 bootstrap();

@@ -12,22 +12,22 @@ import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
   const [cookie] = useCookies(['displayName'])
   const [open, setOpen] = useState(false)
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleOpen = () => {
     setOpen(!open)
   }
 
-	const	handleLogout = () => {
-		axios.delete('http://localhost:3001/auth/logout')
-			.then(res => goToRegistration())
-			.catch(err => console.log(err))
-	}
+  const handleLogout = () => {
+    axios.delete('http://localhost:3001/auth/logout')
+      .then(res => goToRegistration())
+      .catch(err => console.log(err))
+  }
 
-	const goToRegistration = () => {
-		socket.emit('reload');
-		navigate('/');
-	}
+  const goToRegistration = () => {
+    socket.emit('reload');
+    navigate('/');
+  }
 
   return (
     <header>
@@ -49,16 +49,16 @@ const Navbar = () => {
           <i className="fa-solid fa-comment"></i>
           <span>Chat</span>
         </NavLink>
-        <NavLink to="/user" className='navItem' >
+        <NavLink to="/friends" className='navItem'>
           <i className="fa-solid fa-user"></i>
-          <span>User</span>
+          <span>Friends</span>
+          { /* do a button instead of a navlink*/}
         </NavLink>
         <div className='navItem'>
           <div className='navList'>
-            <div onClick={handleOpen}><i className="fa-solid fa-user" />{cookie.displayName}<AiFillCaretDown size={10}/></div>
+            <div onClick={handleOpen}><i className="fa-solid fa-user" />{cookie.displayName}<AiFillCaretDown size={10} /></div>
             {open ? (<ul>
               <li className='navListItem'><NavLink to="/Profile"><CgProfile size={20}></CgProfile> <span>Profile</span></NavLink></li>
-              <li className='navListItem'><NavLink to="/UserSetting"><AiFillSetting size={20}></AiFillSetting> <span>Setting</span></NavLink></li>
               <li className='navListItem'><button onClick={handleLogout}><RiLogoutCircleRLine size={20}></RiLogoutCircleRLine> <span>Logout</span></button></li></ul>) : null}
           </div>
         </div>

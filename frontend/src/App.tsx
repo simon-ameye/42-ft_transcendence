@@ -13,6 +13,7 @@ import NotFound from './components/NotFound';
 import { useCookies } from 'react-cookie';
 import InvitPopup from './components/AbrunGame/invit-popup.component';
 import UnavailableInterface from './interfaces/unavailable.interface';
+import Friends from './components/Friends';
 
 axios.defaults.withCredentials = true;
 
@@ -106,6 +107,7 @@ function App() {
 				<Route path="/game" element={<Game />} />
 				<Route path="/game/live" element={<GameLive />} />
 				<Route path="/Profile" element={<Profile />} />
+				<Route path="/friends" element={<Friends />} />
   	    <Route path="*" element={<NotFound />} />
   	  </Routes>
 			<InvitPopup />

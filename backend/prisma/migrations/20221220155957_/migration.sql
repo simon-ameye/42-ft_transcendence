@@ -1,6 +1,12 @@
 -- CreateEnum
 CREATE TYPE "ChannelMode" AS ENUM ('PUBLIC', 'DIRECT', 'PRIVATE');
 
+-- CreateEnum
+CREATE TYPE "fstatus" AS ENUM ('pending', 'accepted', 'declined', 'blocked');
+
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('OFFLINE', 'ONLINE', 'PLAYING');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -23,8 +29,21 @@ CREATE TABLE "users" (
     "paddleY" DOUBLE PRECISION NOT NULL DEFAULT 0.5,
     "watching" INTEGER NOT NULL DEFAULT -1,
     "log" BOOLEAN NOT NULL DEFAULT true,
+    "status" "Status" NOT NULL DEFAULT 'OFFLINE',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Friends" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "friend_id" INTEGER NOT NULL,
+    "status" "fstatus" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Friends_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -78,7 +97,16 @@ CREATE UNIQUE INDEX "users_displayName_key" ON "users"("displayName");
 CREATE UNIQUE INDEX "users_socketId_key" ON "users"("socketId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Friends_user_id_friend_id_key" ON "Friends"("user_id", "friend_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Matching_userId_key" ON "Matching"("userId");
+
+-- AddForeignKey
+ALTER TABLE "Friends" ADD CONSTRAINT "Friends_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Friends" ADD CONSTRAINT "Friends_friend_id_fkey" FOREIGN KEY ("friend_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Matching" ADD CONSTRAINT "Matching_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

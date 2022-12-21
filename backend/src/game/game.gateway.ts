@@ -1,4 +1,4 @@
-import { WebSocketGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect, MessageBody } from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -6,6 +6,8 @@ import { GameService } from './game.service';
 import { MatchingQueueInterface, PlayerInterface, CheckWinnerInterface } from './interfaces';
 import { UserService } from '../user/user.service';
 import { GameInterface } from './interfaces/game.interface';
+import { Status } from ".prisma/client";
+
 
 @WebSocketGateway(4343, {
   cors: {
@@ -135,7 +137,13 @@ export class GameGateway {
     {
       return;
     }
-    this.gameProcess(gameRoom, p1Id, p2Id, (await game).id);
+    await this.prismaService.user.update({ where: { id: p1Id }, data: { status: Status.PLAYING } });
+    await this.prismaService.user.update({ where: { id: p2Id }, data: { status: Status.PLAYING } });
+
+    await this.gameProcess(gameRoom, p1Id, p2Id, (await game).id);
+
+    await this.prismaService.user.update({ where: { id: p1Id }, data: { status: Status.ONLINE } });
+    await this.prismaService.user.update({ where: { id: p2Id }, data: { status: Status.ONLINE } });
   }
 
   delay(time) {
@@ -254,6 +262,8 @@ export class GameGateway {
         paddleMissed = 0;
         var game = this.prismaService.game.findUnique({ where: { id: gameId } });
         if (!await game) {
+          console.log('Game process: it seems that the game has been deleted');
+          this.finishGame(gameRoom, p1Id, p2Id, 1); //if the game is deleted, 1 is winner
           return;
         }
         gi.powerUp = (await game).powerUp;
