@@ -10,8 +10,6 @@ import Default from '../../layouts/Default';
 import { useParams } from 'react-router-dom';
 import { findRenderedDOMComponentWithTag } from 'react-dom/test-utils';
 
-
-
 type User = {
   email: string;
   displayName: string;
@@ -40,6 +38,14 @@ const PublicProfile = () => {
       }).catch(err => console.log(err));
   }, [])
 
+  const renderImg = () => {
+    console.log(id);
+    let path = "http://localhost:3001/profile/getImageById/:id?id=" + id;
+    return (
+      <img className='profileImage' src={path} alt='profileImage'
+      width="300" height="300"></img>
+    )
+  }
   useEffect(() => {
     /// add friendList of a specific id
     axios.get('http://localhost:3001/user/friendsList')
@@ -55,22 +61,10 @@ const PublicProfile = () => {
     <Default>
       <div className='profile'>
         <div className='imageDiv'>
-          {/* {renderImg()} */}
-          <img className='profileImage' src="http://localhost:3001/profile/getImage" alt='profileImage'
-            width="300" height="300">
-          </img> 
+          {renderImg()} 
         </div>
         <div className='displayName'>{profileInterface?.displayName}</div>
-        <div className='friendList'>
-          {/* <h3>friends</h3> */}
-          {/* {friendList} */}
-        </div>
         <div>victories: {profileInterface?.victories}</div>
-        {/* <div className='email'>{profileInterface?.email}</div> */}
-        {/* <div>matching: {profileInterface?.matching}</div> */}
-        {/* <div>inGame: {profileInterface?.inGame}</div> */}
-        {/* <div>log: {profileInterface?.log}</div> */}
-        {/* <div>blockedUserIds: {profileInterface?.blockedUserIds}</div> */}
       </div>
     </Default>
   )

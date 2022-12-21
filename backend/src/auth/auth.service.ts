@@ -48,7 +48,7 @@ export class AuthService {
 					data: {
 						email: String(res.email),
 						displayName: String(res.login),
-						imageUrl: "./uploads/default.png"
+						imageUrl: "uploads/default.png"
 					}
 				});
 			//	const fs = require('fs');
@@ -104,7 +104,8 @@ export class AuthService {
         data: {
           email: dto.email,
           hash,
-					displayName: dto.displayName
+					displayName: dto.displayName,
+					imageUrl: "uploads/default.png",
         },
       });
       delete user.hash;

@@ -50,8 +50,9 @@ const Friends = () => {
     socket.emit("deny friend", relation);
   }
 
+
   const userList = users.map((c, i) => (
-    <ListItem key={i}> {
+    <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)}> {
       <button onClick={event => sendFriendRequest(c.id, c.socketId)}> send </button>
     }
       {c.displayName}
@@ -59,7 +60,7 @@ const Friends = () => {
   ))
 
   const receivedList = receivedFriendRequest.map((c, i) => (
-    <ListItem key={i}> {
+    <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)}> {
       <div className='accept | deny'>
         <button onClick={event => acceptFriendRequest(c)}> accept </button>
         <button onClick={event => denyFriendRequest(c)}> deny  </button>
@@ -69,13 +70,9 @@ const Friends = () => {
     </ListItem >
   ))
   
-  const redirectProfile = (id: number) => {
-    navigate("/publicProfile/" + id)
-  }
-
   const friendList = friends.map((c, i) => (
     // friend component
-    <ListItem key={i} onClick={(e) => redirectProfile(c.id)}> {
+    <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)}> {
     }
       {c.displayName}
     </ListItem >

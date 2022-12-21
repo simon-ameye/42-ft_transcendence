@@ -24,7 +24,6 @@ export class ProfileController {
   @UseGuards(AuthGuard('jwt'))
   @Get('findbyId/:id')
   async getProfileById(@Query() queryParams) {
-    console.log("why?")
     let test = this.profileService.getProfile(Number(queryParams.id))
     return test;
   }
@@ -55,16 +54,16 @@ export class ProfileController {
   @UseGuards(AuthGuard('jwt'))
   @Get('getImage')
   displayImage(@GetUser() user: UserDto, @Res() res) {
-    console.log(user.imageUrl)
     res.sendFile(user.imageUrl, { root: './' })
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('getImageById/:id')
   async getImagebyId(@Query() queryParams, @Res() res) {
-    let user = await this.userService.getUserById(queryParams.id)
+    let user = await this.userService.getUserById(Number(queryParams.id));
+    console.log("USER ID", user.id);
+    console.log("USER PATH", user.imageUrl);
     if (user)
-      res.sendFile(user.imageUrl, { root: './' })
+      await res.sendFile(user.imageUrl, { root: './' })
   }
-  //// add a getImage:id endpoint
 }

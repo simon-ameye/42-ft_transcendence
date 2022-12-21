@@ -8,15 +8,17 @@ import UserInterface from '../Interface/UserInterface';
 import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
 import { useEffect, useState } from "react";
 import { CompressOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
   const [userInterfaces, setuserInterfaces] = useState<UserInterface[]>([])
-
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState({
     channelId: 0,
     userId: 0,
   })
+
   const handleClickOpen = (userId: number) => {
     setValues({ ...values, userId: userId });
     setOpen(true);
@@ -76,8 +78,10 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
   const inviteToGame = () => {
     alert('not done yet')
   }
+
   const accessUserProfile = () => {
-    alert('not done yet')
+    console.log(values.userId)
+    navigate("/publicProfile/" + values.userId)
   }
 
   return (
