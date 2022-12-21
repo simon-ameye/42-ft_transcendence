@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { GameConfig } from "../interface/gameConfig";
-import { ObjectSize, Position } from "../interface/position";
 import "./style.scss"
 import { GameInterface } from "./interfaces/game.interface";
 import { socket } from '../../App';
-import { List } from "@mui/material";
 import { useKeyDown } from "../hooks/useKeyDown";
 import { useNavigate } from "react-router-dom";
 import { XY } from "../interface/position";
@@ -115,7 +113,7 @@ const GameDisplay = (props: { config: GameConfig }) => {
   }
 
   return gi ? (
-    <>
+    <div className="game-container">
       <div className="scoreboard" style={{ width: canvasSize.x }}>
         <div className="p1-scoreboard">
           <h5 className="name-1">{gi?.p1Name}</h5>
@@ -133,15 +131,13 @@ const GameDisplay = (props: { config: GameConfig }) => {
           <label>background color :</label>
           <input type="color" value={backColor} onChange={e => setBackColor(e.target.value)} />
         </div>
-        <div className="pad-ball-color">
-          <button onClick={powerUp}>Power UP !</button>
-        </div>
+        <button onClick={powerUp}>Power UP !</button>
         <div className="pad-ball-color">
           <label>pad/ball color :</label>
           <input type="color" value={compColor} onChange={e => setCompColor(e.target.value)} />
         </div>
       </div>
-    </>
+    </div>
   ) : <Matchmaking />
 
 }
