@@ -30,12 +30,12 @@ export default function GameHome() {
 	const watchMatch = (strGame: string) => {
 		const playerNames = strGame.split(" ");
 		playerNames.splice(1, 1);
-		navigate('/game/live');
+		//navigate('/game/live');
 		socket.emit("watch game", playerNames);
 	}
 
 	const MatchingQueue = matchingQueue.map((matchingQueue, index) => {
-			return <ListItem key={index}>{matchingQueue} </ListItem>
+		return <ListItem key={index}>{matchingQueue} </ListItem>
 	})
 
 	const GameInProgress = gameList.map((gameList, index) => (
@@ -116,7 +116,7 @@ export default function GameHome() {
 		setMatchingQueue([...matchingQueue]);
 	}
 
-	const	deleteInMatchingListener = (players: string[]) => {
+	const deleteInMatchingListener = (players: string[]) => {
 		let i = 0;
 		const lenP = players.length;
 		let index;
@@ -135,7 +135,7 @@ export default function GameHome() {
 		setGameList([...gameList, strGame]);
 	}
 
-	const	gameOverListener = (versus: string) => {
+	const gameOverListener = (versus: string) => {
 		let index = gameList.indexOf(versus);
 		if (index >= 0)
 			gameList.splice(index, 1);
@@ -147,12 +147,10 @@ export default function GameHome() {
 	function MissedGoal() {
 		return <h1>MISSED!</h1>;
 	}
-
 	// RETURN \\
 
 	return (
 		<div>
-			<Navbar />
 			<div className='Join_game'>
 				{/* Left Side*/}
 				<div className='leftside_game'>

@@ -12,7 +12,7 @@ const Home = () => {
 	const [cookie] = useCookies(['displayName']);
 	const [RowData, setRowData] = useState([]);
 
-	
+
 
 	const columns: GridColDef[] = [{
 		field: "id",
@@ -53,24 +53,24 @@ const Home = () => {
 				<div className='test'>
 					<Box
 						sx={{
-							height:200,
-							width:550,
-						}}
-						>
-						<Typography
-						variant='h5'
-						component='h5'
-						sx={{
-							textAlign:'center', 
-							mt:2, 
-							mb:2,
-							overflow: 'none'
+							height: 200,
+							width: 550,
 						}}
 					>
-						Leaderboard
+						<Typography
+							variant='h5'
+							component='h5'
+							sx={{
+								textAlign: 'center',
+								mt: 2,
+								mb: 2,
+								overflow: 'none'
+							}}
+						>
+							Leaderboard
 						</Typography>
-					<DataGrid rows={RowData} columns={columns}/>
-				</Box>
+						<DataGrid rows={RowData} columns={columns} />
+					</Box>
 				</div>
 			</div>
 		</Default>

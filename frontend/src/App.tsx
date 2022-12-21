@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Route, Routes } from 'react-router-dom'
 import Home from './components/Home';
 import User from './components/User';
-import Game from './components/AbrunGame/Game';
+import Game from './components/GameSetup';
 import io from 'socket.io-client';
 import Auth from './components/Auth';
 import axios, { AxiosError } from 'axios';
@@ -11,7 +11,7 @@ import ChatBox from './components/Chat/ChatBox'
 import Profile from './components/Profile/Profile'
 import NotFound from './components/NotFound';
 import { useCookies } from 'react-cookie';
-import InvitPopup from './components/AbrunGame/invit-popup.component';
+import InvitPopup from './components/Matchmaking/invit-popup.component';
 import UnavailableInterface from './interfaces/unavailable.interface';
 import Friends from './components/Friends';
 
@@ -45,12 +45,12 @@ function App() {
 		}
 	});
 
-	useEffect(() => {
-		socket.on("start game", startGameListener);
-		return () => {
-			socket.off("start game", startGameListener);
-		}
-	});
+	//useEffect(() => {
+	//	socket.on("start game", startGameListener);
+	//	return () => {
+	//		socket.off("start game", startGameListener);
+	//	}
+	//});
 
 	useEffect(() => {
 		socket.on("cannot invit", cannotInvitListener);
@@ -75,9 +75,9 @@ function App() {
 		window.location.reload();
 	}
 
-	const startGameListener = () => {
-		navigate('/game/live');
-	}
+	//const startGameListener = () => {
+	//	navigate('/game/live');
+	//}
 
 	const cannotInvitListener = (unavailable: UnavailableInterface) => {
 		if (unavailable.why == 1) {
@@ -98,25 +98,25 @@ function App() {
 			alert('Cookies corrupted');
 	}
 
-  return cookie.displayName ? (
+	return cookie.displayName ? (
 		<>
-  	  <Routes>
-  	    <Route path="/auth" element={<Auth />} />
-  	    <Route path="/" element={<Home />} />
-  	    <Route path="/ChatBox" element={<ChatBox />} />
+			<Routes>
+				<Route path="/auth" element={<Auth />} />
+				<Route path="/" element={<Home />} />
+				<Route path="/ChatBox" element={<ChatBox />} />
 				<Route path="/game" element={<Game />} />
-				<Route path="/game/live" element={<GameLive />} />
+				{/*<Route path="/game/live" element={<GameLive />} />*/}
 				<Route path="/Profile" element={<Profile />} />
 				<Route path="/friends" element={<Friends />} />
-  	    <Route path="*" element={<NotFound />} />
-  	  </Routes>
+				<Route path="*" element={<NotFound />} />
+			</Routes>
 			<InvitPopup />
 		</>
-  ) : (
+	) : (
 		<Routes>
 			<Route path="/" element={<User />} />
-      <Route path="/auth" element={<Auth />} />
-	    <Route path="*" element={<NotFound />} />
+			<Route path="/auth" element={<Auth />} />
+			<Route path="*" element={<NotFound />} />
 		</Routes>
 	);
 }
