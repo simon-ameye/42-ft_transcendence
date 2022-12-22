@@ -209,4 +209,18 @@ export class UserService {
 		});
 		return (players);
 	}
+
+	async get2fa(displayName: string): Promise<string> {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				displayName
+			},
+			select: {
+				googleSecret: true,
+			}
+		});
+		if (user.googleSecret)
+			return ("yes");
+		return ("no");
+	}
 }

@@ -8,29 +8,50 @@ export default function Auth () {
 
 	// VARIABLES \\
 
-	const [cookie, setCookie] = useCookies(['jwtToken', 'displayName', 'qrcode']);
+	const [cookie] = useCookies(['jwtToken', 'displayName', 'qrcode', 'login']);
 	const navigate = useNavigate();
 	const queryParameters = new URLSearchParams(window.location.search)
 	const code = queryParameters.get("code");
 	const state = queryParameters.get("state");
-	const [qrcode, setQrcode] = useState<string>('');
 	const [displayqrcode, setDisplayqrcode] = useState<boolean>(false);
 	const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
+	const [fa, setfa] = useState<string>('');
+
+	// ON INIT \\
+
+	useEffect(() => {
+		if (code && state && !cookie.login) {
+			axios.post('https://api.intra.42.fr/oauth/token', {
+				grant_type: "authorization_code",
+				client_id: "u-s4t2ud-648c51ea9e1ba58cce46cff68acc6882c3fc4382864770ac7e8f610111a703ec",
+				client_secret: "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",
+				code: code,
+				state: state,
+				redirect_uri: "http://localhost:3000/auth"
+			})
+				.then(res => getIntraMe(res.data))
+				.catch(err => console.log(err));
+		}
+	}, []);
+
+
+	useEffect(() => {
+		if (!code && !state && !cookie.login) {
+			socket.emit('reload');
+			navigate('/auth2fa');
+		}
+		else if (cookie.displayName) {
+			axios.get('http://localhost:3001/user/get2fa', {
+				params: {
+					displayName: cookie.displayName,
+				}
+			})
+			.then(res => setfa(res.data))
+			.catch(err => console.log(err))
+		}
+	}, []);
 
 	// FUNCTIONS \\
-
-	if (code && state) {
-		axios.post('https://api.intra.42.fr/oauth/token', {
-			grant_type: "authorization_code",
-			client_id: "u-s4t2ud-648c51ea9e1ba58cce46cff68acc6882c3fc4382864770ac7e8f610111a703ec",
-			client_secret: "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",
-			code: code,
-			state: state,
-			redirect_uri: "http://localhost:3000/auth"
-		})
-			.then(res => getIntraMe(res.data))
-			.catch(err => console.log(err));
-	}
 
 	const getIntraMe = (data: {access_token: string}) => {
 		axios.get('http://localhost:3001/auth/intra/getMe', {
@@ -38,24 +59,23 @@ export default function Auth () {
 				token: data.access_token
 			}
 		})
-			.then(res => updateUserSocket())
+			.then(res => goToGoogleAuthOrNot())
 			.catch(err => handleIntraErr(err));
 	}
 
-	const updateUserSocket = () => {
-		axios.put('http://localhost:3001/user/modifySocketId', {
-			socketId: socket.id
-		})
-			.then(res => socket.emit('reload'))
-			.catch(err => console.log(err));
+	const	goToGoogleAuthOrNot = () => {
+		if (!cookie.login) {
+			socket.emit('reload');
+			navigate('/auth2fa');
+		}
 	}
 
 	const	handleIntraErr = (err: AxiosError) => {
 		if (err.response) {
-			if (err.response.status == 460) {
+			if (err.response.status === 460) {
 				alert('You are already log in from an other device');
 			}
-			else if (err.response.status == 403) {
+			else if (err.response.status === 403) {
 				alert('Your credentials are already taken');
 			}
 		}
@@ -78,7 +98,7 @@ export default function Auth () {
 
 	const activate2fa = () => {
 		axios.post('http://localhost:3001/auth/google2FA/activate')
-			.then(res => console.log(res.data))
+			.then(res => window.location.reload())
 			.catch(err => console.log(err))
 	}
 
@@ -88,14 +108,6 @@ export default function Auth () {
 		socket.on("reload", reloadListener);
 		return () => {
 			socket.off("reload", reloadListener);
-		}
-	}, []);
-
-	useEffect(() => {
-		if (cookie.qrcode !== undefined && cookie.qrcode === 'yes') {
-			axios.get('http://localhost:3001/user/qrcode')
-				.then(res => setQrcode(res.data))
-				.catch(err => console.log(err))
 		}
 	}, []);
 
@@ -111,15 +123,15 @@ export default function Auth () {
 				<h1>Welcome {cookie.displayName} to ft_transcendence!</h1>
 			</div>
 			<div>
-				{!qrcode &&
+				{fa === 'no' &&
 				<button
 					onClick={activate2fa} className='submit=btn'>Activate google 2FA authentificator
 				</button>}
 			</div>
 			<div>
-				{qrcode &&
+				{cookie.qrcode &&
 				<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
-				{displayqrcode && <img src={qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
+				{displayqrcode && <img src={cookie.qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
 			</div>
 			<div>
 				<button onClick={goHome}>Go to home page</button>

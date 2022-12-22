@@ -119,4 +119,9 @@ export class UserController {
 	getQrcode(@GetUser() user: UserDto) {
 		return (this.userService.getQrcode(user));
 	}
+
+	@Get('get2fa')
+	get2fa(@Query() query: {displayName: string}): Promise<string> {
+		return (this.userService.get2fa(query.displayName));
+	}
 }

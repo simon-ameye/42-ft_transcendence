@@ -21,7 +21,7 @@ export class AuthController {
   signin(
 			@Body() dto: SigninDto,
 			@Res({ passthrough: true} ) response: Response
-		): Promise<boolean> {
+		): Promise<string> {
     return this.authService.signin(dto, response);
   }
 
@@ -33,7 +33,7 @@ export class AuthController {
 	getIntraUser (
 			@Query() query: {token: string},
 			@Res({ passthrough: true} ) response: Response
-		): Promise<boolean> {
+		): Promise<string> {
 		return (this.authService.getIntraUser(query.token, response));
 	}
 
@@ -48,10 +48,10 @@ export class AuthController {
 
 	@Post('google2FA/verify')
 	verify2FA(
-			@Body() body: {email: string, code: string},
+			@Body() body: {code: string, displayName: string},
 			@Res({ passthrough: true }) response: Response
 		): Promise<void> {
-		return (this.authService.verify2FA(body, response));
+		return (this.authService.verify2FA(body.displayName, body.code, response));
 	}
 
 	@UseGuards(AuthGuard('jwt'))

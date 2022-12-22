@@ -44,23 +44,17 @@ const User = () => {
 			displayName: userDisplayNameUp,
 			imageUrl: userProfilePicture
 		})
-			.then(res => updateUserSocket())
+		//	.then(res => updateUserSocket())
+			.then(res => goToAuthPage(res.data))
 			.catch(err => handleSignError(err))
 	}
 
-	const updateUserSocket = () => {
-		axios.put('http://localhost:3001/user/modifySocketId', {
-			socketId: socket.id
-		})
-			.then(res => goToAuthPage(res.data))
-			.catch(err => console.log(err));
-	}
-
-	const goToAuthPage = (doublefa: boolean) => {
+	const goToAuthPage = (doublefa: string) => {
 		socket.emit('reload');
-		if (doublefa)
+		if (doublefa === "yes")
 			navigate('/auth2fa');
-		navigate('/auth');
+		else
+			navigate('/auth');
 	}
 
 	const handleIntra = () => {
@@ -84,7 +78,7 @@ const User = () => {
 			email: userMailIn,
 			password: userPassIn,
 		})
-			.then(res => updateUserSocket())
+			.then(res => goToAuthPage(res.data))
 			.catch(err => handleSignError(err))
 	}
 

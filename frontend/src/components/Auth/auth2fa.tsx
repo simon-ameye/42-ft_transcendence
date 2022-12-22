@@ -10,6 +10,8 @@ import Default from '../../layouts/Default';
 const Auth2FA = () => {
 
 	// VARIABLES \\
+
+	const [cookie] = useCookies(['displayName']);
 	const [googleCode, setGoogleCode] = useState<string>('');
 	const navigate = useNavigate();
 	
@@ -19,6 +21,7 @@ const Auth2FA = () => {
 		e.preventDefault();
 		axios.post('http://localhost:3001/auth/google2FA/verify',{
 			code: googleCode,
+			displayName: cookie.displayName
 		})
 			.then(res => goToAuthPage())
 			.catch(err => handleSignError(err))

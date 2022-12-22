@@ -26,7 +26,7 @@ export class AuthService {
   async getIntraUser(
 			token: string,
 			@Res({ passthrough: true }) response: Response
-		): Promise<boolean> {
+		): Promise<string> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -72,11 +72,9 @@ export class AuthService {
 			//			},
 			//		})
 				}
-			const jwtToken = await this.signJwtToken(user);
-			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
 			if (user.googleSecret) {
-				return (true);
+				return ("yes");
 			}
 			user = await this.prismaService.user.update({
 				where: {
@@ -96,8 +94,10 @@ export class AuthService {
 			}
       throw e;
 		}
-		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true });
-		return (false);
+		const jwtToken = await this.signJwtToken(user);
+		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+		response.status(202).cookie('login', "yes", { path: '/' });
+		return ("no");
   }
 
   async signup(
@@ -114,8 +114,9 @@ export class AuthService {
         },
       });
 			const jwtToken = await this.signJwtToken(user);
-			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+			response.status(202).cookie('login', "yes", { path: '/' });
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -131,7 +132,7 @@ export class AuthService {
   async signin(
 			dto: SigninDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<boolean> {
+		): Promise<string> {
     let user = await this.prismaService.user.findUnique({
       where: {
         email: dto.email,
@@ -166,10 +167,9 @@ export class AuthService {
 			}, 461);
     };
 		const jwtToken = await this.signJwtToken(user);
-		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
 		if (user.googleSecret) {
-			return (true);
+			return ("yes");
 		}
 		user = await this.prismaService.user.update({
 			where: {
@@ -179,8 +179,9 @@ export class AuthService {
 				log: true
 			}
 		});
-		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true });
-		return (false);
+		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
+		response.status(202).cookie('login', "yes", { path: '/' });
+		return ("no");
   }
 
 	async	activate2FA(
@@ -195,19 +196,19 @@ export class AuthService {
 			},
 			data: {
 				googleSecret: String(secret.base32),
-				qrcode: qrcodeURL
 			},
 		});
-		response.status(202).cookie('qrcode', "yes", { path: '/' });
+		response.status(202).cookie('qrcode', qrcodeURL, { path: '/auth' });
 	}
 
 	async verify2FA(
-			payload: {email: string, code: string},
+			displayName: string,
+			code: string,
 			@Res({ passthrough: true }) response: Response
 		): Promise<void> {
 		const user = await this.prismaService.user.findUnique({
 			where: {
-				email: payload.email,
+				displayName
 			},
 		});
 		if (!user) {
@@ -231,7 +232,7 @@ export class AuthService {
 		const verify = speakeasy.totp.verify({
 			secret: user.googleSecret,
 			encoding: 'base32',
-			token: payload.code
+			token: code
 		});
 		if (!verify) {
 			throw new HttpException({
@@ -242,7 +243,7 @@ export class AuthService {
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
-		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true });
+		response.status(202).cookie('login', "yes", { path: '/' });
 		const updateUser = await this.prismaService.user.update({
 			where: {
 				id: user.id
@@ -313,7 +314,7 @@ export class AuthService {
 		});
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
 		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
-		response.status(202).cookie('qrcode', 'none', { path: '/', expires: new Date(Date.now())});
+		response.status(202).cookie('qrcode', 'none', { path: '/auth', expires: new Date(Date.now())});
 		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true, expires: new Date(Date.now())});
 	}
 }
