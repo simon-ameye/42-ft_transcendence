@@ -12,8 +12,6 @@ const User = () => {
 	const [userMailUp, setUserMailUp] = useState('');
 	const [userPassUp, setUserPassUp] = useState('');
 	const [userDisplayNameUp, setUserDisplayNameUp] = useState('');
-	const [userMailQrUp, setUserMailQrUp] = useState('');
-	const [userDisplayNameQrUp, setUserDisplayNameQrUp] = useState('');
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 	const [userMailIn, setUserMailIn] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
@@ -54,28 +52,19 @@ const User = () => {
 		axios.put('http://localhost:3001/user/modifySocketId', {
 			socketId: socket.id
 		})
-			.then(res => goToAuthPage())
+			.then(res => goToAuthPage(res.data))
 			.catch(err => console.log(err));
 	}
 
-	const goToAuthPage = () => {
+	const goToAuthPage = (doublefa: boolean) => {
 		socket.emit('reload');
+		if (doublefa)
+			navigate('/auth2fa');
 		navigate('/auth');
 	}
 
 	const handleIntra = () => {
 		window.location.href = 'http://localhost:3001/auth/42api/login';
-	}
-
-	const handleGoogleAuthSignup = (e: React.FormEvent) => {
-		e.preventDefault();
-		axios.post('http://localhost:3001/auth/google2FA/signup',{
-			email: userMailQrUp,
-			displayName: userDisplayNameQrUp,
-		})
-			.then(res => goToAuthPage())
-			.catch(err => handleSignError(err))
-
 	}
 
 	const handleGoogleAuthSignin = (e: React.FormEvent) => {
@@ -84,7 +73,7 @@ const User = () => {
 			email: userMailQrIn,
 			code: userCodeQrIn,
 		})
-			.then(res => goToAuthPage())
+			.then(res => goToAuthPage(res.data))
 			.catch(err => handleSignError(err))
 	}
 
@@ -160,29 +149,6 @@ const User = () => {
 							</div>
 						</form>
 					</div>
-					<form>
-						<label>Email</label>
-						<input
-							type="email"
-							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-							placeholder='ex: "test@test.fr"'
-							required
-							value={userMailQrUp}
-							onChange={(e) => setUserMailQrUp(e.target.value)}
-						/>
-						<label>Display name</label>
-						<input
-							type="text"
-							required
-							placeholder='Display on pong ranking etc..'
-							value={userDisplayNameQrUp}
-							onChange={(e) => setUserDisplayNameQrUp(e.target.value)}
-						/>
-						<button onClick={handleGoogleAuthSignup} className='login-btn'>
-							<p>Login with</p>
-							<img src={GoogleAuthImage} alt="google authentificator" className='g-auth-logo'></img>
-						</button>
-					</form>
 				</div>
 				<h1>SIGN IN :</h1>
 				<div className="sign-in-container">
@@ -206,31 +172,6 @@ const User = () => {
 								onChange={(e) => setUserPassIn(e.target.value)}
 							/>
 							<button type="submit" className='submit-btn'>submit</button>
-						</form>
-					</div>
-					<div className="createUserContent">
-						<form>
-							<label>Email</label>
-							<input
-								type="email"
-								pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-								placeholder='ex: "test@test.fr"'
-								required
-								value={userMailQrIn}
-								onChange={(e) => setUserMailQrIn(e.target.value)}
-							/>
-							<label>Google code</label>
-							<input
-								type="text"
-								required
-								placeholder='google authentificator code'
-								value={userCodeQrIn}
-								onChange={(e) => setUserCodeQrIn(e.target.value)}
-							/>
-							<button onClick={handleGoogleAuthSignin} className='login-btn'>
-								<p>Login with</p>
-								<img src={GoogleAuthImage} alt="google authentificator" className='g-auth-logo'></img>
-							</button>
 						</form>
 					</div>
 					<div className="createUserContent">

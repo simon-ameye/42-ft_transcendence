@@ -26,7 +26,7 @@ export class AuthService {
   async getIntraUser(
 			token: string,
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
+		): Promise<boolean> {
 		const	authStr = 'Bearer '.concat(token);
 		try {
 			const res = await firstValueFrom(this.httpService.get(
@@ -75,6 +75,9 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
+			if (user.googleSecret) {
+				return (true);
+			}
 			user = await this.prismaService.user.update({
 				where: {
 					id: user.id
@@ -93,6 +96,8 @@ export class AuthService {
 			}
       throw e;
 		}
+		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true });
+		return (false);
   }
 
   async signup(
@@ -126,7 +131,7 @@ export class AuthService {
   async signin(
 			dto: SigninDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
+		): Promise<boolean> {
     let user = await this.prismaService.user.findUnique({
       where: {
         email: dto.email,
@@ -163,6 +168,9 @@ export class AuthService {
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
+		if (user.googleSecret) {
+			return (true);
+		}
 		user = await this.prismaService.user.update({
 			where: {
 				id: user.id
@@ -171,35 +179,26 @@ export class AuthService {
 				log: true
 			}
 		});
+		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true });
+		return (false);
   }
 
-	async	signup2FA(
-			data: {email: string, displayName: string},
+	async	activate2FA(
+			dto: UserDto,
 			@Res({ passthrough: true }) response: Response
 		): Promise<void> {
 		const secret = speakeasy.generateSecret();
 		const qrcodeURL = await qrcode.toDataURL(secret.otpauth_url);
-		try {
-			var user = await this.prismaService.user.create({
-				data: {
-					email: data.email,
-					googleSecret: String(secret.base32),
-					displayName: data.displayName,
-					qrcode: qrcodeURL
-				},
-			});
-			const jwtToken = await this.signJwtToken(user);
-			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-			response.status(202).cookie('qrcode', "yes", { path: '/' });
-			response.status(202).cookie('displayName', user.displayName, { path: '/' });
-		} catch (error) {
-			if (error instanceof Prisma.PrismaClientKnownRequestError) {
-				if (error.code === 'P2002') {
-					throw new ForbiddenException('Credentials taken');
-				}
-			}
-			throw (error);
-		}
+		const user = await this.prismaService.user.update({
+			where: {
+				id: dto.id
+			},
+			data: {
+				googleSecret: String(secret.base32),
+				qrcode: qrcodeURL
+			},
+		});
+		response.status(202).cookie('qrcode', "yes", { path: '/' });
 	}
 
 	async verify2FA(
@@ -243,6 +242,7 @@ export class AuthService {
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
 		response.status(202).cookie('displayName', user.displayName, { path: '/' });
+		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true });
 		const updateUser = await this.prismaService.user.update({
 			where: {
 				id: user.id
@@ -314,5 +314,6 @@ export class AuthService {
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
 		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
 		response.status(202).cookie('qrcode', 'none', { path: '/', expires: new Date(Date.now())});
+		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true, expires: new Date(Date.now())});
 	}
 }

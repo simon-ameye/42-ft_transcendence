@@ -14,6 +14,7 @@ import { useCookies } from 'react-cookie';
 import InvitPopup from './components/AbrunGame/invit-popup.component';
 import UnavailableInterface from './interfaces/unavailable.interface';
 import Friends from './components/Friends';
+import Auth2FA from './components/Auth/auth2fa';
 
 axios.defaults.withCredentials = true;
 
@@ -26,7 +27,7 @@ function App() {
 	socket.emit('hello');
 
 	// VARIABLES \\
-	const [cookie] = useCookies(['displayName', 'jwtToken']);
+	const [cookie] = useCookies(['login']);
 	const navigate = useNavigate();
 
 	// USE EFFECT \\
@@ -62,7 +63,7 @@ function App() {
 	// LISTENER \\
 
 	const heyoListener = () => {
-		if (cookie.displayName) {
+		if (cookie.login) {
 			axios.put('http://localhost:3001/user/modifySocketId', {
 				socketId: socket.id
 			})
@@ -98,7 +99,7 @@ function App() {
 			alert('Cookies corrupted');
 	}
 
-  return cookie.displayName ? (
+  return cookie.login ? (
 		<>
   	  <Routes>
   	    <Route path="/auth" element={<Auth />} />
@@ -117,6 +118,7 @@ function App() {
 			<Route path="/" element={<User />} />
       <Route path="/auth" element={<Auth />} />
 	    <Route path="*" element={<NotFound />} />
+			<Route path="/auth2fa" element={<Auth2FA />} />
 		</Routes>
 	);
 }
