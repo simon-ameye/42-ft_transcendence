@@ -3,8 +3,6 @@ import axios, { AxiosError } from 'axios';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import './style.scss';
-import GoogleAuthImage from '../../assets/googleAuth.png';
-import { useCookies } from 'react-cookie';
 import Default from '../../layouts/Default';
 
 const User = () => {
@@ -15,8 +13,6 @@ const User = () => {
 	const [userProfilePicture, setUserProfilePicture] = useState('');
 	const [userMailIn, setUserMailIn] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
-	const [userMailQrIn, setUserMailQrIn] = useState('');
-	const [userCodeQrIn, setUserCodeQrIn] = useState('');
 
 	// USE_EFFECT \\
 
@@ -59,16 +55,6 @@ const User = () => {
 
 	const handleIntra = () => {
 		window.location.href = 'http://localhost:3001/auth/42api/login';
-	}
-
-	const handleGoogleAuthSignin = (e: React.FormEvent) => {
-		e.preventDefault();
-		axios.post('http://localhost:3001/auth/google2FA/signin',{
-			email: userMailQrIn,
-			code: userCodeQrIn,
-		})
-			.then(res => goToAuthPage(res.data))
-			.catch(err => handleSignError(err))
 	}
 
 	const handleSignin = (e: React.FormEvent) => {

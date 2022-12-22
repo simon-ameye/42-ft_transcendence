@@ -4,7 +4,7 @@ import Home from './components/Home';
 import User from './components/User';
 import Game from './components/AbrunGame/Game';
 import io from 'socket.io-client';
-import Auth from './components/Auth';
+import AuthPassed from './components/Auth/authPassed';
 import axios, { AxiosError } from 'axios';
 import GameLive from './components/GameSetup';
 import ChatBox from './components/Chat/ChatBox'
@@ -102,7 +102,7 @@ function App() {
   return cookie.login ? (
 		<>
   	  <Routes>
-  	    <Route path="/auth" element={<Auth />} />
+  	    <Route path="/auth" element={<AuthPassed />} />
   	    <Route path="/" element={<Home />} />
   	    <Route path="/ChatBox" element={<ChatBox />} />
 				<Route path="/game" element={<Game />} />
@@ -116,7 +116,7 @@ function App() {
   ) : (
 		<Routes>
 			<Route path="/" element={<User />} />
-      <Route path="/auth" element={<Auth />} />
+      <Route path="/auth" element={<AuthPassed />} />
 	    <Route path="*" element={<NotFound />} />
 			<Route path="/auth2fa" element={<Auth2FA />} />
 		</Routes>

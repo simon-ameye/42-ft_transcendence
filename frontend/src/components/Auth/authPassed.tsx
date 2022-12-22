@@ -2,9 +2,9 @@ import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { socket } from '../App';
+import { socket } from '../../App';
 
-export default function Auth () {
+export default function AuthPassed () {
 
 	// VARIABLES \\
 

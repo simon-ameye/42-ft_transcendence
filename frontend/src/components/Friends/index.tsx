@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import Auth from '../Auth';
+import AuthPassed from '../Auth/authPassed';
 import Navbar from '../Navbar';
 import { ListItem } from '@mui/material'
 import io, { Socket } from 'socket.io-client';
