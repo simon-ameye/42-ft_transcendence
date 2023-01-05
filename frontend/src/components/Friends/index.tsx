@@ -95,6 +95,7 @@ const Friends = () => {
       })
   }, []);
 
+  // needs modif
   useEffect(() => {
     const interval = setInterval(() => {
       axios.get('http://localhost:3001/user/friendsList')

@@ -59,7 +59,7 @@ const Profile = () => {
           <h3>friends</h3>
           {friendList}
         </div>
-        <div>victories: {profileInterface?.victories}</div>
+        <div>victories: {profileInterface?.victories} </div>
         {/* <div className='email'>{profileInterface?.email}</div> */}
         {/* <div>matching: {profileInterface?.matching}</div> */}
         {/* <div>inGame: {profileInterface?.inGame}</div> */}
