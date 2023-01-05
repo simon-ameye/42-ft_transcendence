@@ -32,8 +32,6 @@ type FriendRequest = {
   friend: User;
 }
 
-/// needs another component to listen on invit in all app
-
 const Friends = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [cookie] = useCookies(['displayName']);

@@ -381,7 +381,7 @@ export class ChatService {
   }
 
   async getUserFriendTable(userId: number) { //MAYBE NEEDS PROTECTION !
-    var friendsInterfaces: FriendsInterface[] = [];
+    /*var friendsInterfaces: FriendsInterface[] = [];
     var friend: User;
 
     var user = await this.prisma.user.findUnique({ where: { id: userId }, })
@@ -397,7 +397,7 @@ export class ChatService {
       var friendInterface: FriendsInterface = { id: friendId, name: friend.displayName };
       friendsInterfaces.push(friendInterface);
     }
-    return { friendsInterfaces };
+    return { friendsInterfaces };*/
   }
 
   async getUserTable(userId: number) { //MAYBE NEEDS PROTECTION !

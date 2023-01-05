@@ -265,33 +265,26 @@ export class GameService {
   }
 
   async addVictory(winnerId: number, looserId: number, gi: GameInterface): Promise<void> {
-    const winner = await this.prismaService.user.findUnique({ where: { id: winnerId } });
-    const looser = await this.prismaService.user.findUnique({ where: { id: looserId } });
-    await this.prismaService.user.update({
-      where: {
-        id: winnerId,
-      },
-      data: {
-        victories: {
-          increment: +1
-        },
-        matchHistory: {
-          push: "victory against " + looser.displayName + "( lvl " + looser.victories + " ) score: "+ gi.p1score + "/" + gi.p2score + " on " + Date().toLocaleString()
-        }
-      }
-    });
+    const user = await this.prismaService.user.findUnique({ where: { id: winnerId } });
+    const opponent = await this.prismaService.user.findUnique({ where: { id: looserId } });
 
-    await this.prismaService.user.update({
-      where: {
-        id : looserId
-      },
+    await this.prismaService.match.create({
       data: {
-        matchHistory: {
-          push: "defeat against " + winner.displayName + "( lvl " + winner.victories + " ) score: " + gi.p1score + "/" + gi.p2score + " on " + Date().toLocaleString()
-        }
+        userId: user.id,
+        date: 5,
+        score: [gi.p1score, gi.p2score],
+        opponent: opponent.displayName
       },
-    },
-    );
+    })
+
+    await this.prismaService.match.create({
+      data: {
+        userId: opponent.id,
+        date: 5,
+        score: [gi.p2score, gi.p1score],
+        opponent: user.displayName
+      },
+    })
   }
 
   async updateWatching(SId: string, gameId: number): Promise<number> {

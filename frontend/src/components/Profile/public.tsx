@@ -33,7 +33,6 @@ const PublicProfile = () => {
     axios.get('http://localhost:3001/profile/findbyId/:id', {params:{ id: id }}
     ).then(
       function (response) {
-        console.log(id)
         setprofileInterface(response.data);
       }).catch(err => console.log(err));
   }, [])
@@ -63,7 +62,7 @@ const PublicProfile = () => {
           {renderImg()} 
         </div>
         <div className='displayName'>{profileInterface?.displayName}</div>
-        <div>victories: {profileInterface?.victories}</div>
+        <div>level: {profileInterface?.victories}</div>
       </div>
     </Default>
   )

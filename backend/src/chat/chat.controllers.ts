@@ -139,8 +139,8 @@ export class ChatController {
   @UseGuards(AuthGuard('jwt'))
   @Get('getUserFriendTable')
   async getUserFriendTable(@GetUser() user: UserDto) {
-    let { friendsInterfaces } = await this.chatService.getUserFriendTable(user.id);
-    return { friendsInterfaces: friendsInterfaces };
+    //let { friendsInterfaces } = await this.chatService.getUserFriendTable(user.id);
+    //return { friendsInterfaces: friendsInterfaces };
   }
 
   @UseGuards(AuthGuard('jwt'))

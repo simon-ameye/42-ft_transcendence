@@ -7,6 +7,7 @@ import FileUpload from './upload';
 import User from '../User';
 import { ListItem } from '@mui/material';
 import Default from '../../layouts/Default';
+import { profile } from 'console';
 
 type User = {
   email: string;
@@ -14,6 +15,7 @@ type User = {
   imageUrl: string;
   id: number;
   socketId: string;
+  matchHistory: string[];
 }
 
 const Profile = () => {
@@ -25,6 +27,13 @@ const Profile = () => {
     <ListItem key={i}>
       {c.displayName}
     </ListItem >
+  ))
+  
+  const matchHistory = profileInterface?.matchHistory.map((c, i) => (
+    // add a link to each friend profile
+    <ListItem key={i}>
+      { profileInterface?.displayName } VS { c.opponent } Score: {c.score[0]} {c.score[1]} on { c.date }
+    </ListItem>
   ))
 
   useEffect(() => {
@@ -59,12 +68,10 @@ const Profile = () => {
           <h3>friends</h3>
           {friendList}
         </div>
-        <div>victories: {profileInterface?.victories} </div>
-        {/* <div className='email'>{profileInterface?.email}</div> */}
-        {/* <div>matching: {profileInterface?.matching}</div> */}
-        {/* <div>inGame: {profileInterface?.inGame}</div> */}
-        {/* <div>log: {profileInterface?.log}</div> */}
-        {/* <div>blockedUserIds: {profileInterface?.blockedUserIds}</div> */}
+        <div>level: {profileInterface?.victories} </div>
+        <div className='matchHistoryTable'>
+          { matchHistory }
+        </div>
       </div>
     </Default>
   )

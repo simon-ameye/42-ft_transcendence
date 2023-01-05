@@ -10,6 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Match {
+  id       Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+  date Int
+  score Int[]
+  opponent String
+}
+
 model User {
   id           Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
@@ -20,13 +29,11 @@ model User {
   imageUrl     String?
   googleSecret String?
   qrcode       String?
-  //status       String?
-  // add path of the image
   socketId     String?   @unique
   matching     Matching?
-
+  
+  friends   Int[]
   blockedUserIds Int[]
-  friends        Int[]
 
   inGame       Boolean @default(false)
   score     Int     @default(0)
@@ -42,7 +49,7 @@ model User {
 
   status            Status       @default(OFFLINE)
 
-  matchHistory      String[]
+  matchHistory  Match[]
 
   @@map("users")
 }
