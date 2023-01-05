@@ -5,10 +5,7 @@ import OppenentsInterface from '../../interfaces/oppenents.interface';
 import PlayerInterface from '../../interfaces/player.interface';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import Navbar from '../Navbar';
 import { ListItem } from '@mui/material';
-import { RiPingPongFill } from 'react-icons/ri';
-
 
 export default function GameHome() {
 
@@ -150,30 +147,26 @@ export default function GameHome() {
 	// RETURN \\
 
 	return (
-		<div>
-			<div className='Join_game'>
-				{/* Left Side*/}
-				<div className='leftside_game'>
-					<div className='game-container'>
-						<br></br>
-						{cookie.displayName}
-						<br></br>
-						<div className='Join_game_button'>
-							{cookie.displayName &&
-								<div className='pong_join_game'>
-									<button className='pong_button' onClick={() => addToQueue()}><i className="fa-solid fa-table-tennis-paddle-ball"></i></button>
-								</div>}
-						</div>
-						<div className='Matching_queue'>
-							<br></br>
-							Matching Queue
-							{MatchingQueue}
-						</div>
-						<div>
-							<br></br>
-							<h5>Watch game in progress</h5>
-							{GameInProgress}
-						</div>
+		<div className='matchmaking-container'>
+			{/* Left Side*/}
+			<div className='game-container'>
+				{cookie.displayName &&
+					<button className='pong_button' onClick={() => addToQueue()}>
+						Join queue
+						<span>(as {cookie.displayName}) </span>
+					</button>}
+			</div>
+			<div className="matching-container">
+				<div className='matching-queue'>
+					Players in queue :
+					<div>
+						{MatchingQueue}
+					</div>
+				</div>
+				<div className='game-progress'>
+					<h5>Watch game in progress</h5>
+					<div>
+						{GameInProgress}
 					</div>
 				</div>
 			</div>

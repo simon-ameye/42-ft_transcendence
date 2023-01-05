@@ -48,31 +48,6 @@ const Home = () => {
 					Pong is a table tennis–themed twitch arcade sports video game, featuring simple two-dimensional graphics, manufactured by Atari and originally released in <span>1972</span>. It was one of the earliest arcade video games; it was created by <span>Allan Alcorn</span> as a training exercise assigned to him by Atari co-founder Nolan Bushnell, but Bushnell and Atari co-founder Ted Dabney were surprised by the quality of Alcorn's work and decided to manufacture the game.
 				</p>
 			</div>
-			<div>
-				<br></br>
-				<div className='test'>
-					<Box
-						sx={{
-							height: 200,
-							width: 550,
-						}}
-					>
-						<Typography
-							variant='h5'
-							component='h5'
-							sx={{
-								textAlign: 'center',
-								mt: 2,
-								mb: 2,
-								overflow: 'none'
-							}}
-						>
-							Leaderboard
-						</Typography>
-						<DataGrid rows={RowData} columns={columns} />
-					</Box>
-				</div>
-			</div>
 		</Default>
 	);
 };
