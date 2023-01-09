@@ -14,7 +14,7 @@ model Match {
   id       Int  @id @default(autoincrement())
   user   User @relation(fields: [userId], references: [id])
   userId Int
-  date Int
+  date String
   score Int[]
   opponent String
 }

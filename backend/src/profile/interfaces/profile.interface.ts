@@ -1,5 +1,5 @@
 type matchHistory = {
-  date: number;
+  date: string;
   score: number[];
   opponent: string;
 }

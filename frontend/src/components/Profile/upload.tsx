@@ -15,10 +15,10 @@ const FileUpload: React.FC = () => {
       return;
     UploadService.upload(file)
     .then((file) => {
-      console.log("upload succesfully")
+      alert("Upload Done, please refresh")
     })
     .catch((err) => {
-      console.log(err)
+      alert("Upload failed")
     })
     setFile(undefined)
   }

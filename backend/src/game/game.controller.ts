@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/decorators';
 import { UserDto } from '../auth/dto';
 import { GameService } from './game.service';
+import { UseInterceptors } from '@nestjs/common';
 
 @Controller('game')
 export class GameController {

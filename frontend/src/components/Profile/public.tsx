@@ -28,6 +28,13 @@ const PublicProfile = () => {
       {c.displayName}
     </ListItem >
   ))
+  
+  const matchHistory = profileInterface?.matchHistory.map((c, i) => (
+    // add a link to each friend profile
+    <ListItem key={i}>
+      { profileInterface?.displayName } VS { c.opponent } Score: {c.score[0]} {c.score[1]} on { c.date }
+    </ListItem>
+  ))
 
   useEffect(() => {
     axios.get('http://localhost:3001/profile/findbyId/:id', {params:{ id: id }}
@@ -44,8 +51,8 @@ const PublicProfile = () => {
       width="300" height="300"></img>
     )
   }
+
   useEffect(() => {
-    /// add friendList of a specific id
     axios.get('http://localhost:3001/user/friendsList')
       .then(res => {
         setFriends(res.data);
@@ -59,10 +66,11 @@ const PublicProfile = () => {
     <Default>
       <div className='profile'>
         <div className='imageDiv'>
-          {renderImg()} 
+          {renderImg()}
         </div>
         <div className='displayName'>{profileInterface?.displayName}</div>
         <div>level: {profileInterface?.victories}</div>
+        <div>{ matchHistory} </div>
       </div>
     </Default>
   )

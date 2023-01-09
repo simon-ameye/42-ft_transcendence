@@ -224,29 +224,6 @@ export class GameService {
     return (players);
   }
 
-  //async isWinner(gameRoom: string): Promise<CheckWinnerInterface> {
-  //  const splitter = gameRoom.split("game");
-  //  const gameId: number = Number(splitter[1]);
-  //  const players = await this.prismaService.user.findMany({
-  //    where: {
-  //      gameId
-  //    },
-  //    select: {
-  //      id: true,
-  //      displayName: true,
-  //      score: true,
-  //      gameId: true,
-  //    }
-  //  });
-  //  for (let i = 0; i < 2; ++i) {
-  //    if (players[i].score > 600) {
-  //      await this.addVictory(players[i].id);
-  //      return ({ gameId: gameId, winnerId: players[i].id });
-  //    }
-  //  }
-  //  return ({ gameId: 0, winnerId: 0 });
-  //}
-
   async deleteGame(gameId: number): Promise<void> {
     const deleteGame = await this.prismaService.game.deleteMany({
       where: {
@@ -275,11 +252,14 @@ export class GameService {
       data: {
         matchHistory: {
           create: {
-            date: 5,
+            date: new Date(Date.now()).toLocaleString(),
             score: [gi.p1score, gi.p2score],
             opponent: opponent.displayName
           }
         },
+        victories: {
+          increment: 1,
+        }
       },
     })
 
@@ -290,7 +270,7 @@ export class GameService {
       data: {
         matchHistory: {
           create: {
-            date: 5,
+            date:  new Date(Date.now()).toLocaleString(),
             score: [gi.p2score, gi.p1score],
             opponent: user.displayName
           }
@@ -334,7 +314,7 @@ export class GameService {
 		});
 		if (!user.log)
 			return (1);
-		if (user.inGame) 
+		if (user.inGame)
 			return (2);
 		if (user.matching)
 			return (3);
