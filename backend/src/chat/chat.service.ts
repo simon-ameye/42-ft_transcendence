@@ -380,26 +380,6 @@ export class ChatService {
     return ('Channels interfaces sent')
   }
 
-  async getUserFriendTable(userId: number) { //MAYBE NEEDS PROTECTION !
-    /*var friendsInterfaces: FriendsInterface[] = [];
-    var friend: User;
-
-    var user = await this.prisma.user.findUnique({ where: { id: userId }, })
-    if (!user)
-      return { friendsInterfaces };
-    console.log("debug");
-    console.log(userId);
-    console.log("debug");
-    for (let friendId of user.friends) {
-      friend = await this.prisma.user.findUnique({ where: { id: friendId }, })
-      if (!friend)
-        return { friendsInterfaces };
-      var friendInterface: FriendsInterface = { id: friendId, name: friend.displayName };
-      friendsInterfaces.push(friendInterface);
-    }
-    return { friendsInterfaces };*/
-  }
-
   async getUserTable(userId: number) { //MAYBE NEEDS PROTECTION !
     var usersInterfaces: UserInterface[] = [];
     //var user: User;

@@ -268,23 +268,36 @@ export class GameService {
     const user = await this.prismaService.user.findUnique({ where: { id: winnerId } });
     const opponent = await this.prismaService.user.findUnique({ where: { id: looserId } });
 
-    await this.prismaService.match.create({
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
       data: {
-        userId: user.id,
-        date: 5,
-        score: [gi.p1score, gi.p2score],
-        opponent: opponent.displayName
+        matchHistory: {
+          create: {
+            date: 5,
+            score: [gi.p1score, gi.p2score],
+            opponent: opponent.displayName
+          }
+        },
       },
     })
 
-    await this.prismaService.match.create({
+    await this.prismaService.user.update({
+      where: {
+        id: opponent.id,
+      },
       data: {
-        userId: opponent.id,
-        date: 5,
-        score: [gi.p2score, gi.p1score],
-        opponent: user.displayName
+        matchHistory: {
+          create: {
+            date: 5,
+            score: [gi.p2score, gi.p1score],
+            opponent: user.displayName
+          }
+        }
       },
     })
+
   }
 
   async updateWatching(SId: string, gameId: number): Promise<number> {
