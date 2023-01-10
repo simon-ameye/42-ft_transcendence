@@ -32,7 +32,7 @@ export default function GameHome() {
   });
 
   const GameInProgress = gameList.map((gameList, index) => (
-    <ListItem button onClick={() => watchMatch(gameList)} key={index}>
+    <ListItem onClick={() => watchMatch(gameList)} key={index}>
       {gameList}{" "}
     </ListItem>
   ));

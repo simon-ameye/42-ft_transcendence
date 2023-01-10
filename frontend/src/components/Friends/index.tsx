@@ -13,6 +13,7 @@ import { NavLink, Navigate, redirect } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Default from '../../layouts/Default';
 import './style.scss'
+import PlayerInterface from "../../interfaces/player.interface";
 
 type User = {
   email: string;
@@ -38,6 +39,7 @@ const Friends = () => {
   const navigate = useNavigate();
   const [receivedFriendRequest, setReceivedFriendRequest] = useState<FriendRequest[]>([]);
   const [friends, setFriends] = useState<User[]>([])
+  const [gameList, setGameList] = useState<string[]>([]);
 
   const sendFriendRequest = (receiverId: number, socketId: string) => {
     socket.emit("add friend", receiverId, socketId);
@@ -64,6 +66,19 @@ const Friends = () => {
         }
       </ListItem>
     </div>
+  ));
+
+  const watchMatch = (strGame: string) => {
+    const playerNames = strGame.split(" ");
+    playerNames.splice(1, 1);
+    socket.emit("watch game", playerNames);
+    navigate('/game');
+  };
+
+  const GameInProgress = gameList.map((gameList, index) => (
+    <ListItem onClick={() => watchMatch(gameList)} key={index}>
+      {gameList}{" "}
+    </ListItem>
   ));
 
   const receivedList = receivedFriendRequest.map((c, i) => (
@@ -95,7 +110,8 @@ const Friends = () => {
     // friend component
     <li>
       {c.displayName} : {c.status}
-      <ListItem key={i} onClick={(e) =>  navigate("/publicProfile/" + c.id)} />
+      <ListItem key={i}/>
+      {/* <button onClick={(e) =>  navigate("/publicProfile/" + c.id)}>  </button> */}
     </li>
   ));
 
@@ -157,6 +173,24 @@ const Friends = () => {
     };
   }, [receivedFriendRequest]);
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/game/list")
+      .then((res) => {
+        setGameList(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    socket.on("update game list", updateGameListListener);
+    return () => {
+      socket.off("update game list", updateGameListListener);
+    };
+  });
+
   const deniedFriendRequest = (relation: FriendRequest) => {
     if (relation != undefined) {
       setReceivedFriendRequest(
@@ -181,6 +215,12 @@ const Friends = () => {
         request,
       ]);
   };
+  
+  const updateGameListListener = (players: PlayerInterface[]) => {
+    let strGame = players[0].displayName.concat(" vs ");
+    strGame = strGame.concat(players[1].displayName);
+    setGameList([...gameList, strGame]);
+  };
 
   return (
     <Default>
@@ -202,6 +242,10 @@ const Friends = () => {
               {friendList.length ? friendList : <span>No friends, sad</span>}
             </ul>
           </div>
+        </div>
+        <div className="game-progress">
+          <h5>Watch game in progress</h5>
+          {GameInProgress}
         </div>
       </div>
     </Default>
