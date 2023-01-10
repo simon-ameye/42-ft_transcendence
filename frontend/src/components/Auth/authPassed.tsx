@@ -8,14 +8,11 @@ export default function AuthPassed () {
 
 	// VARIABLES \\
 
-	const [cookie] = useCookies(['jwtToken', 'displayName', 'qrcode', 'login']);
+	const [cookie] = useCookies(['jwtToken', 'displayName', 'login']);
 	const navigate = useNavigate();
 	const queryParameters = new URLSearchParams(window.location.search)
 	const code = queryParameters.get("code");
 	const state = queryParameters.get("state");
-	const [displayqrcode, setDisplayqrcode] = useState<boolean>(false);
-	const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
-	const [fa, setfa] = useState<string>('');
 
 	// ON INIT \\
 
@@ -41,15 +38,6 @@ export default function AuthPassed () {
 			socket.emit('reload');
 			navigate('/auth2fa');
 		}
-		else if (cookie.displayName) {
-			axios.get('http://localhost:3001/user/get2fa', {
-				params: {
-					displayName: cookie.displayName,
-				}
-			})
-			.then(res => setfa(res.data))
-			.catch(err => console.log(err))
-		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -70,7 +58,6 @@ export default function AuthPassed () {
 			navigate('/auth2fa');
 		}
 		else {
-			setfa('no');
 			socket.emit('reload');
 		}
 	}
@@ -89,22 +76,8 @@ export default function AuthPassed () {
 		navigate('/');
 	}
 
-	const	displayQrcode = () => {
-		setDisplayqrcode(!displayqrcode);
-		if (!displayqrcode)
-			setDisplayqrcodeMessage("Hide QR Code");
-		else
-			setDisplayqrcodeMessage("Display QR Code");
-	}
-
 	const	goHome = () => {
 		navigate('/');
-	}
-
-	const activate2fa = () => {
-		axios.post('http://localhost:3001/auth/google2FA/activate')
-			.then(res => window.location.reload())
-			.catch(err => console.log(err))
 	}
 
 	// USE_EFFECT \\
@@ -126,17 +99,6 @@ export default function AuthPassed () {
 		<>
 			<div>
 				<h1>Welcome {cookie.displayName} to ft_transcendence!</h1>
-			</div>
-			<div>
-				{fa === 'no' &&
-				<button
-					onClick={activate2fa} className='submit=btn'>Activate google 2FA authentificator
-				</button>}
-			</div>
-			<div>
-				{cookie.qrcode &&
-				<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
-				{displayqrcode && <img src={cookie.qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
 			</div>
 			<div>
 				<button onClick={goHome}>Go to home page</button>

@@ -39,11 +39,20 @@ export class AuthController {
 
 	@UseGuards(AuthGuard('jwt'))
 	@Post('google2FA/activate')
-	signup2FA(
+	activateDfa(
 			@GetUser() dto: UserDto,
 			@Res({ passthrough: true} ) response: Response
 		) {
-		return (this.authService.activate2FA(dto, response));
+		return (this.authService.activateDfa(dto, response));
+	}
+
+	@UseGuards(AuthGuard('jwt'))
+	@Post('google2FA/desactivate')
+	desactivateDfa(
+			@GetUser() dto: UserDto,
+			@Res({ passthrough: true} ) response: Response
+		) {
+		return (this.authService.desactivateDfa(dto, response));
 	}
 
 	@Post('google2FA/verify')

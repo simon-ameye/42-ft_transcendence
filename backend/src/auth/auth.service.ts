@@ -185,7 +185,7 @@ export class AuthService {
 		return ("no");
   }
 
-	async	activate2FA(
+	async	activateDfa(
 			dto: UserDto,
 			@Res({ passthrough: true }) response: Response
 		): Promise<void> {
@@ -199,7 +199,22 @@ export class AuthService {
 				googleSecret: String(secret.base32),
 			},
 		});
-		response.status(202).cookie('qrcode', qrcodeURL, { path: '/auth' });
+		response.status(202).cookie('qrcode', qrcodeURL, { path: '/Profile' });
+	}
+
+	async desactivateDfa(
+		dto: UserDto,
+		@Res({ passthrough: true }) response: Response
+	): Promise<void> {
+		const user = await this.prismaService.user.update({
+			where: {
+				id: dto.id
+			},
+			data: {
+				googleSecret: '',
+			},
+		});
+		response.status(202).cookie('qrcode', '', { path: '/Profile', expires: new Date(Date.now())});
 	}
 
 	async verify2FA(
@@ -315,7 +330,7 @@ export class AuthService {
 		});
 		response.status(202).cookie('jwtToken', 'none', { path: '/', httpOnly: true, expires: new Date(Date.now())});
 		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
-		response.status(202).cookie('qrcode', 'none', { path: '/auth', expires: new Date(Date.now())});
+		response.status(202).cookie('qrcode', 'none', { path: '/Profile', expires: new Date(Date.now())});
 		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true, expires: new Date(Date.now())});
 	}
 }
