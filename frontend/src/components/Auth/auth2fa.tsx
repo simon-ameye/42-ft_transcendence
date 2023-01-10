@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { socket } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import '../User/style.scss';
 import GoogleAuthImage from '../../assets/googleAuth.png';
 import { useCookies } from 'react-cookie';
-import Default from '../../layouts/Default';
 
 const Auth2FA = () => {
 

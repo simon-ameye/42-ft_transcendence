@@ -32,6 +32,7 @@ export default function AuthPassed () {
 				.then(res => getIntraMe(res.data))
 				.catch(err => console.log(err));
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 
@@ -49,6 +50,7 @@ export default function AuthPassed () {
 			.then(res => setfa(res.data))
 			.catch(err => console.log(err))
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// FUNCTIONS \\
@@ -64,7 +66,7 @@ export default function AuthPassed () {
 	}
 
 	const	goToGoogleAuthOrNot = (dfa: string) => {
-		if (dfa == 'yes') {
+		if (dfa === 'yes') {
 			navigate('/auth2fa');
 		}
 		else {

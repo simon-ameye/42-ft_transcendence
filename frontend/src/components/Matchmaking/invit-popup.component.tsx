@@ -10,12 +10,6 @@ export default function InvitPopup() {
 	const navigate = useNavigate();
 	const [invit, setInvit] = useState<boolean>(false);
 	const [invitText, setInvitText] = useState<string>("");
-	const [open, setOpen] = useState(false);
-
-
-	const handleClose = () => {
-		setOpen(false)
-	}
 
 	// FUNCTIONS \\
 
