@@ -1,14 +1,11 @@
-import Navbar from '../Navbar';
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
 import ProfileInterface from './Interface/ProfileInterface';
 import './style.scss'
-import FileUpload from './upload';
 import User from '../User';
 import { ListItem } from '@mui/material';
 import Default from '../../layouts/Default';
 import { useParams } from 'react-router-dom';
-import { findRenderedDOMComponentWithTag } from 'react-dom/test-utils';
 
 type User = {
   email: string;
@@ -70,7 +67,10 @@ const PublicProfile = () => {
         </div>
         <div className='displayName'>{profileInterface?.displayName}</div>
         <div>level: {profileInterface?.victories}</div>
-        <div>{ matchHistory} </div>
+        <div className='matchHistory'>
+          <h2> Match History </h2>
+          { matchHistory }
+        </div>
       </div>
     </Default>
   )

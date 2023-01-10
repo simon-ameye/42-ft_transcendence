@@ -14,6 +14,7 @@ import { useCookies } from "react-cookie";
 import InvitPopup from "./components/Matchmaking/invit-popup.component";
 import UnavailableInterface from "./interfaces/unavailable.interface";
 import Friends from "./components/Friends";
+import PublicProfile from './components/Profile/public';
 
 axios.defaults.withCredentials = true;
 
@@ -93,6 +94,7 @@ function App() {
         <Route path="/game/winner" element={<Winner />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/friends" element={<Friends />} />
+        <Route path="/publicProfile/:id" element={<PublicProfile/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <InvitPopup />
