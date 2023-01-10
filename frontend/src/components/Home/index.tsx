@@ -12,9 +12,7 @@ const Home = () => {
     axios
       .get("http://localhost:3001/leaderboard/getLeaderBoard")
       .then((res) => {
-        console.log(res);
         setRowData(res.data);
-        console.log(RowData);
       })
       .catch((error) => {
         console.log(error);

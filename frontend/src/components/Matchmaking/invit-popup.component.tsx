@@ -10,13 +10,6 @@ export default function InvitPopup() {
 	const navigate = useNavigate();
 	const [invit, setInvit] = useState<boolean>(false);
 	const [invitText, setInvitText] = useState<string>("");
-	const [open, setOpen] = useState(false);
-
-
-	const handleClose = () => {
-		setOpen(false)
-	}
-
 
 	// FUNCTIONS \\
 
@@ -28,7 +21,7 @@ export default function InvitPopup() {
 		const invitTextArray = invitText.split(" ");
 		const senderDName = invitTextArray[invitTextArray.length - 1];
 		socket.emit("invitation accepted", senderDName);
-		navigate('/game/live');
+		navigate('/game');
 		setInvit(false);
 	}
 

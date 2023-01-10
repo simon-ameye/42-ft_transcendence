@@ -1,18 +1,15 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import Auth from '../Auth';
-import Navbar from '../Navbar';
-import { ListItem } from '@mui/material'
-import io, { Socket } from 'socket.io-client';
-import { useCookies } from 'react-cookie';
-import { socket } from '../../App';
-import { request } from 'http';
-import User from '../User';
-import { async } from 'rxjs';
-import { NavLink, Navigate, redirect } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import Default from '../../layouts/Default';
-import './style.scss'
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { ListItem } from "@mui/material";
+import io, { Socket } from "socket.io-client";
+import { useCookies } from "react-cookie";
+import { socket } from "../../App";
+import { request } from "http";
+import User from "../User";
+import { async } from "rxjs";
+import Default from "../../layouts/Default";
+import "./style.scss";
+import { useNavigate } from "react-router-dom";
 import PlayerInterface from "../../interfaces/player.interface";
 
 type User = {

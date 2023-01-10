@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useNavigate, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import User from "./components/User";
 import Game from "./components/GameSetup";
 import io from "socket.io-client";
-import Auth from "./components/Auth";
+import AuthPassed from "./components/Auth/authPassed";
+import Auth2FA from "./components/Auth/auth2fa";
 import axios, { AxiosError } from "axios";
 import Winner from "./components/WinnerPage";
 import ChatBox from "./components/Chat/ChatBox";
@@ -25,10 +26,8 @@ function App() {
 
   socket.emit("hello");
 
-  // VARIABLES \\
-  const [cookie] = useCookies(["displayName", "jwtToken"]);
-
-  // USE EFFECT \\
+	const [cookie] = useCookies(['login']);
+	const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("heyo", heyoListener);
@@ -51,10 +50,17 @@ function App() {
     };
   });
 
+	useEffect(() => {
+		socket.on("start game", startGameListener);
+		return () => {
+			socket.off("start game", startGameListener);
+		}
+	});
+
   // LISTENER \\
 
   const heyoListener = () => {
-    if (cookie.displayName) {
+    if (cookie.login) {
       axios
         .put("http://localhost:3001/user/modifySocketId", {
           socketId: socket.id,
@@ -63,6 +69,10 @@ function App() {
         .catch((err) => handleTokenCorrupted(err));
     }
   };
+
+	const startGameListener = () => {
+		navigate('/game');
+	}
 
   const reloadListener = () => {
     window.location.reload();
@@ -84,13 +94,13 @@ function App() {
     if (err.response && err.response.status === 403) alert("Cookies corrupted");
   };
 
-  return cookie.displayName ? (
-    <>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/ChatBox" element={<ChatBox />} />
-        <Route path="/game" element={<Game />} />
+  return cookie.login ? (
+		<>
+  	  <Routes>
+  	    <Route path="/auth" element={<AuthPassed />} />
+  	    <Route path="/" element={<Home />} />
+  	    <Route path="/ChatBox" element={<ChatBox />} />
+				<Route path="/game" element={<Game />} />
         <Route path="/game/winner" element={<Winner />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/friends" element={<Friends />} />
@@ -100,12 +110,13 @@ function App() {
       <InvitPopup />
     </>
   ) : (
-    <Routes>
-      <Route path="/" element={<User />} />
-      <Route path="/auth" element={<Auth />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
+		<Routes>
+			<Route path="/" element={<User />} />
+      <Route path="/auth" element={<AuthPassed />} />
+	    <Route path="*" element={<NotFound />} />
+			<Route path="/auth2fa" element={<Auth2FA />} />
+		</Routes>
+	);
 }
 
 export default App;

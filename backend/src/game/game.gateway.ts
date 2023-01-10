@@ -41,7 +41,8 @@ export class GameGateway {
   }
 
   @SubscribeMessage('send invitation')
-  async invitSocket(client, receiverName: string): Promise<void> {
+  async invitSocket(client, receiverId: number): Promise<void> {
+		const receiverName = await this.userService.getNameById(receiverId);
 		const userAvailable = await this.gameService.isUserAvailable(receiverName);
 		if (userAvailable > 0) {
 			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: receiverName });
