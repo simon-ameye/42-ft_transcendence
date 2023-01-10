@@ -42,6 +42,8 @@ model User {
 
   status            Status       @default(OFFLINE)
 
+  matchHistory      String[]
+
   @@map("users")
 }
 

@@ -14,25 +14,25 @@ const User = () => {
 	const [userMailIn, setUserMailIn] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
 
-	// USE_EFFECT \\
+  // USE_EFFECT \\
 
-	useEffect(() => {
-		socket.on("reload", reloadListener);
-		return () => {
-			socket.off("reload", reloadListener);
-		}
-	}, []);
+  useEffect(() => {
+    socket.on("reload", reloadListener);
+    return () => {
+      socket.off("reload", reloadListener);
+    };
+  }, []);
 
-	// LISTENER \\
+  // LISTENER \\
 
-	const reloadListener = () => {
-		window.location.reload();
-	}
+  const reloadListener = () => {
+    window.location.reload();
+  };
 
-	// FUNCTIONS \\
+  // FUNCTIONS \\
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
 		axios.post('http://localhost:3001/auth/signup',{
 			email: userMailUp,
@@ -53,9 +53,9 @@ const User = () => {
 			navigate('/auth');
 	}
 
-	const handleIntra = () => {
-		window.location.href = 'http://localhost:3001/auth/42api/login';
-	}
+  const handleIntra = () => {
+    window.location.href = "http://localhost:3001/auth/42api/login";
+  };
 
 	const handleSignin = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -165,6 +165,5 @@ const User = () => {
 		</Default>
 	);
 };
-
 
 export default User;

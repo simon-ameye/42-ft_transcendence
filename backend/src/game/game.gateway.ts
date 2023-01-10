@@ -41,7 +41,8 @@ export class GameGateway {
   }
 
   @SubscribeMessage('send invitation')
-  async invitSocket(client, receiverName: string): Promise<void> {
+  async invitSocket(client, receiverId: number): Promise<void> {
+		const receiverName = await this.userService.getNameById(receiverId);
 		const userAvailable = await this.gameService.isUserAvailable(receiverName);
 		if (userAvailable > 0) {
 			this.server.to(client.id).emit('cannot invit', { why: userAvailable, name: receiverName });
@@ -114,6 +115,14 @@ export class GameGateway {
   }
 
   async startGame(data: { SIdOne: string, SIdTwo: string }): Promise<void> {
+    let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
+    let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
+
+    if (await this.prismaService.game.findFirst({ where: { OR: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } })) {
+      console.log('A game is already running with those two players !');
+      return;
+    }
+
     this.server.to(data.SIdOne).emit('start game');
     this.server.to(data.SIdTwo).emit('start game');
     const pOneDName = await this.userService.getNameBySId(data.SIdOne);
@@ -130,8 +139,6 @@ export class GameGateway {
     this.server.to(data.SIdTwo).emit('join room', gameRoom);
     this.kickoff(gameRoom);
 
-    let p1Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdOne } })).id;
-    let p2Id = (await this.prismaService.user.findUnique({ where: { socketId: data.SIdTwo } })).id;
     let game = this.prismaService.game.findFirst({ where: { AND: [{ players: { has: p1Id } }, { players: { has: p2Id } }] } });
     if (!(await game))
     {
@@ -191,7 +198,7 @@ export class GameGateway {
     return (gi);
   }
 
-  async finishGame(gameRoom: string, p1Id: number, p2Id: number, winner: number) {
+  async finishGame(gameRoom: string, p1Id: number, p2Id: number, gi: GameInterface) {
     let p1 = this.prismaService.user.findUnique({ where: { id: p1Id } });
     let gameId = (await p1).gameId;
 
@@ -199,12 +206,19 @@ export class GameGateway {
     this.gameService.deleteGame(gameId);
 
     let winnerId = 0;
-    if (winner == 1)
-      winnerId = p1Id;
-    if (winner == 2)
-      winnerId = p2Id;
+    let looserId = 0;
 
-    this.gameService.addVictory(winnerId);
+    if (gi.winner == 1) {
+      winnerId = p1Id;
+      looserId = p2Id;
+    }
+    if (gi.winner == 2) {
+      winnerId = p2Id;
+      looserId = p1Id;
+    }
+
+    if (gi.winner != 0)
+      this.gameService.addVictory(winnerId, looserId, gi);
     this.server.to(gameRoom).emit('game finished', winnerId);
     this.server.emit('game over', versus);
   }
@@ -263,7 +277,7 @@ export class GameGateway {
         var game = this.prismaService.game.findUnique({ where: { id: gameId } });
         if (!await game) {
           console.log('Game process: it seems that the game has been deleted');
-          this.finishGame(gameRoom, p1Id, p2Id, 1); //if the game is deleted, 1 is winner
+          this.finishGame(gameRoom, p1Id, p2Id, gi);
           return;
         }
         gi.powerUp = (await game).powerUp;
@@ -279,7 +293,7 @@ export class GameGateway {
         gi.winner = 2;
 
       if (gi.winner) {
-        this.finishGame(gameRoom, p1Id, p2Id, gi.winner);
+        this.finishGame(gameRoom, p1Id, p2Id, gi);
         return;
       }
     }

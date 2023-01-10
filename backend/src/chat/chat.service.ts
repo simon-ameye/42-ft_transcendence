@@ -33,8 +33,13 @@ export class ChatService {
       if (!await otherUser)
         return ('Mode is DIRECT but otherUser is not found');
 
-      if (!(await newowner).friends.includes(otherUserId))
+      const friendship1 = await this.prisma.friends.findMany({ where: { AND: [{ user_id: userId, }, { friend_id: otherUserId, }], status: "accepted", } })
+      const friendship2 = await this.prisma.friends.findMany({ where: { AND: [{ user_id: otherUserId, }, { friend_id: userId, }], status: "accepted", } })
+      if (!friendship1 && !friendship2)
         return ('This user is not your friend. Cant create DIRECT channel !');
+
+      //if (!(await newowner).friends.includes(otherUserId))
+      //  return ('This user is not your friend. Cant create DIRECT channel !');
 
       var directChannelsWithSameUsers = this.prisma.channel.findMany({
         where: {

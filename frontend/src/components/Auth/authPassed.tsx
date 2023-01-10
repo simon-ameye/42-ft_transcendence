@@ -59,14 +59,17 @@ export default function AuthPassed () {
 				token: data.access_token
 			}
 		})
-			.then(res => goToGoogleAuthOrNot())
+			.then(res => goToGoogleAuthOrNot(res.data))
 			.catch(err => handleIntraErr(err));
 	}
 
-	const	goToGoogleAuthOrNot = () => {
-		if (!cookie.login) {
-			socket.emit('reload');
+	const	goToGoogleAuthOrNot = (dfa: string) => {
+		if (dfa == 'yes') {
 			navigate('/auth2fa');
+		}
+		else {
+			setfa('no');
+			socket.emit('reload');
 		}
 	}
 

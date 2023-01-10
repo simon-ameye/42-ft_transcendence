@@ -73,8 +73,8 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
     getUserTable()
   }, [])
 
-  const inviteToGame = (receiverName: string) => {
-		socket.emit("send invitation", receiverName);
+  const inviteToGame = () => {
+		socket.emit("send invitation", values.userId);
   }
   const accessUserProfile = () => {
     alert('not done yet')
@@ -97,7 +97,7 @@ export default function UserList({ actualChannelInterface }: { actualChannelInte
             <button onClick={addUserToChannel}>addUserToChannel</button>
           </DialogActions>
           <DialogActions>
-            <button onClick={() => inviteToGame('abrun')}>inviteToGame</button>
+            <button onClick={() => inviteToGame()}>inviteToGame</button>
           </DialogActions>
           <DialogActions>
             <button onClick={accessUserProfile}>accessUserProfile</button>

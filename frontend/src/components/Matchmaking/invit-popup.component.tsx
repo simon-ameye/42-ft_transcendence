@@ -17,7 +17,6 @@ export default function InvitPopup() {
 		setOpen(false)
 	}
 
-
 	// FUNCTIONS \\
 
 	const removeInvitPopup = () => {
@@ -28,7 +27,7 @@ export default function InvitPopup() {
 		const invitTextArray = invitText.split(" ");
 		const senderDName = invitTextArray[invitTextArray.length - 1];
 		socket.emit("invitation accepted", senderDName);
-		navigate('/game/live');
+		navigate('/game');
 		setInvit(false);
 	}
 
