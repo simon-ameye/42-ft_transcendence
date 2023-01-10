@@ -106,8 +106,11 @@ const Friends = () => {
   const friendList = friends.map((c, i) => (
     // friend component
     <li>
-      {c.displayName} : {c.status}
-      <ListItem key={i}/>
+      <li title={c.status == "OFFLINE" ? "Offline" : "Online"}>
+        {c.status == "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
+        <span className="playing">{c.status == "PLAYING" ? c.status : ""}</span>
+      </li>
+      <ListItem key={i} />
       {/* <button onClick={(e) =>  navigate("/publicProfile/" + c.id)}>  </button> */}
     </li>
   ));
@@ -212,7 +215,7 @@ const Friends = () => {
         request,
       ]);
   };
-  
+
   const updateGameListListener = (players: PlayerInterface[]) => {
     let strGame = players[0].displayName.concat(" vs ");
     strGame = strGame.concat(players[1].displayName);
@@ -239,10 +242,12 @@ const Friends = () => {
               {friendList.length ? friendList : <span>No friends, sad</span>}
             </ul>
           </div>
-        </div>
-        <div className="game-progress">
-          <h5>Watch game in progress</h5>
-          {GameInProgress}
+          <div className="game-progress-container">
+            {
+              GameInProgress.length != 0 && <div className="game-progress">
+                Watch game in progress : {GameInProgress}</div>
+            }
+          </div>
         </div>
       </div>
     </Default>

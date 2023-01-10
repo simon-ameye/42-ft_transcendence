@@ -37,7 +37,7 @@ const Winner = () => {
   return (
     <Default>
       <Confetti width={width} height={height} />
-      <h1 className="winnerDiv">{winner} as won the game</h1>
+      <h1 className="winnerDiv">{winner} has won the game</h1>
     </Default>
   );
 };
