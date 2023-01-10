@@ -62,14 +62,15 @@ const Profile = () => {
           width="300" height="300"
           ></img>
         </div>
-        <div className='displayName'>{profileInterface?.displayName}</div>
+        <div className='displayName'>{profileInterface?.displayName} </div>
         <FileUpload/>
         <div className='friendList'>
           <h3>friends</h3>
           {friendList}
         </div>
         <div>level: {profileInterface?.victories} </div>
-        <div className='matchHistoryTable'>
+        <div className='matchHistory'>
+          <h2> Match History </h2>
           { matchHistory }
         </div>
       </div>

@@ -15,7 +15,7 @@ const FileUpload: React.FC = () => {
       return;
     UploadService.upload(file)
     .then((file) => {
-      alert("Upload Done, please refresh")
+      window.location.reload();
     })
     .catch((err) => {
       alert("Upload failed")
