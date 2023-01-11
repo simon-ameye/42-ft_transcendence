@@ -21,6 +21,17 @@ axios.defaults.withCredentials = true;
 
 export let socket = io("http://localhost:4343", { withCredentials: true });
 
+export const handleTokenCorrupted = (err: AxiosError) => {
+  if (err.response && err.response.status === 401)
+	{
+		axios.delete("http://localhost:3001/auth/corruption")
+			.catch((err) => console.log(err));
+		alert("Cookies corrupted");
+	}
+	else
+		alert("Unkown error");
+};
+
 function App() {
   // ON INIT \\
 
@@ -86,12 +97,6 @@ function App() {
     } else if (unavailable.why === 3) {
       alert(unavailable.name + " is in the matching queue");
     }
-  };
-
-  // FUNCTIONS \\
-
-  const handleTokenCorrupted = (err: AxiosError) => {
-    if (err.response && err.response.status === 403) alert("Cookies corrupted");
   };
 
   return cookie.login ? (

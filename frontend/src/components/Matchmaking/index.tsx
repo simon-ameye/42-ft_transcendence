@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { socket } from "../../App";
+import { socket, handleTokenCorrupted } from "../../App";
 import axios from "axios";
 import OppenentsInterface from "../../interfaces/oppenents.interface";
 import PlayerInterface from "../../interfaces/player.interface";
@@ -46,7 +46,7 @@ export default function GameHome() {
         setMatchingQueue(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        handleTokenCorrupted(err);
       });
   }, []);
 
@@ -57,7 +57,7 @@ export default function GameHome() {
         setGameList(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        handleTokenCorrupted(err);
       });
   }, []);
 

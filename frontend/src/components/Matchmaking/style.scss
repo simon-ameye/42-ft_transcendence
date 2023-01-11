@@ -58,6 +58,42 @@
 	}
 }
 
+.invitPopup {
+	position: fixed;
+	display: inline-block;
+	background-color: black;
+	width: 200px;
+	height: 200px;
+	border-radius: 10px;
+	padding: 10px 0;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -100px;
+	top: 400px;
+	border: 1px solid white;
+
+	.Title_popup {
+		text-align: center;
+		padding: 10px 0;
+
+		.btn {
+			align-items: center;
+			padding: 60px 0;
+			justify-content: space-between;
+			.btn_accept {
+				@include btn-anim;
+				
+				text-align: center;
+			}
+			.btn_close {
+				@include btn-anim;
+			}
+
+		}
+
+	}
+}
+
 //.Join_game {
 //	display: flex;
 //	align-items: center;
@@ -102,45 +138,6 @@
 //						}
 //				}
 //			}
-//		}
-
-//	}
-//}
-
-//.invitPopup {
-//	position: fixed;
-//	display: inline-block;
-//	background-color: black;
-//	width: 200px;
-//	height: 200px;
-//	border-radius: 10px;
-//	padding: 10px 0;
-//	bottom: 125%;
-//	left: 50%;
-//	margin-left: -100px;
-//	top: 400px;
-//	border: 1px solid white;
-
-//	.Title_popup {
-//		text-align: center;
-//		padding: 10px 0;
-
-//		.btn {
-//			align-items: center;
-//			padding: 30px 0;
-//			justify-content: space-between;
-
-//			.btn_accept {
-//				@include btn-anim;
-//				padding: 10px 10px 10px 10px;
-//				text-align: center;
-//			}
-
-//			.btn_close {
-//				@include btn-anim;
-//				padding: 10px 10px 10px 10px;
-//			}
-
 //		}
 
 //	}

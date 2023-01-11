@@ -71,4 +71,9 @@ export class AuthController {
 	) {
 		return (this.authService.logout(user, response));
 	}
+
+	@Delete('corruption')
+	handleCorruption(@Req() req: Request) {
+		console.log({"displayName": req.cookies.displayName});
+	}
 }

@@ -23,7 +23,7 @@ services:
       - ./backend/:/app
     ports:
       - "3001:3001"
-      - "5555:5555"
+#      - "5555:5555"
       - "4343:4343"
     # DATABASE_URL IN A .env
     depends_on:

@@ -1,5 +1,5 @@
 import { useCookies } from "react-cookie";
-import { socket } from "../../App";
+import { socket, handleTokenCorrupted } from "../../App";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { AiFillCaretDown } from "react-icons/ai";
@@ -22,7 +22,7 @@ const Navbar = () => {
     axios
       .delete("http://localhost:3001/auth/logout")
       .then((res) => goToRegistration())
-      .catch((err) => console.log(err));
+      .catch((err) => handleTokenCorrupted(err));
   };
 
   const goToRegistration = () => {
