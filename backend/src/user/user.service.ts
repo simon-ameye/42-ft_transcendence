@@ -53,15 +53,15 @@ export class UserService {
     return friends
   }
 
-  async friendsList(dto: UserDto) {
+  async friendsList(id: number) {
     const friends = await this.prisma.friends.findMany({
       where: {
         OR: [
           {
-            user_id: dto.id,
+            user_id: id,
           },
           {
-            friend_id: dto.id,
+            friend_id: id,
           }
         ],
         status: "accepted",
@@ -75,17 +75,19 @@ export class UserService {
     let users: Array<User> = []
 
     friends.forEach(friend => {
-      if (friend.user.id != dto.id) {
+      if (friend.user.id != id) {
         delete (friend.user['hash'])
+        delete (friend.user['socketId'])
         users.push(friend.user)
       }
       else {
         delete (friend.friend['hash'])
+        delete (friend.user['socketId'])
         users.push(friend.friend)
       }
     });
 
-    return users
+    return users;
   }
 
   async modifyName(dto: UserDto, modif: string) {

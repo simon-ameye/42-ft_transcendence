@@ -73,12 +73,15 @@ const PublicProfile = () => {
   }
 
   useEffect(() => {
-    axios.get('http://localhost:3001/user/friendsList')
+    // add another endpoint in backend
+    axios.get('http://localhost:3001/user/friendslistById/:id', { params:{ id: id } })
       .then(res => {
+        console.log("SUCCESS", res.data);
         setFriends(res.data);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err)
+        console.log("FAILED");
       })
   }, []);
 
@@ -86,9 +89,7 @@ const PublicProfile = () => {
     <Default>
       <div className='profile-container'>
         <div className="name-picture">
-          <img className='profileImage' src="http://localhost:3001/profile/getImage" alt='profileImage'
-            width="300" height="300"
-          ></img>
+          {renderImg()}
           {profileInterface?.displayName}
         </div>
         <div className="social-info">Social & Stats
@@ -98,7 +99,7 @@ const PublicProfile = () => {
               <div className="friendlist">{friendList}</div>
             </div>
             <div className="victories">
-              <span className='vict-title'>My victories:</span>
+              <span className='vict-title'>Victories:</span>
               <span>{profileInterface?.victories}</span>
             </div>
             <div className="match-history">

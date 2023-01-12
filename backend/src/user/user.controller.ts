@@ -62,7 +62,15 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @Get('friendslist')
   getFriends(@GetUser() user: UserDto) {
-    return this.userService.friendsList(user);
+    return this.userService.friendsList(user.id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('friendslistById/:id')
+  async getFriendsById(@Query() queryParams) {
+    let user = await this.userService.getUserById(Number(queryParams.id));
+    let users = await this.userService.friendsList(user.id);
+    return users;
   }
 
   @UseGuards(AuthGuard('jwt'))
