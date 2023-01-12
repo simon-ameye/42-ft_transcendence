@@ -14,33 +14,33 @@ const User = () => {
 	const [userMailIn, setUserMailIn] = useState('');
 	const [userPassIn, setUserPassIn] = useState('');
 
-  // USE_EFFECT \\
+	// USE_EFFECT \\
 
-  useEffect(() => {
-    socket.on("reload", reloadListener);
-    return () => {
-      socket.off("reload", reloadListener);
-    };
-  }, []);
+	useEffect(() => {
+		socket.on("reload", reloadListener);
+		return () => {
+			socket.off("reload", reloadListener);
+		};
+	}, []);
 
-  // LISTENER \\
+	// LISTENER \\
 
-  const reloadListener = () => {
-    window.location.reload();
-  };
+	const reloadListener = () => {
+		window.location.reload();
+	};
 
-  // FUNCTIONS \\
+	// FUNCTIONS \\
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
 
-		axios.post('http://localhost:3001/auth/signup',{
+		axios.post('http://localhost:3001/auth/signup', {
 			email: userMailUp,
 			password: userPassUp,
 			displayName: userDisplayNameUp,
 			imageUrl: userProfilePicture
 		})
-		//	.then(res => updateUserSocket())
+			//	.then(res => updateUserSocket())
 			.then(res => goToAuthPage(res.data))
 			.catch(err => handleSignError(err))
 	}
@@ -53,9 +53,9 @@ const User = () => {
 			navigate('/auth');
 	}
 
-  const handleIntra = () => {
-    window.location.href = "http://localhost:3001/auth/42api/login";
-  };
+	const handleIntra = () => {
+		window.location.href = "http://localhost:3001/auth/42api/login";
+	};
 
 	const handleSignin = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -124,7 +124,6 @@ const User = () => {
 								onChange={(e) => setUserProfilePicture(e.target.value)}
 							/>
 							<div className="submit-upload">
-								<label className="upload" htmlFor="file">Upload profile picture</label>
 								<button type="submit" className='submit-btn'>submit</button>
 							</div>
 						</form>

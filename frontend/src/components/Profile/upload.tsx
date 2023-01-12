@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import IFile from "./Interface/FileInterface";
 import UploadService from "./FileUploadService";
+import './style.scss'
 
 const FileUpload: React.FC = () => {
   const [file, setFile] = useState<File>();
@@ -14,12 +15,12 @@ const FileUpload: React.FC = () => {
     if (!file)
       return;
     UploadService.upload(file)
-    .then((file) => {
-      window.location.reload();
-    })
-    .catch((err) => {
-      alert("Upload failed")
-    })
+      .then((file) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert("Upload failed")
+      })
     setFile(undefined)
   }
 
@@ -27,12 +28,12 @@ const FileUpload: React.FC = () => {
     <div className="upload">
       <label className="custom-file-upload">
         <input type="file" onChange={selectFile}></input>
-        browse
+        Click to browse
       </label>
       <button
         disabled={!file}
         onClick={upload}
-        className=""
+        className="upload-btn"
       >
         Upload
       </button>
