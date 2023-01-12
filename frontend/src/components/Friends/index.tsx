@@ -104,14 +104,13 @@ const Friends = () => {
   ));
 
   const friendList = friends.map((c, i) => (
-    // friend component
     <li>
       <li title={c.status == "OFFLINE" ? "Offline" : "Online"}>
         {c.status == "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
         <span className="playing">{c.status == "PLAYING" ? c.status : ""}</span>
+        <button className="fa-solid fa-user" onClick={(e) =>  navigate("/publicProfile/" + c.id)} ></button>
       </li>
       <ListItem key={i} />
-      {/* <button onClick={(e) =>  navigate("/publicProfile/" + c.id)}>  </button> */}
     </li>
   ));
 
