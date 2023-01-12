@@ -123,43 +123,43 @@ const Profile = () => {
           <img className='profileImage' src="http://localhost:3001/profile/getImage" alt='profileImage'
             width="300" height="300"
           ></img>
-          {profileInterface?.displayName}
+          <div className="name">
+            {profileInterface?.displayName}
+          </div>
         </div>
-        <span className='changepp'>Change profile picture :
-          <FileUpload />
-        </span>
+          <span className='changepp'>Change profile picture :
+            <FileUpload />
+          </span>
+          <div className="g-auth">
+            {dfa === 'no' &&
+            <button
+              onClick={activate2fa} className='submit-btn'>Enable 2FA</button>}
+            {dfa === 'yes' &&
+            <button
+              onClick={desactivate2fa} className='submit-btn'>Disable 2FA</button>}
+            </div>
+            <div>
+            {cookie.qrcode &&
+            <button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
+            {displayqrcode && <img src={cookie.qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
+          </div>
         <div className="social-info">Social & Stats
           <div className="info-container">
             <div className='friend'>
-              <span className='friend-title'>Friends :</span>
+              <span className='friend-title'>Friends:</span>
               <div className="friendlist">{friendList}</div>
             </div>
             <div className="victories">
-              <span className='vict-title'>My victories:</span>
-              <span>{profileInterface?.victories}</span>
+              <span className='vict-title'>Victories:</span>
+              <div className="vict">{profileInterface?.victories}</div>
             </div>
             <div className="match-history">
               <span className='hist-title'>Match History</span>
-              <span>{matchHistory}</span>
+              <span className="hist">{matchHistory}</span>
             </div>
           </div>
         </div>
       </div>
-			<div>
-				{dfa === 'no' &&
-				<button
-					onClick={activate2fa} className='submit=btn'>Activate google 2FA authentificator
-				</button>}
-				{dfa === 'yes' &&
-				<button
-					onClick={desactivate2fa} className='submit=btn'>Desactivate google 2FA authentificator
-				</button>}
-			</div>
-			<div>
-				{cookie.qrcode &&
-				<button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
-				{displayqrcode && <img src={cookie.qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
-			</div>
     </Default >
   )
 }

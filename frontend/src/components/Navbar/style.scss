@@ -1,54 +1,89 @@
 @import '../../styles/settings';
 
-header {
+.navbar {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  //height: 50px;
-  //padding: 0 5rem;
-  background-color: $nav_color;
-  color: $nav_text;
-  margin-bottom: 2rem;
-
+  justify-content: center;
+  align-items: center;
+  height: 6vh;
+  margin-bottom: 5vh;
   .title {
-    font-size: 25px;
-    //padding-right: 1rem;
-    flex-grow: 2;
-    margin-top: 0.5em;
+    position: absolute;
+    left: 50px;
+    
+    span {
+      padding-left: 5px;
+    }
   }
 
-  .nav {
+  .nav-links {
+    height: 100%;
+    width: 50%;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    align-self: flex-start;
-    //align-self: auto;
-    flex-grow: 1;
+    align-items: center;
 
-    .navItem {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      align-self: flex-start;
-      margin: 1em;
-
-      .navList {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-
-        .navListItem {
-          margin-top: 1em;
-          justify-content: flex-start;
-        }
+    a.active {      
+      span {
+        color: grey;
+        font-weight: 900;
       }
+      i {
+        color: grey;
+      }
+    }
+    span {
+      padding-left: 5px;
+    }
+
+  }
+  
+  .logout-btn {
+    font-family: $nova;
+    background-color: transparent;
+    box-shadow: none;
+    border: 1px white solid;
+    position: absolute;
+    right: 50px;
+  }
+  
+  .menu {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .title {
+    display: none;
+  }
+  .navbar {
+   justify-content: flex-start;
+   margin-left: 50px;
+  }
+  .nav-links {
+    i {
+      display: none;
     }
   }
 }
 
-nav span {
-  margin: 0 2rem 0 0.5rem;
-  color: $nav_text;
+@media screen and (max-width: 700px) {
+  .title {
+    display: block;
+  }
+  .navbar {
+   justify-content: flex-start;
+   margin-left: 50px;
+  
+   .nav-links {
+     display: none;
+    }
+  
+    .menu {
+      display: block;
+      position: absolute;
+      right: 50px;
+      font-size: 25px;
+      cursor: pointer;
+    }
+  }
 }

@@ -91,16 +91,16 @@ const PublicProfile = () => {
         <div className="social-info">Social & Stats
           <div className="info-container">
             <div className='friend'>
-              <span className='friend-title'>Friends :</span>
+              <span className='friend-title'>Friends:</span>
               <div className="friendlist">{friendList}</div>
             </div>
             <div className="victories">
               <span className='vict-title'>Victories:</span>
-              <span>{profileInterface?.victories}</span>
+              <div className="vict">{profileInterface?.victories}</div>
             </div>
             <div className="match-history">
               <span className='hist-title'>Match History</span>
-              <span>{matchHistory}</span>
+              <span className="hist">{matchHistory}</span>
             </div>
           </div>
         </div>

@@ -2,14 +2,14 @@ import { useCookies } from "react-cookie";
 import { socket, handleTokenCorrupted } from "../../App";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
-import { AiFillCaretDown } from "react-icons/ai";
-import { RiLogoutCircleRLine } from "react-icons/ri";
-import { CgProfile } from "react-icons/cg";
 import "./style.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Menu from "./Menu";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 const Navbar = () => {
+  const { width } = useWindowSize();
   const [cookie] = useCookies(["displayName"]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -30,55 +30,51 @@ const Navbar = () => {
     navigate("/");
   };
 
-  return (
-    <header>
-      <div className="title">
-        <div className="fa-solid fa-table-tennis-paddle-ball">Pong Game</div>
-      </div>
-      <div className="nav">
-        <NavLink to="/" className="navItem">
-          <i className="fas fa-home"></i>
-          <span>Home</span>
-        </NavLink>
-        <NavLink to="/game" className="navItem">
-          <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-          <span>Game</span>
-        </NavLink>
-        <NavLink to="/ChatBox" className="navItem">
-          <i className="fa-solid fa-comment"></i>
-          <span>Chat</span>
-        </NavLink>
-        <NavLink to="/friends" className="navItem">
-          <i className="fa-solid fa-user"></i>
-          <span>Friends</span>
-        </NavLink>
-        <div className="navItem">
-          <div className="navList">
-            <div onClick={handleOpen}>
-              <i className="fa-solid fa-user" />
-              {cookie.displayName}
-              <AiFillCaretDown size={10} />
-            </div>
-            {open ? (
-              <ul>
-                <li className="navListItem">
-                  <NavLink to="/Profile">
-                    <CgProfile size={20}></CgProfile> <span>Profile</span>
-                  </NavLink>
-                </li>
-                <li className="navListItem">
-                  <button onClick={handleLogout}>
-                    <RiLogoutCircleRLine size={20}></RiLogoutCircleRLine>{" "}
-                    <span>Logout</span>
-                  </button>
-                </li>
-              </ul>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-};
+  useEffect(() => {
+    if (width > 700)
+      setOpen(false);
+  }, [width]);
 
-export default Navbar;
+  return (
+      <>
+        <nav className='navbar'>
+          <div className="title">
+            <i className="fa-solid fa-table-tennis-paddle-ball"/>
+            <span className="pong">Pong Game</span>
+          </div>
+          <div className="nav-links">
+            <NavLink to="/" className="nav-item">
+              <i className="fas fa-home"></i>
+              <span>Home</span>
+            </NavLink>
+            <NavLink to="/game" className="nav-item">
+              <i className="fa-solid fa-table-tennis-paddle-ball"></i>
+              <span>Game</span>
+            </NavLink>
+            <NavLink to="/ChatBox" className="nav-item">
+              <i className="fa-solid fa-comment"></i>
+              <span>Chat</span>
+            </NavLink>
+            <NavLink to="/friends" className="nav-item">
+              <i className="fa-solid fa-user"></i>
+              <span>Friends</span>
+            </NavLink>
+            <NavLink to="/Profile" className="nav-item">
+              <i className="fa-solid fa-address-card"></i>
+              <span>{cookie.displayName}</span>
+            </NavLink>
+            <button className='logout-btn' onClick={handleLogout}>
+              <i className="fa-solid fa-arrow-right-from-bracket"/>
+              <span>Logout</span>
+            </button>
+          </div>
+          <div className="menu" onClick={handleOpen}>
+            <i className="fa-solid fa-bars"></i>
+          </div>
+        </nav>
+        {open ? <Menu displayName={cookie.displayName}/> : null}
+      </>
+    );
+  };
+  
+  export default Navbar;
