@@ -15,7 +15,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe( {
     whitelist: true,
   }));
-  console.log("testing 42API");
   // please modify this secret
   app.use(
     session({

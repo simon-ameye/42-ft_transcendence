@@ -73,15 +73,12 @@ const PublicProfile = () => {
   }
 
   useEffect(() => {
-    // add another endpoint in backend
     axios.get('http://localhost:3001/user/friendslistById/:id', { params:{ id: id } })
       .then(res => {
-        console.log("SUCCESS", res.data);
         setFriends(res.data);
       })
       .catch(err => {
         console.log(err)
-        console.log("FAILED");
       })
   }, []);
 

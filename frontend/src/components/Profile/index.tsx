@@ -30,10 +30,10 @@ const Profile = () => {
   const friendList = friends.map((c, i) => (
     // add a link to each friend profile
     <ListItem key={i}>
-      <li title={c.status == "OFFLINE" ? "Offline" : "Online"}>
+      <ul title={c.status == "OFFLINE" ? "Offline" : "Online"}>
         {c.status == "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
         <span className="playing">{c.status == "PLAYING" ? c.status : ""}</span>
-      </li>
+      </ul>
     </ListItem >
   ))
 
