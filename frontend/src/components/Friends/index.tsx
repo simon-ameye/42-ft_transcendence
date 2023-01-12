@@ -125,6 +125,16 @@ const Friends = () => {
       });
   }, []);
 
+  useEffect(() => {
+      axios.get("http://localhost:3001/user/friendsList")
+        .then((res) => {
+          setFriends(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+  });
+
   // needs modif
   useEffect(() => {
     const interval = setInterval(() => {
