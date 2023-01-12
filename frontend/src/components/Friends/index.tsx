@@ -1,12 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { ListItem } from "@mui/material";
-import io, { Socket } from "socket.io-client";
-import { useCookies } from "react-cookie";
 import { socket } from "../../App";
-import { request } from "http";
-import User from "../User";
-import { async } from "rxjs";
 import Default from "../../layouts/Default";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +27,6 @@ type FriendRequest = {
 
 const Friends = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [cookie] = useCookies(['displayName']);
   const navigate = useNavigate();
   const [receivedFriendRequest, setReceivedFriendRequest] = useState<FriendRequest[]>([]);
   const [friends, setFriends] = useState<User[]>([])
@@ -105,9 +99,9 @@ const Friends = () => {
 
   const friendList = friends.map((c, i) => (
     <li>
-      <li title={c.status == "OFFLINE" ? "Offline" : "Online"}>
-        {c.status == "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
-        <span className="playing">{c.status == "PLAYING" ? c.status : ""}</span>
+      <li title={c.status === "OFFLINE" ? "Offline" : "Online"}>
+        {c.status === "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
+        <span className="playing">{c.status === "PLAYING" ? c.status : ""}</span>
         <button className="fa-solid fa-user" onClick={(e) =>  navigate("/publicProfile/" + c.id)} ></button>
       </li>
       <ListItem key={i} />
@@ -173,14 +167,14 @@ const Friends = () => {
     return () => {
       socket.off("accept friend", acceptedFriendRequest);
     };
-  }, [receivedFriendRequest]);
+  });
 
   useEffect(() => {
     socket.on("deny friend", deniedFriendRequest);
     return () => {
       socket.off("deny friend", deniedFriendRequest);
     };
-  }, [receivedFriendRequest]);
+  });
 
   useEffect(() => {
     axios
@@ -201,24 +195,24 @@ const Friends = () => {
   });
 
   const deniedFriendRequest = (relation: FriendRequest) => {
-    if (relation != undefined) {
+    if (relation !== undefined) {
       setReceivedFriendRequest(
-        receivedFriendRequest.filter((item) => item.id != relation.id)
+        receivedFriendRequest.filter((item) => item.id !== relation.id)
       );
     }
   };
 
   const acceptedFriendRequest = (request: User, relation: FriendRequest) => {
     setFriends((friends) => [...friends, request]);
-    if (relation != undefined) {
+    if (relation !== undefined) {
       setReceivedFriendRequest(
-        receivedFriendRequest.filter((item) => item.id != relation.id)
+        receivedFriendRequest.filter((item) => item.id !== relation.id)
       );
     }
   };
 
   const receiveFriendRequest = (request: FriendRequest) => {
-    if (request != undefined)
+    if (request !== undefined)
       setReceivedFriendRequest((receivedFriendRequest) => [
         ...receivedFriendRequest,
         request,
@@ -253,7 +247,7 @@ const Friends = () => {
           </div>
           <div className="game-progress-container">
             {
-              GameInProgress.length != 0 && <div className="game-progress">
+              GameInProgress.length !== 0 && <div className="game-progress">
                 Watch game in progress : {GameInProgress}</div>
             }
           </div>

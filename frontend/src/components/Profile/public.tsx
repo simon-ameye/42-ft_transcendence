@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import ProfileInterface from './Interface/ProfileInterface';
 import './style.scss'
-import User from '../User';
 import { ListItem } from '@mui/material';
 import Default from '../../layouts/Default';
 import { useParams } from 'react-router-dom';
@@ -62,7 +61,7 @@ const PublicProfile = () => {
       function (response) {
         setprofileInterface(response.data);
       }).catch(err => console.log(err));
-  }, [])
+  }, [id])
 
   const renderImg = () => {
     let path = "http://localhost:3001/profile/getImageById/:id?id=" + id;
@@ -80,7 +79,7 @@ const PublicProfile = () => {
       .catch(err => {
         console.log(err)
       })
-  }, []);
+  }, [id]);
 
   return (
     <Default>

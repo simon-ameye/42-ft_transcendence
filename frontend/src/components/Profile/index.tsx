@@ -1,12 +1,10 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
 import ProfileInterface from './Interface/ProfileInterface';
 import './style.scss'
 import FileUpload from './upload';
-import User from '../User';
 import { ListItem } from '@mui/material';
 import Default from '../../layouts/Default';
-import { profile } from 'console';
 import { useCookies } from 'react-cookie';
 
 type User = {
@@ -30,9 +28,9 @@ const Profile = () => {
   const friendList = friends.map((c, i) => (
     // add a link to each friend profile
     <ListItem key={i}>
-      <ul title={c.status == "OFFLINE" ? "Offline" : "Online"}>
-        {c.status == "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
-        <span className="playing">{c.status == "PLAYING" ? c.status : ""}</span>
+      <ul title={c.status === "OFFLINE" ? "Offline" : "Online"}>
+        {c.status === "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
+        <span className="playing">{c.status === "PLAYING" ? c.status : ""}</span>
       </ul>
     </ListItem >
   ))
