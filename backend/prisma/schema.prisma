@@ -43,7 +43,7 @@ model User {
   paddleY   Float   @default(0.5)
   watching  Int     @default(-1)
 
-  log               Boolean   @default(true)
+  log               Boolean   @default(false)
   userFriends       Friends[] @relation(name: "users")
   friendUserFriends Friends[] @relation(name: "friend_users")
 

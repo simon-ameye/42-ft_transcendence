@@ -45,6 +45,9 @@ const Auth2FA = () => {
 			else if (err.response.status === 460) {
 				alert('You are already log in');
 			}
+			else if (err.response.status === 401) {
+				alert('Operation not allowed');
+			}
 		}
 	}
 

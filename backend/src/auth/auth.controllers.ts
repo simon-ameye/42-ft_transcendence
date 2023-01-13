@@ -13,7 +13,7 @@ export class AuthController {
   signup(
 			@Body() dto: AuthDto,
 			@Res({ passthrough: true} ) response: Response
-	) {
+	): Promise<string> {
     return this.authService.signup(dto, response);
   }
 
@@ -75,5 +75,15 @@ export class AuthController {
 	@Delete('corruption')
 	handleCorruption(@Req() req: Request) {
 		console.log({"displayName": req.cookies.displayName});
+	}
+
+	@UseGuards(AuthGuard('jwt'))
+	@Post('signup/info')
+	setSignupInfo(
+			@GetUser() dto: UserDto,
+			@Res({ passthrough: true }) response: Response,
+			@Body() body: {displayName: string, profilePicture: string}
+		) {
+		return (this.authService.setSignupInfo(dto, response, body));
 	}
 }

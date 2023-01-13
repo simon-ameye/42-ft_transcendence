@@ -49,6 +49,8 @@ const User = () => {
 		socket.emit('reload');
 		if (doublefa === "yes")
 			navigate('/auth2fa');
+		else if (doublefa === "signup")
+			navigate('/auth?code=signup');
 		else
 			navigate('/auth');
 	}

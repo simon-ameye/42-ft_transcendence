@@ -28,6 +28,7 @@ export class AuthService {
 			@Res({ passthrough: true }) response: Response
 		): Promise<string> {
 		const	authStr = 'Bearer '.concat(token);
+		var signup: boolean;
 		try {
 			const res = await firstValueFrom(this.httpService.get(
 				'https://api.intra.42.fr/v2/me', {
@@ -40,6 +41,8 @@ export class AuthService {
 					email: res.email,
 				},
 			});
+			if (user)
+				signup = false;
 			if (user && user.log == true) {
 				throw new HttpException({
 					status: 460,
@@ -54,6 +57,7 @@ export class AuthService {
 						imageUrl: "uploads/default.png"
 					}
 				});
+				signup = true;
 			//	const fs = require('fs');
 			//	const fetch = require('node-fetch');
 
@@ -96,14 +100,17 @@ export class AuthService {
 		}
 		const jwtToken = await this.signJwtToken(user);
 		response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-		response.status(202).cookie('login', "yes", { path: '/' });
+		if (!signup)
+			response.status(202).cookie('login', "yes", { path: '/' });
+		else
+			return ("signup");
 		return ("no");
   }
 
   async signup(
 			dto: AuthDto,
 			@Res({ passthrough: true }) response: Response
-		): Promise<void> {
+		): Promise<string> {
     const hash = await argon.hash(dto.password);
     try {
       const user = await this.prismaService.user.create({
@@ -117,7 +124,6 @@ export class AuthService {
 			const jwtToken = await this.signJwtToken(user);
 			response.status(202).cookie('displayName', user.displayName, { path: '/' });
 			response.status(202).cookie('jwtToken', jwtToken, { path: '/', httpOnly: true });
-			response.status(202).cookie('login', "yes", { path: '/' });
     } catch(e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code == "P2002") {
@@ -128,6 +134,7 @@ export class AuthService {
         throw e;
       }
     }
+		return ('signup');
   }
 
   async signin(
@@ -222,6 +229,12 @@ export class AuthService {
 			code: string,
 			@Res({ passthrough: true }) response: Response
 		): Promise<void> {
+		if (!displayName) {
+			throw new HttpException({
+				status: 401,
+        error: 'Operation not allowed'
+			}, 401);
+		}
 		const user = await this.prismaService.user.findUnique({
 			where: {
 				displayName
@@ -332,5 +345,35 @@ export class AuthService {
 		response.status(202).cookie('displayName', 'none', { path: '/', expires: new Date(Date.now())});
 		response.status(202).cookie('qrcode', 'none', { path: '/Profile', expires: new Date(Date.now())});
 		response.status(202).cookie('login', "yes", { path: '/', httpOnly: true, expires: new Date(Date.now())});
+	}
+
+	async setSignupInfo(
+			dto: UserDto,
+			@Res({ passthrough: true }) response: Response,
+			params: {displayName: string, profilePicture: string}
+		) {
+		try {
+			const userUpdate = await this.prismaService.user.update({
+				where: {
+					id: dto.id
+				},
+				data: {
+					displayName: params.displayName,
+					imageUrl: params.profilePicture,
+					log: true
+				}
+			});
+    } catch(e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code == "P2002") {
+          throw new ForbiddenException(
+            'DisplayName already taken',
+          );
+        }
+        throw e;
+      }
+		}
+		response.status(202).cookie('displayName', params.displayName, { path: '/' });
+		response.status(202).cookie('login', "yes", { path: '/' });
 	}
 }
