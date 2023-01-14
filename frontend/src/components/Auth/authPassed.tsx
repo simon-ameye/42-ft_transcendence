@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { socket } from '../../App';
 
-export default function AuthPassed () {
+export default function AuthPassed() {
 
 	// VARIABLES \\
 
@@ -43,7 +43,7 @@ export default function AuthPassed () {
 
 	// FUNCTIONS \\
 
-	const getIntraMe = (data: {access_token: string}) => {
+	const getIntraMe = (data: { access_token: string }) => {
 		axios.get('http://localhost:3001/auth/intra/getMe', {
 			params: {
 				token: data.access_token
@@ -53,7 +53,7 @@ export default function AuthPassed () {
 			.catch(err => handleIntraErr(err));
 	}
 
-	const	goToGoogleAuthOrNot = (dfa: string) => {
+	const goToGoogleAuthOrNot = (dfa: string) => {
 		if (dfa === 'yes') {
 			navigate('/auth2fa');
 		}
@@ -62,7 +62,7 @@ export default function AuthPassed () {
 		}
 	}
 
-	const	handleIntraErr = (err: AxiosError) => {
+	const handleIntraErr = (err: AxiosError) => {
 		if (err.response) {
 			if (err.response.status === 460) {
 				alert('You are already log in from an other device');
@@ -76,10 +76,6 @@ export default function AuthPassed () {
 		navigate('/');
 	}
 
-	const	goHome = () => {
-		navigate('/');
-	}
-
 	// USE_EFFECT \\
 
 	useEffect(() => {
@@ -87,22 +83,17 @@ export default function AuthPassed () {
 		return () => {
 			socket.off("reload", reloadListener);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// LISTENER \\
 
 	const reloadListener = () => {
 		window.location.reload();
+		navigate('/');
 	}
 
 	return (
-		<>
-			<div>
-				<h1>Welcome {cookie.displayName} to ft_transcendence!</h1>
-			</div>
-			<div>
-				<button onClick={goHome}>Go to home page</button>
-			</div>
-		</>
+		<></>
 	)
 }

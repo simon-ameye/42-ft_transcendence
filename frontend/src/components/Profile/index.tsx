@@ -6,6 +6,7 @@ import FileUpload from './upload';
 import { ListItem } from '@mui/material';
 import Default from '../../layouts/Default';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from "react-router-dom";
 
 type User = {
   email: string;
@@ -20,15 +21,16 @@ type User = {
 const Profile = () => {
   const [profileInterface, setprofileInterface] = useState<ProfileInterface | undefined>()
   const [friends, setFriends] = useState<User[]>([])
-	const [cookie] = useCookies(['qrcode', 'displayName']);
-	const [dfa, setDfa] = useState<string>('');
-	const [displayqrcode, setDisplayqrcode] = useState<boolean>(false);
-	const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
+  const [cookie] = useCookies(['qrcode', 'displayName']);
+  const [dfa, setDfa] = useState<string>('');
+  const [displayqrcode, setDisplayqrcode] = useState<boolean>(false);
+  const [displayqrcodeMessage, setDisplayqrcodeMessage] = useState<string>("Display QR Code");
+  const navigate = useNavigate();
 
   const friendList = friends.map((c, i) => (
     // add a link to each friend profile
     <ListItem key={i}>
-      <ul title={c.status === "OFFLINE" ? "Offline" : "Online"}>
+      <ul className="vist-profile" onClick={(e) => navigate("/publicProfile/" + c.id)} title={c.status === "OFFLINE" ? "Offline" : "Online"}>
         {c.status === "OFFLINE" ? <div className='offline'></div> : <div className='online'></div>} {c.displayName}
         <span className="playing">{c.status === "PLAYING" ? c.status : ""}</span>
       </ul>
@@ -65,25 +67,25 @@ const Profile = () => {
     </ListItem >
   ))
 
-	const activate2fa = () => {
-		axios.post('http://localhost:3001/auth/google2FA/activate')
-			.then(res => window.location.reload())
-			.catch(err => console.log(err))
-	}
+  const activate2fa = () => {
+    axios.post('http://localhost:3001/auth/google2FA/activate')
+      .then(res => window.location.reload())
+      .catch(err => console.log(err))
+  }
 
-	const desactivate2fa = () => {
-		axios.post('http://localhost:3001/auth/google2FA/desactivate')
-			.then(res => window.location.reload())
-			.catch(err => console.log(err))
-	}
+  const desactivate2fa = () => {
+    axios.post('http://localhost:3001/auth/google2FA/desactivate')
+      .then(res => window.location.reload())
+      .catch(err => console.log(err))
+  }
 
-	const	displayQrcode = () => {
-		setDisplayqrcode(!displayqrcode);
-		if (!displayqrcode)
-			setDisplayqrcodeMessage("Hide QR Code");
-		else
-			setDisplayqrcodeMessage("Display QR Code");
-	}
+  const displayQrcode = () => {
+    setDisplayqrcode(!displayqrcode);
+    if (!displayqrcode)
+      setDisplayqrcodeMessage("Hide QR Code");
+    else
+      setDisplayqrcodeMessage("Display QR Code");
+  }
 
   useEffect(() => {
     axios.get('http://localhost:3001/profile/myProfile', {
@@ -93,18 +95,18 @@ const Profile = () => {
       }).catch(err => console.log(err));
   }, [])
 
-	useEffect(() => {
-		if (cookie.displayName) {
-			axios.get('http://localhost:3001/user/get2fa', {
-				params: {
-					displayName: cookie.displayName,
-				}
-			})
-			.then(res => setDfa(res.data))
-			.catch(err => console.log(err))
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+  useEffect(() => {
+    if (cookie.displayName) {
+      axios.get('http://localhost:3001/user/get2fa', {
+        params: {
+          displayName: cookie.displayName,
+        }
+      })
+        .then(res => setDfa(res.data))
+        .catch(err => console.log(err))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     axios.get('http://localhost:3001/user/friendsList')
@@ -127,22 +129,22 @@ const Profile = () => {
             {profileInterface?.displayName}
           </div>
         </div>
-          <span className='changepp'>Change profile picture :
-            <FileUpload />
-          </span>
-          <div className="g-auth">
-            {dfa === 'no' &&
+        <span className='changepp'>Change profile picture :
+          <FileUpload />
+        </span>
+        <div className="g-auth">
+          {dfa === 'no' &&
             <button
               onClick={activate2fa} className='submit-btn'>Enable 2FA</button>}
-            {dfa === 'yes' &&
+          {dfa === 'yes' &&
             <button
               onClick={desactivate2fa} className='submit-btn'>Disable 2FA</button>}
-            </div>
-            <div>
-            {cookie.qrcode &&
+        </div>
+        <div>
+          {cookie.qrcode &&
             <button onClick={displayQrcode} className='submit-btn'>{displayqrcodeMessage}</button>}
-            {displayqrcode && <img src={cookie.qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
-          </div>
+          {displayqrcode && <img src={cookie.qrcode} alt="qrcode" style={{ width: '400px' }}></img>}
+        </div>
         <div className="social-info">Social & Stats
           <div className="info-container">
             <div className='friend'>

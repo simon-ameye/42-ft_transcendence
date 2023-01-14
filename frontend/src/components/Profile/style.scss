@@ -59,7 +59,8 @@
         align-items: center;
         font-size: 25px;
 
-        li, ul {
+        li,
+        ul {
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -83,6 +84,10 @@
           .playing {
             margin-left: 2vw;
           }
+        }
+
+        .vist-profile {
+          cursor: pointer;
         }
       }
 
@@ -166,32 +171,40 @@
   .history {
     font-size: 18px;
   }
+
   .profile-container {
     .name-picture {
       flex-direction: column;
+
       .name {
         font-size: 24px;
       }
     }
+
     .social-info {
-        font-size: 28px;
+      font-size: 28px;
+
       .info-container {
         .friend {
           .friend-title {
             font-size: 24px;
           }
+
           .friendlist {
             font-size: 18px;
           }
         }
+
         .victories {
           .vict-title {
             font-size: 24px;
           }
+
           .vict {
             font-size: 18px;
           }
         }
+
         .match-history {
           .hist-title {
             font-size: 24px;
@@ -200,26 +213,36 @@
       }
     }
   }
-  .date, .separator {
+
+  .date,
+  .separator {
     display: none;
   }
 }
 
 @media screen and (max-width: 510px) {
   .profile-container {
-    .submit-btn, .changepp {
+
+    .submit-btn,
+    .changepp {
       display: none;
     }
+
     .social-info {
       .info-container {
         flex-direction: column;
         align-items: center;
       }
-      .friend, .victories, .match-history {
+
+      .friend,
+      .victories,
+      .match-history {
         padding: 10px;
       }
+
       .match-history {
         border: none;
+
         #lightning {
           display: none;
         }

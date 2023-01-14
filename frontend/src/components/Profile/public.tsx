@@ -5,6 +5,7 @@ import './style.scss'
 import { ListItem } from '@mui/material';
 import Default from '../../layouts/Default';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 type User = {
   email: string;
@@ -18,13 +19,16 @@ const PublicProfile = () => {
   const [profileInterface, setprofileInterface] = useState<ProfileInterface | undefined>()
   const [friends, setFriends] = useState<User[]>([])
   let { id } = useParams()
+  const navigate = useNavigate();
 
   const friendList = friends.map((c, i) => (
     <ListItem key={i}>
-      {c.displayName}
+      <ul className="vist-profile" onClick={(e) => navigate("/publicProfile/" + c.id)} >
+        {c.displayName}
+      </ul>
     </ListItem >
   ))
-  
+
   const matchHistory = profileInterface?.matchHistory.reverse().map((c, i) => (
     <ListItem key={i}>
       <div className="history">
@@ -56,7 +60,7 @@ const PublicProfile = () => {
   ))
 
   useEffect(() => {
-    axios.get('http://localhost:3001/profile/findbyId/:id', {params:{ id: id }}
+    axios.get('http://localhost:3001/profile/findbyId/:id', { params: { id: id } }
     ).then(
       function (response) {
         setprofileInterface(response.data);
@@ -67,12 +71,12 @@ const PublicProfile = () => {
     let path = "http://localhost:3001/profile/getImageById/:id?id=" + id;
     return (
       <img className='profileImage' src={path} alt='profileImage'
-      width="300" height="300"></img>
+        width="300" height="300"></img>
     )
   }
 
   useEffect(() => {
-    axios.get('http://localhost:3001/user/friendslistById/:id', { params:{ id: id } })
+    axios.get('http://localhost:3001/user/friendslistById/:id', { params: { id: id } })
       .then(res => {
         setFriends(res.data);
       })
