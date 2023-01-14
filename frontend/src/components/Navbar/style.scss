@@ -6,10 +6,11 @@
   align-items: center;
   height: 6vh;
   margin-bottom: 5vh;
+
   .title {
     position: absolute;
     left: 50px;
-    
+
     span {
       padding-left: 5px;
     }
@@ -22,21 +23,22 @@
     justify-content: space-between;
     align-items: center;
 
-    a.active {      
+    a.active {
       span {
         color: grey;
         font-weight: 900;
       }
+
       i {
         color: grey;
       }
     }
+
     span {
       padding-left: 5px;
     }
-
   }
-  
+
   .logout-btn {
     font-family: $nova;
     background-color: transparent;
@@ -45,7 +47,7 @@
     position: absolute;
     right: 50px;
   }
-  
+
   .menu {
     display: none;
   }
@@ -55,10 +57,12 @@
   .title {
     display: none;
   }
+
   .navbar {
-   justify-content: flex-start;
-   margin-left: 50px;
+    justify-content: flex-start;
+    margin-left: 50px;
   }
+
   .nav-links {
     i {
       display: none;
@@ -70,14 +74,15 @@
   .title {
     display: block;
   }
+
   .navbar {
-   justify-content: flex-start;
-   margin-left: 50px;
-  
-   .nav-links {
-     display: none;
+    justify-content: flex-start;
+    margin-left: 50px;
+
+    .nav-links {
+      display: none;
     }
-  
+
     .menu {
       display: block;
       position: absolute;

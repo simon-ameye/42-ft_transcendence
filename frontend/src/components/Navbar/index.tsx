@@ -36,45 +36,45 @@ const Navbar = () => {
   }, [width]);
 
   return (
-      <>
-        <nav className='navbar'>
-          <div className="title">
-            <i className="fa-solid fa-table-tennis-paddle-ball"/>
-            <span className="pong">Pong Game</span>
-          </div>
-          <div className="nav-links">
-            <NavLink to="/" className="nav-item">
-              <i className="fas fa-home"></i>
-              <span>Home</span>
-            </NavLink>
-            <NavLink to="/game" className="nav-item">
-              <i className="fa-solid fa-table-tennis-paddle-ball"></i>
-              <span>Game</span>
-            </NavLink>
-            <NavLink to="/ChatBox" className="nav-item">
-              <i className="fa-solid fa-comment"></i>
-              <span>Chat</span>
-            </NavLink>
-            <NavLink to="/friends" className="nav-item">
-              <i className="fa-solid fa-user"></i>
-              <span>Friends</span>
-            </NavLink>
-            <NavLink to="/Profile" className="nav-item">
-              <i className="fa-solid fa-address-card"></i>
-              <span>{cookie.displayName}</span>
-            </NavLink>
-            <button className='logout-btn' onClick={handleLogout}>
-              <i className="fa-solid fa-arrow-right-from-bracket"/>
-              <span>Logout</span>
-            </button>
-          </div>
-          <div className="menu" onClick={handleOpen}>
-            <i className="fa-solid fa-bars"></i>
-          </div>
-        </nav>
-        {open ? <Menu displayName={cookie.displayName}/> : null}
-      </>
-    );
-  };
-  
-  export default Navbar;
+    <>
+      <nav className='navbar'>
+        <div className="title">
+          <i className="fa-solid fa-table-tennis-paddle-ball" />
+          <span className="pong">Pong Game</span>
+        </div>
+        <div className="nav-links">
+          <NavLink to="/" className="nav-item">
+            <i className="fas fa-home"></i>
+            <span>Home</span>
+          </NavLink>
+          <NavLink to="/game" className="nav-item">
+            <i className="fa-solid fa-table-tennis-paddle-ball"></i>
+            <span>Game</span>
+          </NavLink>
+          <NavLink to="/ChatBox" className="nav-item">
+            <i className="fa-solid fa-comment"></i>
+            <span>Chat</span>
+          </NavLink>
+          <NavLink to="/friends" className="nav-item">
+            <i className="fa-solid fa-user"></i>
+            <span>Friends</span>
+          </NavLink>
+          <NavLink to="/Profile" className="nav-item">
+            <i className="fa-solid fa-address-card"></i>
+            <span>{cookie.displayName}</span>
+          </NavLink>
+          <button className='logout-btn' onClick={handleLogout}>
+            <i className="fa-solid fa-arrow-right-from-bracket" />
+            <span>Logout</span>
+          </button>
+        </div>
+        <div className="menu" onClick={handleOpen}>
+          {open ? <i className="fa-solid fa-xmark"></i> : <i className="fa-solid fa-bars"></i>}
+        </div>
+      </nav>
+      {open ? <Menu displayName={cookie.displayName} /> : null}
+    </>
+  );
+};
+
+export default Navbar;
