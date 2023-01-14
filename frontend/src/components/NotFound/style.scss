@@ -1,16 +1,25 @@
 @import '../../styles/settings';
 
-.notFound{
+.notFound {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+
 	.navlink {
 		font-size: 20px;
 		text-transform: uppercase;
 
 		i {
 			margin-right: 10px;
+		}
+	}
+}
+
+@media screen and (max-width: 700px) {
+	.notFound {
+		img {
+			width: 450px;
 		}
 	}
 }

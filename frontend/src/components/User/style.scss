@@ -113,3 +113,31 @@ input[type="file"] {
 .school-logo {
   width: 50px;
 }
+
+@media screen and (max-width: 700px) {
+  .authentification-container {
+    h1 {
+      font-size: 18px;
+    }
+
+    .sign-in-container {
+      flex-direction: column;
+
+      .createUserContent {
+        .login-btn {
+          width: 75px;
+          padding: 0;
+          margin-top: 5vh;
+
+          .school-logo {
+            width: 30px;
+          }
+
+          p {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}

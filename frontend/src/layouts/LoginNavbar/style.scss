@@ -33,3 +33,19 @@
     }
   }
 }
+
+@media screen and (max-width: 700px) {
+  .login-header {
+    margin-top: 10vh;
+
+    .header-container {
+      .ask-log {
+        display: none;
+      }
+
+      .pong-title {
+        display: none;
+      }
+    }
+  }
+}
