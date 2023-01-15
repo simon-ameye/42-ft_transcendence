@@ -1,11 +1,18 @@
-.messageInput{
-        text-align: center;
-    textarea{
-		outline: none;
-		font-family: inherit;
-		border-radius: 10px;
-		background-color: transparent;
-        //resize: none;
+    .messageInput {
+      margin-left: auto;
+      margin-right: auto;
+      // width: 600px;
+      //height: 700px;
+
+      textarea {
+        // width: 560px;
+        // height: 60px;
+        resize: none;
+        background-color: transparent;
+        text-align: left;
+        overflow: auto;
+        border: none;
+        outline: none;
         width: 565px;
+      }
     }
-}
