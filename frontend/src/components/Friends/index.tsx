@@ -140,7 +140,7 @@ const Friends = () => {
         .catch((err) => {
           console.log(err);
         });
-    }, 1000);
+    }, 10000);
     return () => clearInterval(interval);
   });
 

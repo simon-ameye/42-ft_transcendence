@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { IoSend } from "react-icons/io5";
 import axios from 'axios';
 import ChannelInterface from './Interface/ChannelInterface';
-import { convertToObject } from 'typescript';
 import './inputmessage.scss'
+
 const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) => {
   const [value, setValue] = useState<string>("");
 

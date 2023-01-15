@@ -8,7 +8,6 @@ import { FriendService } from './friend/friend.service';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
 import { ProfileModule } from './profile/profile.module';
-import { LeaderboardModule } from './leaderboard/leaderboard.module';
 
 @Module({
   imports: [
@@ -22,7 +21,6 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     PrismaModule,
     FriendModule,
     GameModule,
-    LeaderboardModule,
   ],
   //providers: [FriendService],
 })

@@ -135,9 +135,6 @@ export default function GameHome() {
     setGameList([...gameList]);
   };
 
-  function MissedGoal() {
-    return <h1>MISSED!</h1>;
-  }
   // RETURN \\
 
   return (

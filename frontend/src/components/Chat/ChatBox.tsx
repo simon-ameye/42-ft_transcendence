@@ -8,7 +8,7 @@ import axios from 'axios';
 import Channel from './Sidebar/Channel';
 import Sidebar from './Sidebar';
 import ChannelPrivate from './Sidebar/ChannelPrivate'
-import { TbKey, TbKeyOff, TbRefresh } from 'react-icons/tb';
+import { TbRefresh } from 'react-icons/tb';
 import { RiChat3Fill } from 'react-icons/ri';
 import { RiChatPrivateFill } from 'react-icons/ri';
 import { BsFillPeopleFill } from 'react-icons/bs';
@@ -35,9 +35,9 @@ const Chatbox = () => {
 
   const channelList = channelInterfaces.map((c, i) => (
     <ListItem key={i} onClick={event => handleSelectChannel(c.id)} >
-      {c.mode == "PUBLIC" ? <RiChat3Fill /> : ""}
-      {c.mode == "PRIVATE" ? <RiChatPrivateFill /> : ""}
-      {c.mode == "DIRECT" ? <BsFillPeopleFill /> : ""}
+      {c.mode === "PUBLIC" ? <RiChat3Fill /> : ""}
+      {c.mode === "PRIVATE" ? <RiChatPrivateFill /> : ""}
+      {c.mode === "DIRECT" ? <BsFillPeopleFill /> : ""}
       <div className='list'>{c.name}</div>
     </ListItem>
   ))
@@ -54,13 +54,13 @@ const Chatbox = () => {
     tmpChannelInterfaces = channelInterfaces;
     let alreadyKnownChannel = 0
     for (let i = 0; i < tmpChannelInterfaces.length; i++) {
-      if (tmpChannelInterfaces[i].id == channelInterface.id) {
+      if (tmpChannelInterfaces[i].id === channelInterface.id) {
         tmpChannelInterfaces[i] = channelInterface
         alreadyKnownChannel = 1
         break
       }
     }
-    if (alreadyKnownChannel == 0) {
+    if (alreadyKnownChannel === 0) {
       tmpChannelInterfaces.push(channelInterface)
     }
     setchannelInterfaces([...tmpChannelInterfaces])

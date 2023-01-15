@@ -1,12 +1,8 @@
 import { ListItem } from '@mui/material'
 import axios from 'axios';
 import { useState } from 'react'
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, InputAdornment, IconButton } from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { TbKey, TbKeyOff } from 'react-icons/tb';
+import { Dialog, DialogActions, DialogTitle, TextField } from '@mui/material'
 import ChannelInterface from './Interface/ChannelInterface';
-import UserInterface from './Interface/UserInterface';
 
 export default function ChannelUserList({ actualChannelInterface }: { actualChannelInterface: ChannelInterface | undefined }) {
 
@@ -20,11 +16,6 @@ export default function ChannelUserList({ actualChannelInterface }: { actualChan
     setValues({ ...values, userId: userId });
     setOpen(true);
   }
-  const handleVisibility = () => {
-    setValues({
-      ...values,
-    });
-  };
   const handleClose = () => {
     setValues({
       channelId: 0,

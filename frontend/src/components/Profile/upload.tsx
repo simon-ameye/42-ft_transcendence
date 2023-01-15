@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import IFile from "./Interface/FileInterface";
+import { useState } from "react";
 import UploadService from "./FileUploadService";
 import './style.scss'
 

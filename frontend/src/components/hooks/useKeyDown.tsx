@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 export const useKeyDown = (callback:Function, keys:string[]) => {
 	const onKeyDown = (event:KeyboardEvent) => {
@@ -8,6 +8,7 @@ export const useKeyDown = (callback:Function, keys:string[]) => {
 			callback(event.key);
 		}
 	};
+
 	useEffect(() => {
 		document.addEventListener('keydown', onKeyDown);
 		return () => {

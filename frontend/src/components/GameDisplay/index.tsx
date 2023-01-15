@@ -18,7 +18,7 @@ const GameDisplay = (props: { config: GameConfig }) => {
 
   const canvas = useRef<HTMLCanvasElement>(null);
 
-  const { canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize } =
+  const { canvasSize, bgColor, fgColor } =
     props.config;
 
   const drawRect = (
@@ -71,7 +71,7 @@ const GameDisplay = (props: { config: GameConfig }) => {
         fgColor
       );
     },
-    [gi, canvasSize, ballSize, bgColor, fgColor, paddleOffset, paddleSize]
+    [gi, bgColor, fgColor, drawRect]
   );
 
   useEffect(() => {

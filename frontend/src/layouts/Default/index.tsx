@@ -5,7 +5,7 @@ import LoginNavbar from "../LoginNavbar";
 import './style.scss'
 
 const Default = (props: PropsWithChildren) => {
-	const [cookie, setCookie] = useCookies(['displayName', 'jwtToken']);
+	const [cookie] = useCookies(['displayName', 'jwtToken']);
 
 	return (
 		<>

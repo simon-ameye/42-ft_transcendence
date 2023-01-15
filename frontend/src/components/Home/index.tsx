@@ -1,24 +1,7 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import Default from "../../layouts/Default";
 import "./style.scss";
 
 const Home = () => {
-  const [cookie] = useCookies(["displayName"]);
-  const [RowData, setRowData] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/leaderboard/getLeaderBoard")
-      .then((res) => {
-        setRowData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   return (
     <Default>
       <div className="homeContent">

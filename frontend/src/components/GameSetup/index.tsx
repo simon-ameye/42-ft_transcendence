@@ -10,13 +10,13 @@ const Game = () => {
   // VARIABLES \\
   const { width, height } = useWindowSize();
 
-  const [playerRight, setPlayerRight] = useState<PlayerInterface>({
+  const [playerRight] = useState<PlayerInterface>({
     userId: 0,
     displayName: "right",
     score: 0,
     side: 0,
   });
-  const [playerLeft, setPlayerLeft] = useState<PlayerInterface>({
+  const [playerLeft] = useState<PlayerInterface>({
     userId: 0,
     displayName: "left",
     score: 0,
@@ -42,7 +42,7 @@ const Game = () => {
       fgColor: "#fff",
       players2: [playerRight, playerLeft],
     }),
-    [width, height]
+    [width, playerRight, playerLeft]
   );
 
   return (
