@@ -26,7 +26,7 @@ services:
       - database
     links:
       - database
-    command: sh -c 'npx prisma db push && npm install && npm run start'
+    command: sh -c 'npx prisma db push && npm install --no-warnings && npm run start'
     networks:
       - ft_transcendence
 
@@ -38,7 +38,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-        - ./frontend/:/app
+      - ./frontend/:/app
     image: frontend-node
     networks:
       - ft_transcendence
