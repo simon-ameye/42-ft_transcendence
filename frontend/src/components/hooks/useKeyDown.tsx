@@ -8,7 +8,7 @@ export const useKeyDown = (callback:Function, keys:string[]) => {
 			callback(event.key);
 		}
 	};
-
+	
 	useEffect(() => {
 		document.addEventListener('keydown', onKeyDown);
 		return () => {

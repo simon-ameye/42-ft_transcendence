@@ -8,7 +8,7 @@ import useWindowSize from "react-use/lib/useWindowSize";
 
 const Game = () => {
   // VARIABLES \\
-  const { width, height } = useWindowSize();
+  const { width } = useWindowSize();
 
   const [playerRight] = useState<PlayerInterface>({
     userId: 0,
