@@ -1,23 +1,13 @@
 FROM node:19-alpine
 
-RUN apk update
-#RUN apk add libressl-dev
-RUN apk add libssl1.1
-
-RUN apk add --no-cache curl zsh git emacs vim;
+WORKDIR /app
 
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV PATH=$PATH:/home/node/.npm-global/bin
 
-# root only for dev
-USER root
+#USER root
 
-# zsh only for dev
-ARG OH_MY_ZSH_THEME=cloud
-RUN set -eux; \
-  npm install -g npm\
-  @nestjs/cli \
-  sh -c "export LD_LIBRARY_PATH=/usr/local/lib"
-WORKDIR /app
+RUN npm install -g npm \
+    @nestjs/cli
 
 CMD [ "zsh" ]
