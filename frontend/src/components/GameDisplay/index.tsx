@@ -114,7 +114,6 @@ const GameDisplay = (props: { config: GameConfig }) => {
 
   useKeyDown(() => {
     socket.emit("arrow up");
-    console.log("presssss");
   }, ["ArrowUp"]);
 
   useKeyDown(() => {

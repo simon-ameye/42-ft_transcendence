@@ -22,7 +22,7 @@ const MessageInput = ({ actualChannelInterface }: { actualChannelInterface: Chan
     }
   }
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.code === "Enter" && value !== "") {
+    if (e.code === "Enter") {
       e.preventDefault();
       sendMessage();
     }

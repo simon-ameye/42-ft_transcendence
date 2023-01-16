@@ -15,7 +15,7 @@
   .Left-side-chat {
     display: flex;
     flex-direction: column;
-          overflow: auto;
+    overflow: auto;
     max-width: 300px;
 
     .chatbox-container {
@@ -101,13 +101,20 @@
       font-style: oblique;
     }
 
+    .ChatMessagesAndInput {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
     .channel_setting {
       text-align: right;
     }
 
     .directmessage {
       width: 595px;
-      height: 770px;
+      height: 600px;
+      //max-height: 80%;
       text-align: left;
       overflow: auto;
       background-color: transparent;
@@ -147,22 +154,6 @@
       }
     }
 
-    .messageInput {
-      margin-left: auto;
-      margin-right: auto;
-      width: 600px;
-      //height: 70px;
 
-      textarea {
-        width: 560px;
-        height: 60px;
-        resize: none;
-        background-color: transparent;
-        text-align: left;
-        overflow: auto;
-        border: none;
-        outline: none;
-      }
-    }
   }
 }

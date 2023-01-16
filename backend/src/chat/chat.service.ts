@@ -142,6 +142,9 @@ export class ChatService {
   }
 
   async sendMessage(userId: number, channelId: number, text: string) {
+    if (!text || text == '' || text == '\n')
+      return ('Empty message');
+
     var channel = this.prisma.channel.findUnique({ where: { id: channelId } });
     if (!await channel)
       return ('Channel not found');
@@ -152,7 +155,6 @@ export class ChatService {
 
     if (!(await channel).userIds.includes(userId)) //BUGGING
       return ('You are not in the channel');
-
 
     var actualDate = new Date();
     let muteUserIds = (await channel).muteUserIds;

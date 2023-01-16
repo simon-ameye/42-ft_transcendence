@@ -13,8 +13,10 @@ const Chat = ({ actualChannelInterface }: { actualChannelInterface: ChannelInter
         {actualChannelInterface ? actualChannelInterface.name : "No channel selected"}
         <ChannelSetting actualChannelInterface={actualChannelInterface} />
       </h1>
-      <DirectMessage actualChannelInterface={actualChannelInterface} />
-      <InputMessage actualChannelInterface={actualChannelInterface} />
+      <div className='ChatMessagesAndInput'>
+        <DirectMessage actualChannelInterface={actualChannelInterface} />
+        <InputMessage actualChannelInterface={actualChannelInterface} />
+      </div>
     </div>
   )
 }
