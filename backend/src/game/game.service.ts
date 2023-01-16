@@ -242,19 +242,22 @@ export class GameService {
   }
 
   async addVictory(winnerId: number, looserId: number, gi: GameInterface): Promise<void> {
-    const user = await this.prismaService.user.findUnique({ where: { id: winnerId } });
-    const opponent = await this.prismaService.user.findUnique({ where: { id: looserId } });
+    const winner = await this.prismaService.user.findUnique({ where: { id: winnerId } });
+    const looser = await this.prismaService.user.findUnique({ where: { id: looserId } });
+
+    let winnerScore = Math.max(gi.p2score, gi.p1score);
+    let looserScore = Math.min(gi.p2score, gi.p1score);
 
     await this.prismaService.user.update({
       where: {
-        id: user.id,
+        id: winnerId,
       },
       data: {
         matchHistory: {
           create: {
             date: new Date(Date.now()).toLocaleString(),
-            score: [gi.p1score, gi.p2score],
-            opponent: opponent.displayName
+            score: [winnerScore, looserScore],
+            opponent: looser.displayName
           }
         },
         victories: {
@@ -265,14 +268,14 @@ export class GameService {
 
     await this.prismaService.user.update({
       where: {
-        id: opponent.id,
+        id: looserId,
       },
       data: {
         matchHistory: {
           create: {
             date:  new Date(Date.now()).toLocaleString(),
-            score: [gi.p2score, gi.p1score],
-            opponent: user.displayName
+            score: [looserScore, winnerScore],
+            opponent: winner.displayName
           }
         }
       },
