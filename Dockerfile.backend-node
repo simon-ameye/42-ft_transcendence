@@ -7,7 +7,4 @@ ENV PATH=$PATH:/home/node/.npm-global/bin
 
 #USER root
 
-RUN npm install -g npm \
-    @nestjs/cli
-
-CMD [ "zsh" ]
+ENTRYPOINT [ "sh", "start.sh" ]

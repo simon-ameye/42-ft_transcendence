@@ -26,7 +26,6 @@ services:
       - database
     links:
       - database
-    command: sh -c 'npx prisma db push && npm install && npm run start'
     networks:
       - ft_transcendence
 
